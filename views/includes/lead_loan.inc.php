@@ -13,8 +13,6 @@ if(!empty($_POST['clientId'])&&!empty($_POST['loanId'])&&!empty($_POST['amount']
   $loanController = \Hudutech\Controller\LoanController::lendLoan($_POST['clientId'],$_POST['loanId'],$_POST['amount']);
 
 
-
-
     if ($loanController) {
         $success_msg .= "Loan issued successfully";
 
