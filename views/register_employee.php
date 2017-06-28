@@ -76,15 +76,26 @@ include  __DIR__.'/includes/register_employee.inc.php';
                     </div>
                     <div class="panel-body">
                         <div class="row">
-                            <div>
-                                <?php if($errorMsg == '' and $successMsg != '') {?>
-                                    <div class="alert alert-success">
-                                        <?php echo $successMsg; ?>
-                                    </div>
-                                <?php } ?>
-                            </div>
+
                             <div class="col-md-10 col-md-offset-1">
-                                <form class="form-horizontal" role="form" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'])?>" METHOD="post">
+                                <div>
+                                    <?php if($errorMsg == '' and $successMsg != '') {?>
+                                        <div class="alert alert-success">
+                                            <?php echo $successMsg; ?>
+                                        </div>
+                                    <?php }
+                                    elseif($errorMsg != '' and $successMsg == '')
+                                    {
+                                        ?>
+                                        <div class="alert alert-danger">
+                                            <?php echo $errorMsg; ?>
+                                        </div>
+                                        <?php
+                                    }
+
+                                    ?>
+                                </div>
+                                <form class="form-horizontal" role="form" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'])?>" METHOD="post" enctype="multipart/form-data">
                                     <fieldset>
 
                                         <!-- Form Name -->
@@ -139,8 +150,8 @@ include  __DIR__.'/includes/register_employee.inc.php';
                                         </div>
                                         <div class="form-group">
                                         <div class="col-sm-6">
-                                            <label for="passport">Id Copy</label>
-                                            <input type="file" name="passport" id="passport" class="form-control" accept="image/*">
+                                            <label for="idAttachment">Id Copy</label>
+                                            <input type="file" name="idAttachment" id="idAttachment" class="form-control" accept="image/*">
                                         </div>
 
                                             <div class="col-sm-6">
@@ -148,7 +159,7 @@ include  __DIR__.'/includes/register_employee.inc.php';
                                                 <input type="file" name="passport" id="passport" class="form-control" accept="image/*">
                                             </div>
                                         </div>
-                            </div>
+
 
                                         <legend>Contact Information Details</legend>
                                         <!-- Text input-->
@@ -184,8 +195,8 @@ include  __DIR__.'/includes/register_employee.inc.php';
                                         <!-- Text input-->
                                         <div class="form-group">
                                             <div class="col-sm-5">
-                                                <label for="date_hired">Date of Hire</label>
-                                                <input placeholder="Date of Hire" name="date_hired" id="date_hired" class="form-control" type="text" onfocus="(this.type='date')" onblur="(this.type='text')" >
+                                                <label for="dateOfHire">Date of Hire</label>
+                                                <input placeholder="Date of Hire" name="dateOfHire" id="dateOfHire" class="form-control" type="text" onfocus="(this.type='date')" onblur="(this.type='text')" >
                                             </div>
                                             <div class="col-sm-5">
                                                 <label for="remuneration">Remuneration</label>
@@ -270,6 +281,7 @@ include  __DIR__.'/includes/register_employee.inc.php';
                                         </div>
                                     </fieldset>
                                 </form>
+                            </div>
                             </div><!-- /.col-lg-12 -->
                         </div><!-- /.row -->
                     </div>

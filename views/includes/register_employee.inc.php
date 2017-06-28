@@ -6,7 +6,7 @@
  * Time: 12:49
  */
 
-
+use Hudutech\Services\FileUploader;
 $successMsg = '';
 $errorMsg = '';
 if(isset($_POST['first_name'], $_POST['middle_name'], $_POST['last_name'])) {
@@ -31,16 +31,61 @@ if(isset($_POST['first_name'], $_POST['middle_name'], $_POST['last_name'])) {
     $employee-> setNokName($_POST['nok_name']);
     $employee-> setNokRelationship($_POST['nok_relationship']);
     $employee-> setNokContact($_POST['nok_contact']);
+    $employee->setDateOfHire($_POST['dateOfHire']);
+
+    if(isset($_FILES['passport'])){
+        $uploader = new FileUploader('image');
+        $target_dir = 'uploads/passports/';
+        // $target_dir = 'uploads/';
+
+
+//name of the form input
+        $form_name = 'passport';
+        $fileUploaded = $uploader->uploadFile($target_dir, $form_name);
+        if($fileUploaded){
+//retrive the file path
+            $file_url = $uploader->getFilePath();
+//use the file_url to set the value for db column
+            $employee->setPassport($file_url);
+
+        }
+    }else{
+        //$client->setPassport(null);
+        $errorMsg .= "passport not uploaded";
+    }
+
+    if(isset($_FILES['idAttachment'])){
+        $uploader = new FileUploader('image');
+        $target_dir = 'uploads/ids/';
+        // $target_dir = 'uploads/';
+
+
+//name of the form input
+        $form_name = 'idAttachment';
+        $fileUploaded = $uploader->uploadFile($target_dir, $form_name);
+        if($fileUploaded){
+//retrive the file path
+            $file_url = $uploader->getFilePath();
+//use the file_url to set the value for db column
+            $employee->setIdAttachment($file_url);
+
+        }
+    }else{
+        //$client->setPassport(null);
+        $errorMsg .= "Id attachment not uploaded";
+    }
+
+
 
 
     $employeeControl= new \Hudutech\Controller\EmployeeController();
     $created= $employeeControl->create($employee);
 
 
-    if ($created) {
-        $successMsg .= "Employee details saved successfully";
-    } else {
-        $errorMsg .= "error occured";
+    if ($created===true) {
+        $successMsg .= "Client details saved successfully";
+    } elseif(array_key_exists('error',$created)) {
+        $errorMsg .= "{$created['error']}";
 
     }
 
