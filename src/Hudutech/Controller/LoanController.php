@@ -603,8 +603,16 @@ class LoanController extends ComplexQuery implements LoanInterface
         }
     }
 
-    public static function getAmountDefaulted($clientId)
+    public static function getAmountDefaulted()
     {
+
+    }
+
+    public static function checkDeadlineDate(){
+      $now = date('Y-m-d');
+    }
+
+    public static function markAsDefaulted(){
 
     }
 
