@@ -43,7 +43,7 @@ if(isset($_POST['first_name'], $_POST['middle_name'], $_POST['last_name'])) {
         $form_name = 'passport';
         $fileUploaded = $uploader->uploadFile($target_dir, $form_name);
         if($fileUploaded){
-//retrive the file path
+//retrieve the file path
             $file_url = $uploader->getFilePath();
 //use the file_url to set the value for db column
             $employee->setPassport($file_url);
