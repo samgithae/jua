@@ -30,4 +30,5 @@ return array(
     'Hudutech\\Entity\\Loan' => $baseDir . '/src/Hudutech/Entity/Loan.php',
     'Hudutech\\Entity\\Saving' => $baseDir . '/src/Hudutech/Entity/Saving.php',
     'Hudutech\\Entity\\User' => $baseDir . '/src/Hudutech/Entity/User.php',
+    'Hudutech\\Services\\FileUploader' => $baseDir . '/src/Hudutech/Services/FileUploader.php',
 );

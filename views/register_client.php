@@ -83,10 +83,20 @@ $groups = \Hudutech\Controller\GroupController::all();
                                     <div class="alert alert-success">
                                         <?php echo $successMsg; ?>
                                     </div>
-                                <?php } ?>
+                                <?php }
+                                elseif($errorMsg != '' and $successMsg == '')
+                                {
+                                    ?>
+                                <div class="alert alert-danger">
+                                    <?php echo $errorMsg; ?>
+                                </div>
+                                <?php
+                                }
+
+                                ?>
                             </div>
                             <div class="col-md-10 col-md-offset-1">
-                                <form class="form-horizontal" role="form" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>" METHOD="post">
+                                <form class="form-horizontal" role="form" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>" METHOD="post" enctype="multipart/form-data">
                                     <fieldset>
 
                                         <!-- Form Name -->
