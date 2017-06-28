@@ -13,7 +13,6 @@ use Hudutech\AppInterface\ClientInterface;
 use Hudutech\DBManager\ComplexQuery;
 use Hudutech\DBManager\DB;
 use Hudutech\Entity\Client;
-use Hudutech\Entity\Saving;
 
 class ClientController extends ComplexQuery implements ClientInterface
 {
@@ -123,7 +122,10 @@ class ClientController extends ComplexQuery implements ClientInterface
             $stmt->bindParam(":dateEnrolled", $dateEnrolled);
             $stmt->bindParam(":nokContact", $nokContact);
             $stmt->bindParam(":passport", $passport);
+
             if($stmt->execute()){
+
+                SavingController::createBalance($conn->lastInsertId());
                 $db->closeConnection();
                 return true;
             }else{
