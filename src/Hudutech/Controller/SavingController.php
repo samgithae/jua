@@ -455,4 +455,28 @@ class SavingController implements SavingInterface
         }
     }
 
+    public static function createBalance($clientId){
+        $db = new DB();
+        $conn = $db->connect();
+        try{
+            $stmt = $conn->prepare("INSERT INTO saving_balances(clientId) VALUES (:clientId)");
+            $stmt->bindParam(":clientId", $clientId);
+
+            if ($stmt->execute()) {
+                $db->closeConnection();
+                return true;
+            } else {
+                $db->closeConnection();
+                return [
+                    "error" => "Error Occurred:=> [{$stmt->errorInfo()[0]} {$stmt->errorInfo()[1]}  {$stmt->errorInfo()[2]}]"
+                ];
+            }
+        } catch (\PDOException $exception) {
+            print_r($exception->getMessage());
+            return [
+                'error' => $exception->getMessage()
+            ];
+        }
+    }
+
 }
