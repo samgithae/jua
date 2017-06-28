@@ -214,7 +214,7 @@ class LoanController extends ComplexQuery implements LoanInterface
     {
         $table = 'loans';
         $tableColumn = array();
-        $options = array("loanType" => $loanType, "limit"=>1);
+        $options = array("loanType" => $loanType, "limit" => 1);
         $loan = self::customFilter($table, $tableColumn, $options);
         $interestRate = $loan[0]['interestRate'];
         return (float)($amount * $interestRate);
@@ -277,7 +277,7 @@ class LoanController extends ComplexQuery implements LoanInterface
      * @param $amount
      * @return bool
      */
-    public  static function lendLoan($clientId, $loanId, $amount)
+    public static function lendLoan($clientId, $loanId, $amount)
     {
 
         // check if the client can be given amount requested
@@ -318,9 +318,9 @@ class LoanController extends ComplexQuery implements LoanInterface
                     self::createLoanStatus($clientId, $loanType);
                     self::createLoanServicing($config);
                     ClientController::createTransactionLog(array(
-                        "amount"=>$amount,
-                        "details"=>"Received Loan of Ksh ".$amount." To be repaid in ".$loanType." Plan",
-                        "clientId"=>$clientId
+                        "amount" => $amount,
+                        "details" => "Received Loan of Ksh " . $amount . " To be repaid in " . $loanType . " Plan",
+                        "clientId" => $clientId
                     ));
                     return true;
                 } else {
@@ -328,7 +328,7 @@ class LoanController extends ComplexQuery implements LoanInterface
                 }
 
             } catch (\PDOException $exception) {
-                print_r( array("error"=>$exception->getMessage()));
+                print_r(array("error" => $exception->getMessage()));
                 return false;
             }
         } else {
@@ -365,16 +365,17 @@ class LoanController extends ComplexQuery implements LoanInterface
      * @param $clientLoanId
      * @return bool
      */
-    public static function markLoanCleared($clientId, $clientLoanId){
+    public static function markLoanCleared($clientId, $clientLoanId)
+    {
         $db = new DB();
         $conn = $db->connect();
 
-        try{
+        try {
             $stmt = $conn->prepare("UPDATE client_loans SET `status`='repaid'
             WHERE id='{$clientLoanId}' AND clientId='{$clientId}'");
-            return $stmt->execute() ? true: false;
+            return $stmt->execute() ? true : false;
 
-         } catch (\PDOException $exception) {
+        } catch (\PDOException $exception) {
             echo $exception->getMessage();
             return false;
         }
@@ -398,7 +399,7 @@ class LoanController extends ComplexQuery implements LoanInterface
             "clientId" => $clientId,
             "status" => "active",
             "id" => $clientLoanId,
-            "limit"=>1
+            "limit" => 1
         );
 
         $table2 = "monthly_loan_servicing";
@@ -418,7 +419,7 @@ class LoanController extends ComplexQuery implements LoanInterface
         // make first payment
 
         try {
-             $previousPayment = self::getPreviousRepayment($clientId, $clientLoanId);
+            $previousPayment = self::getPreviousRepayment($clientId, $clientLoanId);
 
             if (sizeof($loanServicing) == 1 &&
                 empty($loanServicing[0]['loanCF']) &&
@@ -427,7 +428,7 @@ class LoanController extends ComplexQuery implements LoanInterface
 
                 $loanCF = (float)($loanServicing[0]['loanBal'] - $amount);
                 $id = $previousPayment['id'];
-                if ($loanCF == 0){
+                if ($loanCF == 0) {
                     self::markLoanCleared($clientId, $clientLoanId);
                 }
 
@@ -440,17 +441,16 @@ class LoanController extends ComplexQuery implements LoanInterface
                 if ($stmt->execute()) {
                     //create transaction log
                     ClientController::createTransactionLog(array(
-                        "amount"=>$amount,
-                        "details"=>"Repayment of Loan",
-                        "clientId"=>$clientId
+                        "amount" => $amount,
+                        "details" => "Repayment of Loan",
+                        "clientId" => $clientId
                     ));
                     return true;
-                }
-                else{
+                } else {
                     return false;
                 }
             }
-            if (sizeof($loanServicing) == 1 && !empty($loanServicing[0]['loanCF']) && !empty($loanServicing[0]['amountPaid']) && $loanServicing[0]['loanCF'] > 0){
+            if (sizeof($loanServicing) == 1 && !empty($loanServicing[0]['loanCF']) && !empty($loanServicing[0]['amountPaid']) && $loanServicing[0]['loanCF'] > 0) {
                 // get the previous payment and create an new record
                 //previous LoanCF = new principal
                 $previousLoanCF = $loanServicing[0]['loanCF'];
@@ -460,7 +460,7 @@ class LoanController extends ComplexQuery implements LoanInterface
                 $newLoanCF = (float)($newLoanBal - $amount);
                 $datePaid = date("Y-m-d h:i:s");
 
-                if ($newLoanCF == 0){
+                if ($newLoanCF == 0) {
                     self::markLoanCleared($clientId, $clientLoanId);
                 }
 
@@ -500,19 +500,18 @@ class LoanController extends ComplexQuery implements LoanInterface
 
                 if ($stmt->execute()) {
                     ClientController::createTransactionLog(array(
-                        "amount"=>$amount,
-                        "details"=>"Repayment of Loan",
-                        "clientId"=>$clientId
+                        "amount" => $amount,
+                        "details" => "Repayment of Loan",
+                        "clientId" => $clientId
                     ));
                     return true;
-                }
-                else{
+                } else {
                     return false;
                 }
             }
 
 
-            if (sizeof($loanServicing) > 1 && !empty($previousPayment['loanCF']) && !empty($previousPayment['amountPaid']) && $previousPayment['loanCF'] > 0){
+            if (sizeof($loanServicing) > 1 && !empty($previousPayment['loanCF']) && !empty($previousPayment['amountPaid']) && $previousPayment['loanCF'] > 0) {
                 // get the previous payment and create an new record
                 //previous LoanCF = new principal
                 $previousLoanCF = $previousPayment['loanCF'];
@@ -522,7 +521,7 @@ class LoanController extends ComplexQuery implements LoanInterface
                 $newLoanCF = (float)($newLoanBal - $amount);
                 $datePaid = date("Y-m-d h:i:s");
 
-                if ($newLoanCF == 0){
+                if ($newLoanCF == 0) {
                     self::markLoanCleared($clientId, $clientLoanId);
                 }
 
@@ -562,13 +561,12 @@ class LoanController extends ComplexQuery implements LoanInterface
 
                 if ($stmt->execute()) {
                     ClientController::createTransactionLog(array(
-                        "amount"=>$amount,
-                        "details"=>"Repayment of Loan",
-                        "clientId"=>$clientId
+                        "amount" => $amount,
+                        "details" => "Repayment of Loan",
+                        "clientId" => $clientId
                     ));
                     return true;
-                }
-                else{
+                } else {
                     return false;
                 }
             }
@@ -579,5 +577,36 @@ class LoanController extends ComplexQuery implements LoanInterface
         }
 
     }
+
+    public static function getLoan()
+    {
+        $db = new DB();
+        $conn = $db->connect();
+        try {
+            $stmt = $conn->prepare("SELECT * FROM client_loans WHERE  status='active'");
+            if ($stmt->execute()) {
+                $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+                $db->closeConnection();
+                return $rows;
+
+            } else {
+                $db->closeConnection();
+                return [
+                    "error" => "Error Occurred:=> [{$stmt->errorInfo()[0]} {$stmt->errorInfo()[1]}  {$stmt->errorInfo()[2]}]"
+                ];
+            }
+        } catch (\PDOException $exception) {
+            print_r($exception->getMessage());
+            return [
+                'error' => $exception->getMessage()
+            ];
+        }
+    }
+
+    public static function getAmountDefaulted($clientId)
+    {
+
+    }
+
 
 }
