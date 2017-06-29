@@ -409,20 +409,27 @@ class SavingController implements SavingInterface
     {
         $db = new DB();
         $conn = $db->connect();
-        try {
-            $stmt = $conn->prepare("UPDATE saving_balances SET balance = balance - '{$amount}'
-                                   WHERE clientId=:clientId");
-            $stmt->bindParam(":clientId", $clientId);
+        $balance = self::createBalance($clientId);
 
-            if ($stmt->execute()) {
-                $db->closeConnection();
-                return true;
-            } else {
-                $db->closeConnection();
-                return [
-                    "error" => "Error Occurred:=> [{$stmt->errorInfo()[0]} {$stmt->errorInfo()[1]}  {$stmt->errorInfo()[2]}]"
-                ];
+        try {
+            if($balance <=$amount && $amount>0) {
+                $stmt = $conn->prepare("UPDATE saving_balances SET balance = balance - '{$amount}'
+                                   WHERE clientId=:clientId");
+                $stmt->bindParam(":clientId", $clientId);
+
+                if ($stmt->execute()) {
+                    $db->closeConnection();
+                    return true;
+                } else {
+                    $db->closeConnection();
+                    return [
+                        "error" => "Error Occurred:=> [{$stmt->errorInfo()[0]} {$stmt->errorInfo()[1]}  {$stmt->errorInfo()[2]}]"
+                    ];
+                }
+            }else{
+                return ['error'=>"Your account does not have sufficient savings"];
             }
+
         } catch (\PDOException $exception) {
             print_r($exception->getMessage());
             return [
