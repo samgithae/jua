@@ -1,31 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: hudutech
- * Date: 6/28/17
- * Time: 6:01 PM
- */
-echo  __DIR__;
-require_once __DIR__.'/vendor/autoload.php';
+$datetime1 = new DateTime('2009-10-11');
+$datetime2 = new DateTime('2009-10-13');
+$date3 = new DateTime(date('Y-m-d'));
+if($datetime1 < $date3){
+    echo "doing fine".PHP_EOL;
+    echo date('Y-m-d');
+}
 
-use \Hudutech\Services\FileUploader;
-if($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $uploader = new FileUploader('image');
-    $target_dir = '..//';
-    $form_name = 'passport';
-    $success = $uploader->uploadFile($target_dir, $form_name);
-    if ($success) {
-        echo "File UPloaded {$uploader->getFilePath()}";
-    } else {
-        echo "error occured";
-}
-}
 ?>
 
-<html>
-<form action="test.php" method="POST" enctype="multipart/form-data">
-    <input type="file" name="passport" >
-    <input type="submit" name="submit" value="submit">
-
-</form>
-</html>

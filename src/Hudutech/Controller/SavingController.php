@@ -410,27 +410,30 @@ class SavingController implements SavingInterface
     {
         $db = new DB();
         $conn = $db->connect();
-        $balance = self::createBalance($clientId);
+        $balance = self::checkBalance($clientId);
 
-        try {
-            if($balance <=$amount && $amount>0) {
-                $stmt = $conn->prepare("UPDATE saving_balances SET balance = balance - '{$amount}'
+        try{
+
+            if(!array_key_exists('error', $balance)) {
+
+                if ($balance <= $amount && $amount > 0) {
+                    $stmt = $conn->prepare("UPDATE saving_balances SET balance = balance - '{$amount}'
                                    WHERE clientId=:clientId");
-                $stmt->bindParam(":clientId", $clientId);
+                    $stmt->bindParam(":clientId", $clientId);
 
-                if ($stmt->execute()) {
-                    $db->closeConnection();
-                    return true;
+                    if ($stmt->execute()) {
+                        $db->closeConnection();
+                        return true;
+                    } else {
+                        $db->closeConnection();
+                        return [
+                            "error" => "Error Occurred:=> [{$stmt->errorInfo()[0]} {$stmt->errorInfo()[1]}  {$stmt->errorInfo()[2]}]"
+                        ];
+                    }
                 } else {
-                    $db->closeConnection();
-                    return [
-                        "error" => "Error Occurred:=> [{$stmt->errorInfo()[0]} {$stmt->errorInfo()[1]}  {$stmt->errorInfo()[2]}]"
-                    ];
+                    return ['error' => "Your account does not have sufficient savings"];
                 }
-            }else{
-                return ['error'=>"Your account does not have sufficient savings"];
             }
-
         } catch (\PDOException $exception) {
             print_r($exception->getMessage());
             return [

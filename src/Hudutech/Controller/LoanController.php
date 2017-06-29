@@ -608,11 +608,136 @@ class LoanController extends ComplexQuery implements LoanInterface
 
     }
 
-    public static function checkDeadlineDate(){
-      $now = date('Y-m-d');
+    public static function getLatestLoanCF($clientId)
+    {
+        $db = new DB();
+        $conn = $db->connect();
+        try {
+            $stmt = $conn->prepare("SELECT clientLoanId, loanCF FROM monthly_loan_servicing
+                                    WHERE clientId=:clientId ORDER BY datePaid DESC  LIMIT 1");
+            $stmt->bindParam(":clientId", $clientId);
+            if ($stmt->execute() && $stmt->rowCount() == 1) {
+                $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+                $db->closeConnection();
+                return $row;
+            } else {
+                $db->closeConnection();
+                return [
+                    "error" => "Error Occurred:=> [{$stmt->errorInfo()[0]} {$stmt->errorInfo()[1]}  {$stmt->errorInfo()[2]}]"
+                ];
+            }
+        } catch (\PDOException $exception) {
+            print_r($exception->getMessage());
+            return [
+                'error' => $exception->getMessage()
+            ];
+        }
     }
 
-    public static function markAsDefaulted(){
+    public static function getRepaymentsDeadlines($clientId, $loanDate)
+    {
+        $db = new DB();
+        $conn = $db->connect();
+        try {
+            $stmt = $conn->prepare("SELECT * FROM loan_repayment_dates WHERE clientId=:clientId AND loanDate=:loanDate");
+            $stmt->bindParam(":clientId", $clientId);
+            $stmt->bindParam(":loanDate", $loanDate);
+            if ($stmt->execute() && $stmt->rowCount() == 1) {
+                $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+                $db->closeConnection();
+                return $row;
+            } else {
+                $db->closeConnection();
+                return [
+                    "error" => "Error Occurred:=> [{$stmt->errorInfo()[0]} {$stmt->errorInfo()[1]}  {$stmt->errorInfo()[2]}]"
+                ];
+            }
+        } catch (\PDOException $exception) {
+            return [
+                'error' => $exception->getMessage()
+            ];
+        }
+    }
+
+    public static function totalMonthRepayment($date){
+        $db = new DB();
+        $conn = $db->connect();
+        try {
+            $stmt = $conn->prepare("SELECT SUM(amountPaid) as totalPaid FROM monthly_loan_servicing
+                                    WHERE date(datePaid)='{$date}'");
+            if ($stmt->execute() && $stmt->rowCount() == 1) {
+                $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+                $db->closeConnection();
+                return (float)$row['amountPaid'];
+            } else {
+                $db->closeConnection();
+                return [
+                    "error" => "Error Occurred:=> [{$stmt->errorInfo()[0]} {$stmt->errorInfo()[1]}  {$stmt->errorInfo()[2]}]"
+                ];
+            }
+        } catch (\PDOException $exception) {
+            print_r($exception->getMessage());
+            return [
+                'error' => $exception->getMessage()
+            ];
+        }
+    }
+
+    public static function checkIfDefaulted()
+    {
+        $loans = self::getLoan();
+        if (!array_key_exists('error', $loans) && sizeof($loans) > 0) {
+            foreach ($loans as $loan) {
+                if ($loan['loanType'] == 'trimester') {
+                    // get repayment dates
+                    $dates = self::getRepaymentsDeadlines($loan['clientId'], $loan['loanDate']);
+                    $today = new \DateTime(date('Y-m-d'));
+                    $monthOne = new \DateTime($dates['monthOne']);
+                    $monthTwo = new \DateTime($dates['monthTwo']);
+                    $monthThree = new \DateTime($dates['monthThree']);
+                    $monthOneRepayment = 0;
+                    $monthTwoRepayment = 0;
+                    $monthThreeRepayment = 0;
+                    $m1 = self::totalMonthRepayment($dates['monthOne']);
+                    $m2 = self::totalMonthRepayment($dates['monthTwo']);
+                    $m3 = self::totalMonthRepayment($dates['monthThree']);
+                    if(!array_key_exists('error', $m1)){
+                       $monthOneRepayment = $m1;
+                    }
+                    if(!array_key_exists('error', $m2)){
+                        $monthTwoRepayment = $m2;
+                    }
+                    if(!array_key_exists('error', $m3)){
+                        $monthThreeRepayment = $m3;
+                    }
+
+                    $monthOnePayable = self::calculateInterest('trimester', $loan['loanAmount']) - $loan['loanAmount'];
+                    $nextMonthAmt = self::getLatestLoanCF($loan['clientId'])['loanCF'];
+                    $nextMonthPayable = self::calculateInterest('trimester', $nextMonthAmt) - $nextMonthAmt;
+
+
+                    if ($monthOne > $today && $today < $monthTwo && (float)$monthOneRepayment< $monthOnePayable) {
+                        //defaulted for month one
+                        //check the latest loanCF
+
+
+                        //compute the new loan balance which includes the fine.
+                        //update defaulters table and create instance of defaulters
+
+                    } elseif ($monthTwo > $today && $today < $monthThree && $monthTwoRepayment < $nextMonthPayable) {
+                        //defaulted for month two
+                    } elseif ($monthThree > $today && $monthThreeRepayment < $nextMonthPayable) {
+                        //defaulted for month three
+                    }
+
+
+                }
+            }
+        }
+    }
+
+    public static function markAsDefaulted()
+    {
 
     }
 
