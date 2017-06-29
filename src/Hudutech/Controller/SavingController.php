@@ -89,6 +89,7 @@ class SavingController implements SavingInterface
                         "details" => "Savings Payment"
                     )
                 );
+                self::updateBalance($clientId, $contribution);
                 return true;
             } else {
                 return false;
@@ -175,6 +176,7 @@ class SavingController implements SavingInterface
                         "details" => "Savings Payment"
                     )
                 );
+                self::updateBalance($clientId, $contribution);
             }
             $db->closeConnection();
             return true;
@@ -343,14 +345,13 @@ class SavingController implements SavingInterface
     /**
      *shows total saving for every clients
      */
-    public static function clientsTotalSavingsLog()
+    public static function clientsTotalSavings()
     {
         $db = new DB();
         $conn = $db->connect();
         try {
-            $sql = "SELECT c.fullName, g.groupName, SUM(s.contribution) AS totalSaving
-                     FROM clients c, sacco_group g, savings s
-                     WHERE c.groupRefNo = g.refNo AND s.groupId=g.id GROUP BY g.groupName";
+            $sql = "SELECT  DISTINCT c.fullName, g.groupName, t.balance FROM saving_balances t, sacco_group g, clients c
+                    INNER JOIN saving_balances sb ON sb.clientId= c.id WHERE  c.id=t.clientId AND c.groupRefNo=g.refNo";
             $stmt = $conn->prepare($sql);
             return $stmt->execute() && $stmt->rowCount() > 0 ? $stmt->fetchAll(\PDO::FETCH_ASSOC) : [];
         } catch (\PDOException $exception) {
@@ -409,19 +410,29 @@ class SavingController implements SavingInterface
     {
         $db = new DB();
         $conn = $db->connect();
-        try {
-            $stmt = $conn->prepare("UPDATE saving_balances SET balance = balance - '{$amount}'
-                                   WHERE clientId=:clientId");
-            $stmt->bindParam(":clientId", $clientId);
+        $balance = self::checkBalance($clientId);
 
-            if ($stmt->execute()) {
-                $db->closeConnection();
-                return true;
-            } else {
-                $db->closeConnection();
-                return [
-                    "error" => "Error Occurred:=> [{$stmt->errorInfo()[0]} {$stmt->errorInfo()[1]}  {$stmt->errorInfo()[2]}]"
-                ];
+        try{
+
+            if(!array_key_exists('error', $balance)) {
+
+                if ($balance <= $amount && $amount > 0) {
+                    $stmt = $conn->prepare("UPDATE saving_balances SET balance = balance - '{$amount}'
+                                   WHERE clientId=:clientId");
+                    $stmt->bindParam(":clientId", $clientId);
+
+                    if ($stmt->execute()) {
+                        $db->closeConnection();
+                        return true;
+                    } else {
+                        $db->closeConnection();
+                        return [
+                            "error" => "Error Occurred:=> [{$stmt->errorInfo()[0]} {$stmt->errorInfo()[1]}  {$stmt->errorInfo()[2]}]"
+                        ];
+                    }
+                } else {
+                    return ['error' => "Your account does not have sufficient savings"];
+                }
             }
         } catch (\PDOException $exception) {
             print_r($exception->getMessage());
@@ -448,7 +459,6 @@ class SavingController implements SavingInterface
                 ];
             }
         } catch (\PDOException $exception) {
-            print_r($exception->getMessage());
             return [
                 'error' => $exception->getMessage()
             ];
@@ -472,7 +482,7 @@ class SavingController implements SavingInterface
                 ];
             }
         } catch (\PDOException $exception) {
-            print_r($exception->getMessage());
+
             return [
                 'error' => $exception->getMessage()
             ];

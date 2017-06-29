@@ -21,5 +21,5 @@ interface SavingInterface
     public static function showClientSavingsLog($clientId);
     public static function showGroupSavingsLog();
     public static function all();
-    public static function clientsTotalSavingsLog();
+    public static function clientsTotalSavings();
 }
