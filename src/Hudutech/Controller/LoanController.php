@@ -275,7 +275,7 @@ class LoanController extends ComplexQuery implements LoanInterface
      * @param $clientId
      * @param $loanId
      * @param $amount
-     * @return bool
+     * @return mixed
      */
     public static function lendLoan($clientId, $loanId, $amount)
     {
@@ -324,15 +324,20 @@ class LoanController extends ComplexQuery implements LoanInterface
                     ));
                     return true;
                 } else {
-                    return false;
+                    return [
+                        "error" => "Error Occurred:=> [{$stmt->errorInfo()[0]} {$stmt->errorInfo()[1]}  {$stmt->errorInfo()[2]}]"
+                    ];
                 }
 
             } catch (\PDOException $exception) {
-                print_r(array("error" => $exception->getMessage()));
-                return false;
+                return [
+                    "error"=>$exception->getMessage()
+                ];
             }
         } else {
-            return false;
+            return [
+                "error"=> "Amount More than your allowed limit of {$loanLimit}"
+            ];
         }
     }
 
@@ -659,12 +664,13 @@ class LoanController extends ComplexQuery implements LoanInterface
         }
     }
 
-    public static function totalMonthRepayment($date){
+    public static function totalMonthRepayment($clientId, $date){
         $db = new DB();
         $conn = $db->connect();
         try {
             $stmt = $conn->prepare("SELECT SUM(amountPaid) as totalPaid FROM monthly_loan_servicing
-                                    WHERE date(datePaid)='{$date}'");
+                                    WHERE date(datePaid)='{$date}' AND clientId=:clientId");
+            $stmt->bindParam(":clientId", $clientId);
             if ($stmt->execute() && $stmt->rowCount() == 1) {
                 $row = $stmt->fetch(\PDO::FETCH_ASSOC);
                 $db->closeConnection();
@@ -698,9 +704,9 @@ class LoanController extends ComplexQuery implements LoanInterface
                     $monthOneRepayment = 0;
                     $monthTwoRepayment = 0;
                     $monthThreeRepayment = 0;
-                    $m1 = self::totalMonthRepayment($dates['monthOne']);
-                    $m2 = self::totalMonthRepayment($dates['monthTwo']);
-                    $m3 = self::totalMonthRepayment($dates['monthThree']);
+                    $m1 = self::totalMonthRepayment($loan['clientId'], $dates['monthOne']);
+                    $m2 = self::totalMonthRepayment($loan['clientId'], $dates['monthTwo']);
+                    $m3 = self::totalMonthRepayment($loan['clientId'], $dates['monthThree']);
                     if(!array_key_exists('error', $m1)){
                        $monthOneRepayment = $m1;
                     }
