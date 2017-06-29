@@ -41,6 +41,7 @@ class EmployeeController implements EmployeeInterface
         $nokContact = $employee->getNokContact();
         $dateOfHire = $employee->getDateOfHire();
         $idAttachment = $employee->getIdAttachment();
+        $passport=$employee->getPassport();
 
         try {
 
@@ -65,7 +66,8 @@ class EmployeeController implements EmployeeInterface
                                             nokRelationship,
                                             nokContact,
                                             dateOfHire,
-                                            idAttachment
+                                            idAttachment,
+                                            passport
                                             ) 
                                       VALUES(
                                             :pfNo,
@@ -88,7 +90,8 @@ class EmployeeController implements EmployeeInterface
                                             :nokRelationship,
                                             :nokContact,
                                             :dateOfHire,
-                                            :idAttachment
+                                            :idAttachment,
+                                            :passport
                                          )";
 
             $stmt = $conn->prepare($sql);
@@ -114,6 +117,7 @@ class EmployeeController implements EmployeeInterface
             $stmt->bindParam(":nokContact", $nokContact);
             $stmt->bindParam(":dateOfHire", $dateOfHire);
             $stmt->bindParam(":idAttachment", $idAttachment);
+            $stmt->bindParam(":passport", $passport);
 
             if($stmt->execute()){
                 $db->closeConnection();

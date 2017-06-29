@@ -43,9 +43,9 @@
 
         <div class="navbar-default sidebar" role="navigation">
             <div class="sidebar-nav navbar-collapse">
-                <p style="text-align: center; padding: 20px; color: #0d6aad;">
+               <a href="index.php"> <p style="text-align: center; padding: 20px; color: #0d6aad;">
                 <i class="fa fa-university" aria-hidden="true" style="font-size: 100px;"></i>
-            </p>
+            </p></a>
                 <ul class="nav" id="side-menu">
 
 

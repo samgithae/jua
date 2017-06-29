@@ -45,6 +45,7 @@ class ComposerStaticInit4e3453010ba9f77a6119b03ae3282213
         'Hudutech\\Entity\\Loan' => __DIR__ . '/../..' . '/src/Hudutech/Entity/Loan.php',
         'Hudutech\\Entity\\Saving' => __DIR__ . '/../..' . '/src/Hudutech/Entity/Saving.php',
         'Hudutech\\Entity\\User' => __DIR__ . '/../..' . '/src/Hudutech/Entity/User.php',
+        'Hudutech\\Services\\FileUploader' => __DIR__ . '/../..' . '/src/Hudutech/Services/FileUploader.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

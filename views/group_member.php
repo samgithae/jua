@@ -45,11 +45,6 @@ if ($refNo) {
 
 <head>
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
 
     <title>Group Member</title>
 
@@ -194,13 +189,7 @@ if ($refNo) {
 
 
     <?php include_once 'footer.php' ?>
-    <script>
-        $(document).ready(function () {
-            $('#dataTables-example').DataTable({
-                responsive: true
-            });
-        });
-    </script>
+
 
 
 

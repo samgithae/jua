@@ -61,8 +61,7 @@ class FileUploader
         /*
          * Check the media type
          */
-        $mediaType = $this->mediaType;
-        if ($mediaType == 'image'){
+        if (strtolower($this->mediaType) == 'image'){
 
             $extension = explode(".", $_FILES[$form_name]["name"]);
             $new_file_name = md5(uniqid('image', true)).".".$extension[1];
@@ -74,10 +73,10 @@ class FileUploader
             //Check if image file is a actual image or fake image
             $check = getimagesize($_FILES[$form_name]["tmp_name"]);
             if ($check !== false) {
-                echo "File is an image - " . $check["mime"] . ".";
+               // echo "File is an image - " . $check["mime"] . ".";
                 $uploadOk = 1;
             } else {
-                echo "File is not an image.";
+               // echo "File is not an image.";
                 $uploadOk = 0;
             }
 
@@ -87,7 +86,7 @@ class FileUploader
                 $uploadOk = 0;
             }
             // Check file size
-            if ($_FILES[$form_name]["size"] > 500000) {
+            if ($_FILES[$form_name]["size"] > 5000000) {
                 echo "Sorry, your file is too large.";
                 $uploadOk = 0;
             }
@@ -105,7 +104,7 @@ class FileUploader
                 // if everything is ok, try to upload file
             } else {
 
-                echo "new filename is ".$new_file_name."\n";
+                //echo "new filename is ".$new_file_name."\n";
                 if (move_uploaded_file($_FILES[$form_name]["tmp_name"], $target_file)) {
 
                     $this->setFilePath($target_file);
@@ -118,7 +117,7 @@ class FileUploader
             }
         }
 
-        elseif ($mediaType == 'file'){
+        elseif (strtolower($this->mediaType) == 'file'){
             // logic for uploading file here
         }
 

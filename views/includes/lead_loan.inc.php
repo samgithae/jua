@@ -8,6 +8,9 @@
 $success_msg = '';
 $error_msg = '';
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // …
+
 if(!empty($_POST['clientId'])&&!empty($_POST['loanId'])&&!empty($_POST['amount'])) {
 
   $loanController = \Hudutech\Controller\LoanController::lendLoan($_POST['clientId'],$_POST['loanId'],$_POST['amount']);
@@ -25,4 +28,5 @@ if(!empty($_POST['clientId'])&&!empty($_POST['loanId'])&&!empty($_POST['amount']
 else{
 
     $error_msg .= "All  FIELDS REQUIRED";
+}
 }
