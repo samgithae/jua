@@ -670,8 +670,11 @@ class LoanController extends ComplexQuery implements LoanInterface
         $db = new DB();
         $conn = $db->connect();
         try {
+            $month = date('m', strtotime($date));
+            $year = date('Y', strtotime($date));
             $stmt = $conn->prepare("SELECT SUM(amountPaid) as totalPaid FROM monthly_loan_servicing
-                                    WHERE date(datePaid)='{$date}' AND clientId=:clientId");
+                                    WHERE MONTH(datePaid) ='{$month}' AND YEAR(datePaid)='{$year}'
+                                     AND clientId=:clientId");
             $stmt->bindParam(":clientId", $clientId);
             if ($stmt->execute() && $stmt->rowCount() == 1) {
                 $row = $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -801,7 +804,7 @@ class LoanController extends ComplexQuery implements LoanInterface
                         $loanInfo = self::getLatestLoanInfo($loan['clientId']);
                         if ($monthThreeRepayment < (float)$loanInfo['loanInterest']) {
                             //compute fine
-                            $fine = $newLoanBalance = $amountDefaulted = 0;
+                             $fine = $newLoanBalance = $amountDefaulted = 0;
 
                             if ($monthThreeRepayment > 0) {
                                 $amountDefaulted = (float)$loanInfo['loanBal'] - $monthThreeRepayment;
@@ -823,12 +826,62 @@ class LoanController extends ComplexQuery implements LoanInterface
                                 "amountDefaulted" => $amountDefaulted,
                                 "createdAt" => $loan['createdAt']
                             ];
+
                             self::executeDefaulterFine($loan['clientId'], $info);
                         }
                     }
 
+                }elseif ($loan['loanType'] == 'monthly'){
+                    $dates = self::getRepaymentsDeadlines($loan['clientId'], $loan['loanDate']);
+
+                    $today = new \DateTime(date('Y-m-d'));
+                    $monthOne = new \DateTime($dates['monthOne']);
+                    $monthOneRepayment = 0;
+                    $m1 = self::totalMonthRepayment($loan['clientId'], $dates['monthOne']);
+                    if (!array_key_exists('error', $m1)) {
+                        $monthOneRepayment = $m1;
+                    }
+
+                    if ($monthOne > $today) {
+                        //to get defaulted for month one we compare with latest interest
+
+
+                        $loanInfo = self::getLatestLoanInfo($loan['clientId']);
+                        if ($monthOneRepayment < (float)$loanInfo['loanInterest']) {
+                            $fine = $newLoanBalance = $amountDefaulted = 0;
+
+                            if ($monthOneRepayment > 0) {
+                                $amountDefaulted = (float)$loanInfo['loanInterest'] - $monthOneRepayment;
+                                $fine = 0.2 * $amountDefaulted;
+                                $newLoanBalance = $loanInfo['loanBal'] + $fine;
+                            } else {
+                                $fine = 0.2 * (float)$loanInfo['loanInterest'];
+                                $newLoanBalance = $loanInfo['loanBal'] + $fine;
+                            }
+                            //compute fine
+                            $groupRefNo = ClientController::getId($loan['clientId'])['groupRefNo'];
+                            $info = [
+                                "fine" => $fine,
+                                "newLoanBal" => $newLoanBalance,
+                                "clientLoanId" => $loan['clientLoanId'],
+                                "loanType" => $loan['loanType'],
+                                "groupRefNo" => $groupRefNo,
+                                "amountDefaulted" => $amountDefaulted,
+                                "createdAt" => $loan['createdAt']
+                            ];
+                            self::executeDefaulterFine($loan['clientId'], $info);
+
+
+                        }
+                        //compute the new loan balance which includes the fine.
+                        //update defaulters table and create instance of defaulters
+
+                    }
+
+
 
                 }
+
             }
         }
     }
