@@ -12,14 +12,14 @@ $counter = 1;
 
 
 
-$groups = \Hudutech\Controller\GroupController::all();
+$groups = \Hudutech\Controller\GroupController::groupMembers($_GET['k']);
 
 //$groups = \Hudutech\Controller\GroupController::customFilter($table,$tableColumns,$options);
 //$groups = \Hudutech\Controller\GroupController::search($table,$tableColumns,$searchText);
 //print_r(json_encode($groups));
 
 
-$refNo = isset($_POST['group_ref_no']) ? $_POST['group_ref_no'] : false;
+$refNo = isset($_GET['k']) ? $_GET['k'] : false;
 
 if ($refNo) {
     $table= 'clients';
@@ -32,12 +32,15 @@ if ($refNo) {
 
     $clients = \Hudutech\Controller\ClientController::search($table,$tableColumns,$searchText);
 
+
 } else {
-    $clients = \Hudutech\Controller\ClientController::all();
+    //$clients = \Hudutech\Controller\ClientController::all();
 
 }
 
-
+foreach ($groups as $group ):
+    $groupName=$group['groupName'];
+endforeach;
 ?>
 
 <!DOCTYPE html>
@@ -100,7 +103,7 @@ if ($refNo) {
     <div id="page-wrapper">
         <div class="row">
             <div class="col-lg-12">
-                <h1 class="page-header">Group Members</h1>
+                <h1 class="page-header"><?php  echo $groupName?>  Members</h1>
             </div>
             <!-- /.col-lg-12 -->
         </div>
@@ -117,23 +120,7 @@ if ($refNo) {
 
                             <div class="col-md-12 pull-left">
                                 <div class="col-sm-6 form-horizontal">
-
-                                    <form   role="form" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>" METHOD="post">
-                                        <div class="col-md-6">
-                                        <select name="group_ref_no" class="form-control" style="padding-top: 10px; margin-top: 5px; margin-bottom: 5px; margin-left: 5px;">
-                                            <option>--Select Group here--</option>
-                                            <?php foreach ($groups as $group): ?>
-                                                <option value="<?php echo $group['refNo']?>"><?php echo $group['groupName']?></option>
-                                            <?php endforeach ?>
-
-                                        </select>
-                                        </div>
-                                        <div class="col-md-6">
-
-                                        <input type="submit" class="form-control btn btn-primary" style="padding-top: 10px; margin-top: 5px; margin-bottom: 5px; margin-left: 5px;" value="View Group Members"/>
-                                        </div>
-                                    </form>
-                                </div>
+                             </div>
                             </div>
 
                             <table width="100%" class="table table-striped table-bordered table-hover"
@@ -147,7 +134,7 @@ if ($refNo) {
                                     <th>ID</th>
                                     <th>KRA PIN</th>
                                     <th>PhoneNumber</th>
-
+                                    <th>Email</th>
                                     <th>County</th>
 
                                     <td>Action</td>
@@ -164,11 +151,12 @@ if ($refNo) {
                                         <td><?php echo $client['idNo']?></td>
                                         <td><?php echo $client['kraPin']?></td>
                                         <td><?php echo $client['phoneNumber']?></td>
-
+                                        <td><?php echo $client['email']?></td>
                                         <td><?php echo $client['county']?></td>
 
                                         <td colspan="3">
                                             <button class="btn btn-xs btn-primary">Edit</button>
+                                            \
 
                                             <a href="client_profile.php?id=<?php echo urlencode($client['id'])?>" class=" btn-xs btn-primary"> Profile</a>
 

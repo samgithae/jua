@@ -133,6 +133,19 @@
                             </li>
                         </ul>
                     </li>
+
+                    <li>
+
+
+                        <a href="#" data-toggle="collapse" data-target="#submenu-6"> <div class="menu-links"><i class="fa fa-money" aria-hidden="true"></i> Withdraws <i class="fa fa-fw fa-angle-down pull-right"></i></div></a>
+                        <ul id="submenu-6" class="nav nav-second-level">
+
+                            <li>
+                                <a href="savingWithdraw.php"><div class="menu-links" ><i class="fa fa-fw fa-fw fa-university"></i> Saving Withdraw</div></a>
+                            </li>
+
+                        </ul>
+                    </li>
                 </ul>
             </div>
             <!-- /.sidebar-collapse -->

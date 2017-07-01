@@ -8,7 +8,7 @@
 $success_msg = '';
 $error_msg = '';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // …
 
 if(!empty($_POST['clientId'])&&!empty($_POST['loanId'])&&!empty($_POST['amount'])) {
@@ -16,11 +16,11 @@ if(!empty($_POST['clientId'])&&!empty($_POST['loanId'])&&!empty($_POST['amount']
   $loanController = \Hudutech\Controller\LoanController::lendLoan($_POST['clientId'],$_POST['loanId'],$_POST['amount']);
 
 
-    if ($loanController) {
+    if ($loanController === true) {
         $success_msg .= "Loan issued successfully";
 
-    } else {
-        $error_msg .= "error occured";
+    } elseif (array_key_exists('error', $loanController)) {
+        $error_msg .= "{$loanController['error']}";
 
     }
 

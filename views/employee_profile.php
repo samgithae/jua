@@ -7,18 +7,9 @@
  */
 require_once __DIR__ . '/../vendor/autoload.php';
 $counter = 1;
-$client = \Hudutech\Controller\ClientController::getId($_GET['id']);
-$groups = \Hudutech\Controller\GroupController::all();
-$savings = \Hudutech\Controller\SavingController::getClientTotalSavings($_GET['id']);
-$singleClientSavings = \Hudutech\Controller\SavingController::showClientSavingsLog($_GET['id']);
-//print_r($client);
-foreach ($groups as $group):
+$employee = \Hudutech\Controller\EmployeeController::getId($_GET['id']);
 
-    if ($group['refNo'] == $client['groupRefNo']) {
-        $groupName = $group['groupName'];
 
-    }
-endforeach;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -78,11 +69,11 @@ endforeach;
 
 
                                     <?php
-                                    if(!empty($client['passport']))
+                                    if(!empty($employee['passport']))
                                     {
                                         ?>
                                         <img align="left" class="fb-image-profile thumbnail " height="150px" width="150px"
-                                             src=" <?php echo $client['passport'] ?>" alt="Profile image example"/>
+                                             src=" <?php echo $employee['passport'] ?>" alt="Profile image example"/>
 
 
                                         <?php
@@ -101,8 +92,9 @@ endforeach;
                                     ?>
                                 </div>
                                 <div class="col-md-8">
-                                <h2><b>Name:</b> <?php echo $client['fullName'] ?></h2>
-                                <h3><b>Group:</b> <?php echo $groupName ?></h3>
+                                <h2><b>Name:</b> <?php echo $employee['fullName'] ?></h2>
+                                    <h3><b>Job Title:</b> <?php echo $employee['jobTitle'] ?></h3>
+
                                 </div>
                             </div>
                         </div>
@@ -132,7 +124,7 @@ endforeach;
                                             </li>
                                             <li>
                                                 <a href="#tab_default_5" data-toggle="tab">
-                                                    Expectation Details</a>
+                                                    Bank Details</a>
                                             </li>
                                         </ul>
                                         <div class="tab-content">
@@ -145,34 +137,48 @@ endforeach;
                                                     <div class="col-sm-6">
                                                         <div class="form-group">
                                                             <label for="name">Full Name:</label>
-                                                            <p><?php echo $client['fullName'] ?></p>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="email">Membership Number:</label>
-                                                            <p> <?php echo $client['membershipNo'] ?></p>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="email">Identity card number:</label>
-                                                            <p> <?php echo $client['idNo'] ?></p>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="email">KRA Pin Number:</label>
-                                                            <p> <?php echo $client['kraPin'] ?></p>
+                                                            <p><?php echo $employee['fullName'] ?></p>
                                                         </div>
                                                     </div>
                                                     <div class="col-sm-6">
                                                         <div class="form-group">
-                                                            <label for="email">Date Of Birth:</label>
-                                                            <p> <?php echo $client['dob'] ?></p>
+                                                            <label for="email">Job Title:</label>
+                                                            <p> <?php echo $employee['jobTitle'] ?></p>
                                                         </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
                                                         <div class="form-group">
-                                                            <label for="email">Date of enrollment:</label>
-                                                            <p> <?php echo $client['dateEnrolled'] ?></p>
+                                                            <label for="email">Identity card number:</label>
+                                                            <p> <?php echo $employee['idNo'] ?></p>
                                                         </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
                                                         <div class="form-group">
-                                                            <label for="email">Occupation:</label>
-                                                            <p> <?php echo $client['occupation'] ?></p>
+                                                            <label for="email">NHIF Number:</label>
+                                                            <p> <?php echo $employee['nhifNo'] ?></p>
                                                         </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group">
+                                                            <label for="email">NSSF Number:</label>
+                                                            <p> <?php echo $employee['nssfNo'] ?></p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group">
+                                                            <label for="email">KRA Pin Number:</label>
+                                                            <p> <?php echo $employee['kraPin'] ?></p>
+                                                        </div>
+                                                    </div>
+
+
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group">
+                                                            <label for="email">Date Of Hire:</label>
+                                                            <p> <?php echo $employee['dateOfHire'] ?></p>
+                                                        </div>
+
+
 
 
                                                     </div>
@@ -187,20 +193,17 @@ endforeach;
                                                     <div class="col-sm-6">
                                                         <div class="form-group">
                                                             <label for="email">Phone Number:</label>
-                                                            <p> <?php echo $client['phoneNumber'] ?></p>
+                                                            <p> <?php echo $employee['phoneNumber'] ?></p>
                                                         </div>
                                                         <div class="form-group">
                                                             <label for="email">Email:</label>
-                                                            <p> <?php echo $client['email'] ?></p>
+                                                            <p> <?php echo $employee['email'] ?></p>
                                                         </div>
                                                         <div class="form-group">
                                                             <label for="email">Postal Address:</label>
-                                                            <p> <?php echo $client['postalAddress'] ?></p>
+                                                            <p> <?php echo $employee['postalAddress'] ?></p>
                                                         </div>
-                                                        <div class="form-group">
-                                                            <label for="email">Emergency contacts:</label>
-                                                            <p> <?php echo $client['emergencyContact'] ?></p>
-                                                        </div>
+
                                                     </div>
 
                                                 </div>
@@ -209,35 +212,24 @@ endforeach;
                                             </div>
                                             <div class="tab-pane" id="tab_default_3">
                                                 <p>
-                                                    Resident Information Details
+                                                    Job Information Details
                                                 </p>
                                                 <div class="row">
                                                     <div class="col-sm-6">
                                                         <div class="form-group">
-                                                            <label for="email">County:</label>
-                                                            <p><?php echo $client['county'] ?></p>
+                                                            <label for="email">Job Description:</label>
+                                                            <p><?php echo $employee['jobDescription'] ?></p>
                                                         </div>
                                                         <div class="form-group">
-                                                            <label for="email">Sub County:</label>
-                                                            <p> <?php echo $client['subCounty'] ?></p>
+                                                            <label for="email">Qualification:</label>
+                                                            <p> <?php echo $employee['qualification'] ?></p>
                                                         </div>
                                                         <div class="form-group">
-                                                            <label for="email">Location:</label>
-                                                            <p> <?php echo $client['location'] ?></p>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="email">Sub Location:</label>
-                                                            <p><?php echo $client['subLocation'] ?></p>
+                                                            <label for="email">Testimonial:</label>
+                                                            <p> <?php echo $employee['testimonial'] ?></p>
                                                         </div>
                                                     </div>
-                                                    <div class="col-sm-6">
-                                                        <div class="form-group">
-                                                            <label for="email">Village/Estate:</label>
-                                                            <p> <?php echo $client['village'] ?></p>
-                                                        </div>
 
-
-                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="tab-pane" id="tab_default_4">
@@ -249,16 +241,16 @@ endforeach;
                                                     <div class="col-sm-6">
                                                         <div class="form-group">
                                                             <label for="email">Full Name:</label>
-                                                            <p> <?php echo $client['nokName'] ?></p>
+                                                            <p> <?php echo $employee['nokName'] ?></p>
                                                         </div>
 
                                                         <div class="form-group">
                                                             <label for="email">Contact:</label>
-                                                            <p> <?php echo $client['nokContact'] ?></p>
+                                                            <p> <?php echo $employee['nokContact'] ?></p>
                                                         </div>
                                                         <div class="form-group">
                                                             <label for="email">Relationship:</label>
-                                                            <p> <?php echo $client['nokRelationship'] ?></p>
+                                                            <p> <?php echo $employee['nokRelationship'] ?></p>
                                                         </div>
                                                     </div>
 
@@ -266,14 +258,22 @@ endforeach;
                                             </div>
                                             <div class="tab-pane" id="tab_default_5">
                                                 <p>
-                                                    Expectation Details
+                                                    Bank Details
 
                                                 </p>
                                                 <div class="row">
                                                     <div class="col-sm-6">
                                                         <div class="form-group">
-                                                            <label for="email">Expectation:</label>
-                                                            <p> <?php echo $client['expectation'] ?></p>
+                                                            <label for="email">Bank:</label>
+                                                            <p> <?php echo $employee['bankName'] ?></p>
+                                                        </div>
+
+
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group">
+                                                            <label for="email">Bank Account No:</label>
+                                                            <p> <?php echo $employee['bankAccountNo'] ?></p>
                                                         </div>
 
 
@@ -286,41 +286,7 @@ endforeach;
                                 </div>
 
 
-                                <div class="row">
 
-                                    <div class="col col-md-12" style="margin: 5px;">
-                                        <!--                <div class="table-responsive">-->
-                                        <!---->
-                                        <!--                    <table class="table">-->
-                                        <!--                        <h3>Saving Log</h3>-->
-                                        <!--                        <thead>-->
-                                        <!--                        <tr class="bg-primary">-->
-                                        <!--                            <th>#</th>-->
-                                        <!--                            <th>Full Name</th>-->
-                                        <!--                            <th>Contribution</th>-->
-                                        <!--                            <th>Payment Method</th>-->
-                                        <!--                            <th>Date Paid</th>-->
-                                        <!--                        </tr>-->
-                                        <!--                        </thead>-->
-                                        <!--                        <tbody>-->
-                                        <!--                        --><?php //foreach ($singleClientSavings as $clientSaving): ?>
-                                        <!--                            <tr>-->
-                                        <!--                                <td>--><?php //echo $counter++ ?><!--</td>-->
-                                        <!--                                <td>--><?php //echo $clientSaving['fullName'] ?><!--</td>-->
-                                        <!--                                <td>--><?php //echo $clientSaving['contribution'] ?><!--</td>-->
-                                        <!--                                <td>--><?php //echo $clientSaving['paymentMethod'] ?><!--</td>-->
-                                        <!--                                <td>--><?php //echo $clientSaving['datePaid'] ?><!--</td>-->
-                                        <!---->
-                                        <!--                            </tr>-->
-                                        <!--                        --><?php //endforeach; ?>
-                                        <!--                        </tbody>-->
-                                        <!--                    </table>-->
-                                        <!--                </div>-->
-                                        <div class="jumbotron">
-                                            <h3>Total Savings <?php echo $savings['totalSavings'] ?></h3>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
 
                         </div>

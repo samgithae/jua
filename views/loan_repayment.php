@@ -19,7 +19,7 @@ $loans= \Hudutech\Controller\LoanController::all();
 
 
     <title>Loan Repayment</title>
-    <?php include_once 'head.php' ?>
+    <?php include_once 'head_views.php' ?>
 </head>
 
 <body>

@@ -20,7 +20,7 @@ $groupSavings=\Hudutech\Controller\SavingController::showGroupSavingsLog();
 
 
     <title>Group Member</title>
-    <?php include_once 'head.php' ?>
+    <?php include_once 'head_views.php' ?>
 
 </head>
 <body>
@@ -61,6 +61,12 @@ $groupSavings=\Hudutech\Controller\SavingController::showGroupSavingsLog();
                                     <th>#</th>
                                     <th>GroupName</th>
                                     <th>GroupSaving</th>
+                                    <th>Shares</th>
+                                    <th>Advance</th>
+                                    <th>Loans</th>
+                                    <th>Banking</th>
+                                    <th>TRF</th>
+                                    <th>Interest</th>
 
                                 </tr>
                                 </thead>
