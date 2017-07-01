@@ -73,13 +73,13 @@ class LoanController extends ComplexQuery implements LoanInterface
      * @param $amount
      * @return mixed
      */
-    public static function lendLoan($clientId, $loanId, $amount)
+    public static function lendShortTermLoan($clientId, $loanId, $amount)
     {
 
         // check if the client can be given amount requested
-        $loanLimit = ClientController::getShortTermLoanLimit($clientId);
+        $shortTermLoanLimit = ClientController::getShortTermLoanLimit($clientId);
         $loanDate = date('Y-m-d');
-        if ($amount <= $loanLimit) {
+        if ($amount <= $shortTermLoanLimit) {
 
             $loan = self::getId($loanId);
             $loanType = $loan['loanType'];
@@ -132,7 +132,7 @@ class LoanController extends ComplexQuery implements LoanInterface
             }
         } else {
             return [
-                "error" => "Amount More than your allowed limit of {$loanLimit}"
+                "error" => "Amount More than your allowed limit of {$shortTermLoanLimit}"
             ];
         }
     }
@@ -173,9 +173,10 @@ class LoanController extends ComplexQuery implements LoanInterface
     /**
      * @param $clientId
      * @param $loanType
+     * @param $years
      * @return bool
      */
-    public static function createRepaymentDates($clientId, $loanType)
+    public static function createRepaymentDates($clientId, $loanType, $years=0)
     {
         $db = new DB();
         $conn = $db->connect();
@@ -191,6 +192,10 @@ class LoanController extends ComplexQuery implements LoanInterface
                 $monthOne = date('Y-m-d', strtotime($currentDate . ' + 30 days'));
                 $monthTwo = date('Y-m-d', strtotime($monthOne . ' + 30 days'));
                 $monthThree = date('Y-m-d', strtotime($monthTwo . ' + 30 days'));
+            }elseif ($loanType == 'long_term'){
+                $days = $years * 365;
+                $days = '+'.$days.' days';
+                $monthOne = date('Y-m-d', strtotime($currentDate . $days));
             }
             $stmt = $conn->prepare("INSERT INTO loan_repayment_dates(clientId, monthOne, monthTwo, monthThree, loanType, loanDate)
                                      VALUES (:clientId, :monthOne, :monthTwo, :monthThree, :loanType, :loanDate)");
@@ -212,9 +217,10 @@ class LoanController extends ComplexQuery implements LoanInterface
     /**
      * @param $clientId
      * @param $loanType
+     * @param $years
      * @return bool
      */
-    public static function createLoanStatus($clientId, $loanType)
+    public static function createLoanStatus($clientId, $loanType, $years=0)
     {
         $db = new DB;
         $conn = $db->connect();
@@ -252,6 +258,21 @@ class LoanController extends ComplexQuery implements LoanInterface
                     $stmt->bindParam(":loanDate", $currentDate);
                     $stmt->execute();
                 }
+                return true;
+            }
+            elseif ($loanType=='long_term'){
+                $days = $years * 365;
+                $days = '+'.$days.' days';
+                $deadline = date('Y-m-d', strtotime($currentDate . $days));
+                $sql = "INSERT INTO loan_status(clientId, deadline, status, loanType, loanDate)
+                          VALUES (:clientId, :deadline, :status, :loanType, :loanDate)";
+                $stmt = $conn->prepare($sql);
+                $stmt->bindParam(":clientId", $clientId);
+                $stmt->bindParam(":deadline", $deadline);
+                $stmt->bindParam(":status", $status);
+                $stmt->bindParam(":loanType", $loanType);
+                $stmt->bindParam(":loanDate", $currentDate);
+                $stmt->execute();
                 return true;
             }
         } catch (\PDOException $exception) {
