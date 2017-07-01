@@ -321,4 +321,19 @@ class EmployeeController implements EmployeeInterface
         }
     }
 
+    public static function getId($clientId)
+    {
+        $db = new DB();
+        $conn = $db->connect();
+
+        try {
+            $stmt = $conn->prepare("SELECT t.* FROM employees t WHERE t.id=:id");
+            $stmt->bindParam(":id", $clientId);
+            return $stmt->execute() && $stmt->rowCount() == 1 ? $stmt->fetch(\PDO::FETCH_ASSOC) : [];
+        } catch (\PDOException $exception) {
+            echo $exception->getMessage();
+            return [];
+        }
+    }
+
 }

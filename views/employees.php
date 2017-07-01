@@ -51,14 +51,12 @@ $counter = 1;
                                     <th>FullName</th>
                                     <th>JobTitle</th>
                                     <th>ID</th>
-                                    <th>NSSF</th>
-                                    <th>NHIF</th>
-                                    <th>KRA PIN</th>
+
                                     <th>Remuneration</th>
-                                    <th>BankName</th>
+
                                     <th>BankAccNo</th>
                                     <th>PhoneNumber</th>
-                                    <th colspan="3"> Action</th>
+                                    <th > Action</th>
 
                                 </tr>
                                 </thead>
@@ -70,15 +68,16 @@ $counter = 1;
                                         <td><?php echo $employee['fullName'] ?></td>
                                         <td><?php echo $employee['jobTitle'] ?></td>
                                         <td><?php echo $employee['idNo'] ?></td>
-                                        <td><?php echo $employee['nssfNo'] ?></td>
-                                        <td><?php echo $employee['nhifNo'] ?></td>
-                                        <td><?php echo $employee['kraPin'] ?></td>
+
                                         <td><?php echo $employee['remuneration'] ?></td>
-                                        <td><?php echo $employee['bankName'] ?></td>
+
                                         <td><?php echo $employee['bankAccountNo'] ?></td>
                                         <td><?php echo $employee['phoneNumber'] ?></td>
                                         <td colspan="3" class="btn-xs">
                                             <button class="btn-xs btn-primary">Edit</button>
+
+                                            <a href="employee_profile.php?id=<?php echo urlencode($employee['id'])?>" class=" btn-xs btn-primary"> Profile</a>
+
 
                                             <button class="btn-xs btn-danger">Delete</button>
                                         </td>

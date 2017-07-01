@@ -55,9 +55,9 @@ $counter = 1;
                                         <th>GroupRefNo</th>
                                         <th>MembershipNo</th>
                                         <th>ID</th>
-                                        <th>KRA PIN</th>
+
                                         <th>PhoneNumber</th>
-                                        <th>Email</th>
+
                                         <th>County</th>
 
                                         <th >Action</th>
@@ -73,9 +73,9 @@ $counter = 1;
                                             <td><?php echo $client['groupRefNo']?></td>
                                             <td><?php echo $client['membershipNo']?></td>
                                             <td><?php echo $client['idNo']?></td>
-                                            <td><?php echo $client['kraPin']?></td>
+
                                             <td><?php echo $client['phoneNumber']?></td>
-                                            <td><?php echo $client['email']?></td>
+
                                             <td><?php echo $client['county']?></td>
 
                                             <td colspan="3"class="btn-xs" >
