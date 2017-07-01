@@ -102,7 +102,8 @@ $counter=1;
 
                                         <td colspan="3">
                                             <button class="btn btn-xs btn-primary">Edit</button>
-                                            <button class="btn btn-xs btn-success">ViewMore</button>
+
+                                            <a class="btn btn-xs btn-success" href="group_member_get.php?k=<?php echo $group['refNo'] ?> ">View</a>
                                             <button class="btn btn-xs btn-danger">Delete</button>
                                         </td>
                                     </tr>

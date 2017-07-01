@@ -220,7 +220,8 @@ class GroupController extends ComplexQuery implements GroupInterface
         $db = new DB();
         $conn = $db->connect();
         try{
-           $sql = "SELECT c.fullName, c.membershipNo, c.idNo, c.phoneNumber FROM clients c  WHERE c.groupRefNo='{$groupRefNo}'";
+           $sql = "SELECT DISTINCT c.fullName, c.membershipNo, g.groupName, c.idNo, c.phoneNumber FROM clients c, sacco_group g
+  INNER JOIN clients cl ON cl.groupRefNo = g.refNo WHERE c.groupRefNo='{$groupRefNo}' AND g.refNo=c.groupRefNo;";
            $stmt = $conn->prepare($sql);
             return $stmt->execute() && $stmt->rowCount() > 0 ? $stmt->fetchAll(\PDO::FETCH_ASSOC) : [];
         } catch (\PDOException $exception) {

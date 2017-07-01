@@ -75,8 +75,30 @@ endforeach;
 
                             <div class="fb-profile-text">
                                 <div class="col-md-2">
-                                <img align="left" class="fb-image-profile thumbnail " height="150px" width="150px"
-                                     src="../public/assets/img/profile_default.jpg" alt="Profile image example"/>
+
+
+                                    <?php
+                                    if(!empty($client['passport']))
+                                    {
+                                        ?>
+                                        <img align="left" class="fb-image-profile thumbnail " height="150px" width="150px"
+                                             src=" <?php echo $client['passport'] ?>" alt="Profile image example"/>
+
+
+                                        <?php
+
+                                   }
+
+                                    else{
+                                        ?>
+                                    <img align="left" class="fb-image-profile thumbnail " height="150px" width="150px"
+                                         src="../public/assets/img/profile_default.jpg  ?>" alt="Profile image example"/>
+                                    <?php
+
+                                    }
+
+
+                                    ?>
                                 </div>
                                 <div class="col-md-8">
                                 <h2><b>Name:</b> <?php echo $client['fullName'] ?></h2>
