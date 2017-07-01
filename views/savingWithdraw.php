@@ -19,7 +19,7 @@ include  __DIR__.'/includes/lead_loan.inc.php';
 <head>
     <title>Saving Withdraw</title>
 <?php include_once 'head_views.php';?>
-
+    <link href="../public/assets/select/jquery-editable-select.min.css" rel="stylesheet">
 </head>
 
 <body>
@@ -81,11 +81,11 @@ include  __DIR__.'/includes/lead_loan.inc.php';
                                 <form class="form-horizontal" method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'])?>">
 
                                     <div class="form-group">
-                                        <label for="name" class="cols-sm-2 control-label">Client Name</label>
+                                        <label for="name" class="cols-sm-2 control-label">Client</label>
                                         <div class="cols-sm-10">
                                             <div class="input-group">
                                                 <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
-                                                <select name="clientId" class="form-control">
+                                                <select name="clientId" id="clientId" class="form-control">
                                                     <option>--Select Client here--</option>
                                                     <?php foreach ($clients as $client): ?>
                                                         <option value="<?php echo $client['id']?>"><?php echo $client['fullName'].' - '.$client['idNo']?></option>
@@ -97,27 +97,21 @@ include  __DIR__.'/includes/lead_loan.inc.php';
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="email" class="cols-sm-2 control-label">Loan Type</label>
+                                        <label for="email" class="cols-sm-2 control-label">Current Balance</label>
                                         <div class="cols-sm-10">
                                             <div class="input-group">
-                                                <span class="input-group-addon"><i class="fa fa-cog fa" aria-hidden="true"></i></span>
-                                                <select name="loanId" class="form-control">
-                                                    <option>--Select Loan type--</option>
-                                                    <?php foreach ($loans as $loan): ?>
-                                                        <option value="<?php echo $loan['id']?>"><?php echo $loan['loanType']?></option>
-                                                    <?php endforeach ?>
-
-                                                </select>
+                                                <span class="input-group-addon"><i class="fa fa-money fa" aria-hidden="true"></i></span>
+                                                <input type="number" class="form-control" name="balance" disabled/>
                                             </div>
                                         </div>
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="username" class="cols-sm-2 control-label">Amount</label>
+                                        <label for="username" class="cols-sm-2 control-label">Amount to withdraw</label>
                                         <div class="cols-sm-10">
                                             <div class="input-group">
                                                 <span class="input-group-addon"><i class="fa fa-money fa" aria-hidden="true"></i></span>
-                                                <input type="number" class="form-control" name="amount"   placeholder="Loan amount" />
+                                                <input type="number" class="form-control" name="amount"   placeholder="amount e.g 1000" />
 
                                             </div>
                                         </div>
@@ -144,8 +138,10 @@ include  __DIR__.'/includes/lead_loan.inc.php';
 
 <?php  include_once 'footer.php'?>
 
-
-
+<script src="../public/assets/select/jquery-editable-select.js"></script>
+<script>
+    $('#clientId').editableSelect();
+</script>
 
 </body>
 </html>
