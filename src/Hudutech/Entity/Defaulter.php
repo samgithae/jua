@@ -69,7 +69,7 @@ class Defaulter
     }
 
     /**
-     * @param int $groupId
+     * @param mixed $groupId
      */
     public function setGroupId($groupId)
     {
