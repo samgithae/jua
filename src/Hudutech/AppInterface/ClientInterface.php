@@ -58,7 +58,13 @@ interface ClientInterface
      * @param $clientId
      * @return float
      */
-    public static function getLoanLimit($clientId);
+    public static function getShortTermLoanLimit($clientId);
+    
+    /**
+     * @param $clientId
+     * @return float
+     */
+    public static function getLongTermLoanLimit($clientId);
 
     /**
      * @param array $config
