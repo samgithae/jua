@@ -88,7 +88,7 @@ include  __DIR__.'/includes/lead_loan.inc.php';
                                                 <select name="clientId" class="form-control">
                                                     <option>--Select Client here--</option>
                                                     <?php foreach ($clients as $client): ?>
-                                                        <option value="<?php echo $client['id']?>"><?php echo $client['fullName']?></option>
+                                                        <option value="<?php echo $client['id']?>"><?php echo $client['fullName'].' - '.$client['idNo']?></option>
                                                     <?php endforeach ?>
 
                                                 </select>
