@@ -11,6 +11,7 @@ namespace Hudutech\Controller;
 use Hudutech\AppInterface\LoanInterface;
 use Hudutech\DBManager\ComplexQuery;
 use Hudutech\DBManager\DB;
+use Hudutech\Entity\Defaulter;
 use Hudutech\Entity\Loan;
 
 class LoanController extends ComplexQuery implements LoanInterface
@@ -331,12 +332,12 @@ class LoanController extends ComplexQuery implements LoanInterface
 
             } catch (\PDOException $exception) {
                 return [
-                    "error"=>$exception->getMessage()
+                    "error" => $exception->getMessage()
                 ];
             }
         } else {
             return [
-                "error"=> "Amount More than your allowed limit of {$loanLimit}"
+                "error" => "Amount More than your allowed limit of {$loanLimit}"
             ];
         }
     }
@@ -613,12 +614,12 @@ class LoanController extends ComplexQuery implements LoanInterface
 
     }
 
-    public static function getLatestLoanCF($clientId)
+    public static function getLatestLoanInfo($clientId)
     {
         $db = new DB();
         $conn = $db->connect();
         try {
-            $stmt = $conn->prepare("SELECT clientLoanId, loanCF FROM monthly_loan_servicing
+            $stmt = $conn->prepare("SELECT * FROM monthly_loan_servicing
                                     WHERE clientId=:clientId ORDER BY datePaid DESC  LIMIT 1");
             $stmt->bindParam(":clientId", $clientId);
             if ($stmt->execute() && $stmt->rowCount() == 1) {
@@ -664,7 +665,8 @@ class LoanController extends ComplexQuery implements LoanInterface
         }
     }
 
-    public static function totalMonthRepayment($clientId, $date){
+    public static function totalMonthRepayment($clientId, $date)
+    {
         $db = new DB();
         $conn = $db->connect();
         try {
@@ -707,33 +709,122 @@ class LoanController extends ComplexQuery implements LoanInterface
                     $m1 = self::totalMonthRepayment($loan['clientId'], $dates['monthOne']);
                     $m2 = self::totalMonthRepayment($loan['clientId'], $dates['monthTwo']);
                     $m3 = self::totalMonthRepayment($loan['clientId'], $dates['monthThree']);
-                    if(!array_key_exists('error', $m1)){
-                       $monthOneRepayment = $m1;
+                    if (!array_key_exists('error', $m1)) {
+                        $monthOneRepayment = $m1;
                     }
-                    if(!array_key_exists('error', $m2)){
+                    if (!array_key_exists('error', $m2)) {
                         $monthTwoRepayment = $m2;
                     }
-                    if(!array_key_exists('error', $m3)){
+                    if (!array_key_exists('error', $m3)) {
                         $monthThreeRepayment = $m3;
                     }
 
-                    $monthOnePayable = self::calculateInterest('trimester', $loan['loanAmount']) - $loan['loanAmount'];
-                    $nextMonthAmt = self::getLatestLoanCF($loan['clientId'])['loanCF'];
-                    $nextMonthPayable = self::calculateInterest('trimester', $nextMonthAmt) - $nextMonthAmt;
+
+                    if ($monthOne > $today && $today < $monthTwo) {
+                        //to get defaulted for month one we compare with latest interest
 
 
-                    if ($monthOne > $today && $today < $monthTwo && (float)$monthOneRepayment< $monthOnePayable) {
-                        //defaulted for month one
-                        //check the latest loanCF
+                        $loanInfo = self::getLatestLoanInfo($loan['clientId']);
+                        if ($monthOneRepayment < (float)$loanInfo['loanInterest']) {
+                            $fine = $newLoanBalance = $amountDefaulted = 0;
+
+                            if ($monthOneRepayment > 0) {
+                                $amountDefaulted = (float)$loanInfo['loanInterest'] - $monthOneRepayment;
+                                $fine = 0.2 * $amountDefaulted;
+                                $newLoanBalance = $loanInfo['loanBal'] + $fine;
+                            } else {
+                                $fine = 0.2 * (float)$loanInfo['loanInterest'];
+                                $newLoanBalance = $loanInfo['loanBal'] + $fine;
+                            }
+                            //compute fine
+                            $groupRefNo = ClientController::getId($loan['clientId'])['groupRefNo'];
+                            $info = [
+                                "fine" => $fine,
+                                "newLoanBal" => $newLoanBalance,
+                                "clientLoanId" => $loan['clientLoanId'],
+                                "loanType" => $loan['loanType'],
+                                "groupRefNo" => $groupRefNo,
+                                "amountDefaulted" => $amountDefaulted,
+                                "createdAt" => $loan['createdAt']
+                            ];
+                            self::executeDefaulterFine($loan['clientId'], $info);
 
 
+                        }
                         //compute the new loan balance which includes the fine.
                         //update defaulters table and create instance of defaulters
 
-                    } elseif ($monthTwo > $today && $today < $monthThree && $monthTwoRepayment < $nextMonthPayable) {
-                        //defaulted for month two
-                    } elseif ($monthThree > $today && $monthThreeRepayment < $nextMonthPayable) {
-                        //defaulted for month three
+                    } elseif ($monthTwo > $today && $today < $monthThree) {
+                        $loanInfo = self::getLatestLoanInfo($loan['clientId']);
+                        if ($monthTwoRepayment < (float)$loanInfo['loanInterest']) {
+                            $fine = $newLoanBalance = $amountDefaulted = 0;
+
+                            if ($monthTwoRepayment > 0) {
+                                $amountDefaulted = (float)$loanInfo['loanInterest'] - $monthTwoRepayment;
+                                $fine = 0.2 * $amountDefaulted;
+                                if (!is_null($loanInfo['loanCF'])) {
+                                    $newLoanBalance = $loanInfo['loanCF'] + $fine;
+                                } else {
+                                    $newLoanBalance = $loanInfo['loanBal'] + $fine;
+                                }
+
+                            } else {
+                                $amountDefaulted = (float)$loanInfo['loanInterest'];
+                                $fine = 0.2 * $amountDefaulted;
+                                //check is loanCF Is null if not take balance
+                                //since this will be the case where client was given loan and
+                                //did not give any repayment at all.
+                                if (!is_null($loanInfo['loanCF'])) {
+                                    $newLoanBalance = $loanInfo['loanCF'] + $fine;
+                                } else {
+                                    $newLoanBalance = $loanInfo['loanBal'] + $fine;
+                                }
+                            }
+
+                            //execute the code to create defaulter an update the loanservicing
+                            //table with the new data
+
+                            $groupRefNo = ClientController::getId($loan['clientId'])['groupRefNo'];
+                            $info = [
+                                "fine" => $fine,
+                                "newLoanBal" => $newLoanBalance,
+                                "clientLoanId" => $loan['clientLoanId'],
+                                "loanType" => $loan['loanType'],
+                                "groupRefNo" => $groupRefNo,
+                                "amountDefaulted" => $amountDefaulted,
+                                "createdAt" => $loan['createdAt']
+                            ];
+                            self::executeDefaulterFine($loan['clientId'], $info);
+
+                        }
+                    } elseif ($monthThree > $today) {
+                        $loanInfo = self::getLatestLoanInfo($loan['clientId']);
+                        if ($monthThreeRepayment < (float)$loanInfo['loanInterest']) {
+                            //compute fine
+                            $fine = $newLoanBalance = $amountDefaulted = 0;
+
+                            if ($monthThreeRepayment > 0) {
+                                $amountDefaulted = (float)$loanInfo['loanBal'] - $monthThreeRepayment;
+                                $fine = 0.2 * $amountDefaulted;
+                                $newLoanBalance = $loanInfo['loanBal'] + $fine;
+                            } else {
+                                $amountDefaulted = (float)$loanInfo['loanBal'];
+                                $fine = 0.2 * $amountDefaulted;
+                                $newLoanBalance = $loanInfo['loanBal'] + $fine;
+                            }
+
+                            $groupRefNo = ClientController::getId($loan['clientId'])['groupRefNo'];
+                            $info = [
+                                "fine" => $fine,
+                                "newLoanBal" => $newLoanBalance,
+                                "clientLoanId" => $loan['clientLoanId'],
+                                "loanType" => $loan['loanType'],
+                                "groupRefNo" => $groupRefNo,
+                                "amountDefaulted" => $amountDefaulted,
+                                "createdAt" => $loan['createdAt']
+                            ];
+                            self::executeDefaulterFine($loan['clientId'], $info);
+                        }
                     }
 
 
@@ -746,6 +837,74 @@ class LoanController extends ComplexQuery implements LoanInterface
     {
 
     }
+
+    /**
+     * @param $clientId
+     * @param array $info
+     * $info = [
+     *          "fine"=>value,
+     *          "newLoanBal"=>value,
+     *          "clientLoanId"=>"clientLoanId",
+     *          "loanType"=>"type of loan",
+     *          "groupRefNo"=>value,
+     *          "amountDefaulted"=>value
+     *          "createdAt"=>"value for created loan createdAt"
+     *          ]
+     *
+     * @return mixed
+     */
+    public static function executeDefaulterFine($clientId, array $info)
+    {
+        $db = new DB();
+        $conn = $db->connect();
+        try {
+
+            $withInterest = self::calculateInterest($info['loanType'], $info['newLoanBal']);
+            $interest = $withInterest - $info['newLoanBal'];
+
+
+            $fine = $info['fine'];
+            $principal = $info['newLoanBal'];
+            $clientLoanId = $info['clientLoanId'];
+            $groupRefNo = $info['groupRefNo'];
+            $amountDefaulted = $info['amountDefaulted'];
+
+            $stmt = $conn->prepare("INSERT INTO monthly_loan_servicing(clientId, clientLoanId,
+                                    principal,loanInterest, defaulterFine, loanBal, loanCF
+                                    )VALUES(
+                                    :clientId, :clientLoanId, :principal, :loanInterest,
+                                     :defaulterFine, :loanBal, :loanCF)
+                                     ");
+            $stmt->bindParam(":clientId", $clientId);
+            $stmt->bindParam(":clientLoanId", $clientLoanId);
+            $stmt->bindParam(":principal", $principal);
+            $stmt->bindParam(":loanInterest", $interest);
+            $stmt->bindParam(":defaulterFine", $fine);
+            $stmt->bindParam(":loanBal", $withInterest);
+            $stmt->bindParam(":loanCF", $withInterest);
+            if ($stmt->execute()) {
+                $defaulter = new Defaulter();
+                $defaulter->setClientId($clientId);
+                $defaulter->setGroupId($groupRefNo);
+                $defaulter->setAmountDefaulted($amountDefaulted);
+                $defaulterCtrl = new DefaulterController();
+                $created = $defaulterCtrl->create($defaulter);
+                if ($created === true) {
+                    ClientController::createTransactionLog(array(
+                        "amount" => $amountDefaulted,
+                        "details" => "Client Set to defaulters list for defaulting Ksh " . $amountDefaulted . " For A loan",
+                        "clientId" => $clientId
+                    ));
+                }
+            }
+        } catch (\PDOException $exception) {
+            echo $exception->getMessage();
+            return false;
+        }
+    }
+
+
+
 
 
 }
