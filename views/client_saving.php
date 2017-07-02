@@ -7,8 +7,8 @@
  */
 require_once __DIR__.'/../vendor/autoload.php';
 $counter=1;
-$clientSavings=\Hudutech\Controller\SavingController::clientsTotalSavingsLog();
-//print_r($clientSavings);
+$clientSavings=\Hudutech\Controller\SavingController::clientsTotalSavings();
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -30,7 +30,7 @@ $clientSavings=\Hudutech\Controller\SavingController::clientsTotalSavingsLog();
     <div id="page-wrapper">
         <div class="row">
             <div class="col-lg-12">
-                <h1 class="page-header"> Client Savings</h1>
+                <h1 class="page-header"> Client Savings and Withdraws</h1>
             </div>
             <!-- /.col-lg-12 -->
         </div>
@@ -51,6 +51,7 @@ $clientSavings=\Hudutech\Controller\SavingController::clientsTotalSavingsLog();
                                     <th>Full Name</th>
                                     <th>Group Name</th>
                                     <th>Total Saving</th>
+                                    <th>Action</th>
 
                                 </tr>
                                 </thead>
@@ -60,7 +61,9 @@ $clientSavings=\Hudutech\Controller\SavingController::clientsTotalSavingsLog();
                                         <td><?php echo $counter++?></td>
                                         <td><?php echo $clientSaving['fullName']?></td>
                                         <td><?php echo $clientSaving['groupName']?></td>
-                                        <td><?php echo $clientSaving['totalSaving']?></td>
+                                        <td><?php echo $clientSaving['balance']?></td>
+
+                                       <td> <a class="btn btn-primary" href="withdraw.php?id=<?php echo $clientSaving['clientId']?>">Withdraw</a></td>
 
                                     </tr>
                                 <?php endforeach; ?>

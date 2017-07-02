@@ -9,6 +9,7 @@
 namespace Hudutech\Controller;
 
 
+use function Couchbase\basicEncoderV1;
 use Hudutech\AppInterface\SavingInterface;
 use Hudutech\DBManager\DB;
 use Hudutech\Entity\Saving;
@@ -350,7 +351,7 @@ class SavingController implements SavingInterface
         $db = new DB();
         $conn = $db->connect();
         try {
-            $sql = "SELECT  DISTINCT c.fullName, g.groupName, t.balance FROM saving_balances t, sacco_group g, clients c
+            $sql = "SELECT  DISTINCT c.fullName, g.groupName, t.balance,t.clientId FROM saving_balances t, sacco_group g, clients c
                     INNER JOIN saving_balances sb ON sb.clientId= c.id WHERE  c.id=t.clientId AND c.groupRefNo=g.refNo";
             $stmt = $conn->prepare($sql);
             return $stmt->execute() && $stmt->rowCount() > 0 ? $stmt->fetchAll(\PDO::FETCH_ASSOC) : [];
@@ -449,15 +450,21 @@ class SavingController implements SavingInterface
         try {
             $stmt = $conn->prepare("SELECT balance FROM saving_balances WHERE clientId=:clientId LIMIT 1");
             $stmt->bindParam(":clientId", $clientId);
+            $balance=0;
             if ($stmt->execute() && $stmt->rowCount() == 1) {
                 $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-                return (float)$row['balance'];
-            } else {
+                $balance = (float)$row['balance'];
+
+            }elseif($stmt->rowCount() <=0){
+                $db->closeConnection();
+                return $balance;
+            }else{
                 $db->closeConnection();
                 return [
                     "error" => "Error Occurred:=> [{$stmt->errorInfo()[0]} {$stmt->errorInfo()[1]}  {$stmt->errorInfo()[2]}]"
                 ];
             }
+
         } catch (\PDOException $exception) {
             return [
                 'error' => $exception->getMessage()

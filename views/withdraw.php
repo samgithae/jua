@@ -8,6 +8,8 @@
 require_once __DIR__.'/../vendor/autoload.php';
 
 $client = \Hudutech\Controller\ClientController::getId($_GET['id']);
+//print_r($client);
+
 $loans= \Hudutech\Controller\LoanController::all();
 
 include  __DIR__.'/includes/lead_loan.inc.php';
@@ -87,13 +89,8 @@ include  __DIR__.'/includes/lead_loan.inc.php';
 
                                             <div class="input-group">
                                                  <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
-                                                <select name="clientId" id="clientId" class="form-control" onkeyup="calculateBal()" onchange="calculateBal()">
-                                                    <option>--Select Client here--</option>
-                                                    <?php foreach ($clients as $client): ?>
-                                                        <option value="<?php echo $client['id']?>"><?php echo $client['fullName'].' - '.$client['idNo']?></option>
-                                                    <?php endforeach ?>
-
-                                                </select>
+                                                <input type="text" class="form-control" name="fullName" value="<?php echo $client['fullName']?>" id="clientName" disabled/>
+                                                <input type="hidden" id="clientId" value="<?php echo $_GET['id'] ?>" />
                                             </div>
                                         </div>
                                     </div>
@@ -142,7 +139,7 @@ include  __DIR__.'/includes/lead_loan.inc.php';
 
 <script src="../public/assets/select/jquery-editable-select.js"></script>
 <script>
-   $('#clientId').editableSelect();
+   //$('#clientId').editableSelect();
 </script>
 <script>
     function calculateBal() {
@@ -165,6 +162,11 @@ include  __DIR__.'/includes/lead_loan.inc.php';
             }
         )
     }
+</script>
+<script>
+    window.onload = function() {
+        calculateBal();
+    };
 </script>
 </body>
 </html>
