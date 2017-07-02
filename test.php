@@ -1,9 +1,8 @@
 <?php
-$currentDate = date('Y-m-d');
+require_once __DIR__.'/vendor/autoload.php';
 
-$days = $years * 365;
-$days = '+'.$days.' days';
-$deadline = date('Y-m-d', strtotime($currentDate . $days));
-echo $deadline;
+use Hudutech\Controller\SavingController;
+
+print SavingController::checkBalance($_GET['id']);
 
 
