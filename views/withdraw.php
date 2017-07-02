@@ -9,10 +9,11 @@ require_once __DIR__.'/../vendor/autoload.php';
 
 $client = \Hudutech\Controller\ClientController::getId($_GET['id']);
 //print_r($client);
-
+use Hudutech\Controller\SavingController;
 $loans= \Hudutech\Controller\LoanController::all();
 
 include  __DIR__.'/includes/lead_loan.inc.php';
+$balance= SavingController::checkBalance($_GET['id']);
 
 ?>
 <!DOCTYPE html>
@@ -90,7 +91,7 @@ include  __DIR__.'/includes/lead_loan.inc.php';
                                             <div class="input-group">
                                                  <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
                                                 <input type="text" class="form-control" name="fullName" value="<?php echo $client['fullName']?>" id="clientName" disabled/>
-                                                <input type="hidden" id="clientId" value="<?php echo $_GET['id'] ?>" />
+
                                             </div>
                                         </div>
                                     </div>
@@ -100,7 +101,7 @@ include  __DIR__.'/includes/lead_loan.inc.php';
                                         <div class="cols-sm-10">
                                             <div class="input-group">
                                                 <span class="input-group-addon"><i class="fa fa-money fa" aria-hidden="true"></i></span>
-                                                <input type="number" class="form-control" name="balance" id="balance" disabled/>
+                                                <input type="number" class="form-control" name="balance"  value="<?php echo $balance?>" id="balance" disabled/>
                                             </div>
                                         </div>
                                     </div>
@@ -139,19 +140,24 @@ include  __DIR__.'/includes/lead_loan.inc.php';
 
 <script src="../public/assets/select/jquery-editable-select.js"></script>
 <script>
+    $(document).ready(function (e) {
+        e.preventDefault;
+        calculateBal();
+
+    })
    //$('#clientId').editableSelect();
 </script>
 <script>
     function calculateBal() {
-        var url = 'check_balance_endpoint.php';
-        var clientId = jQuery('#clientId').val()
+
+        var clientId = '<?php echo $_GET['id']?>';
+        var url = 'check_balance_endpoint.php?id='+clientId;
 
 
         jQuery.ajax(
             {
-                type: 'POST',
+                type: 'GET',
                 url: url,
-                data: JSON.stringify({clientId :clientId}),
                 dataType: 'json',
                 contentType: 'application/json; charset=utf-8;',
                 traditional: true,

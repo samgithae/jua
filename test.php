@@ -1,9 +1,12 @@
 <?php
-$currentDate = date('Y-m-d');
+require_once __DIR__.'/vendor/autoload.php';
 
-$days = $years * 365;
-$days = '+'.$days.' days';
-$deadline = date('Y-m-d', strtotime($currentDate . $days));
-echo $deadline;
+$client = \Hudutech\Controller\ClientController::getId(57);
+//print_r($client);
+use Hudutech\Controller\SavingController;
+$loans= \Hudutech\Controller\LoanController::all();
 
+
+$balance= SavingController::checkBalance(57);
+echo $balance;
 

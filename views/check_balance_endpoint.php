@@ -8,11 +8,11 @@
 require_once __DIR__.'/../vendor/autoload.php';
 
 use Hudutech\Controller\SavingController;
-$data = json_decode(file_get_contents('php://input'), true);
+//$data = json_decode(file_get_contents('php://input'), true);
 
-if($_SERVER['REQUEST_METHOD'] == 'POST'){
+if($_SERVER['REQUEST_METHOD'] == 'GET'){
 
-    $balance= SavingController::checkBalance($data['clientId']);
+    $balance= SavingController::checkBalance($_GET['id']);
 
     print_r(json_encode(array(
         "balance"=>$balance,
