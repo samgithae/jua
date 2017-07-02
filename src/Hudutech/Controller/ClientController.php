@@ -348,11 +348,19 @@ class ClientController extends ComplexQuery implements ClientInterface
 
     }
 
-    public static function getLoanLimit($clientId)
+    public static function getShortTermLoanLimit($clientId)
     {
-        $savings = SavingController::getClientTotalSavings($clientId);
+        $savings = SavingController::checkBalance($clientId);
 
         $loanLimit = (float)($savings['totalSavings'] * 3);
+        return $loanLimit;
+    }
+
+    public static function getLongTermLoanLimit($clientId)
+    {
+        $savings = SavingController::checkBalance($clientId);
+
+        $loanLimit = (float)($savings['totalSavings'] * 2.5);
         return $loanLimit;
     }
 
