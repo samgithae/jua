@@ -454,6 +454,7 @@ class SavingController implements SavingInterface
             if ($stmt->execute() && $stmt->rowCount() == 1) {
                 $row = $stmt->fetch(\PDO::FETCH_ASSOC);
                 $balance = (float)$row['balance'];
+                return $balance;
 
             }elseif($stmt->rowCount() <=0){
                 $db->closeConnection();
