@@ -79,8 +79,9 @@ $counter = 1;
                                             <td><?php echo $client['county']?></td>
 
                                             <td colspan="3"class="btn-xs" >
-                                                <button class=" btn-xs btn-primary">Edit</button>
-                                                <a href="client_profile.php?id=<?php echo urlencode($client['id'])?>" class=" btn-xs btn-primary"> Profile</a>
+
+                                                <a href="edit_client.php?id=<?php echo urlencode($client['id'])?>" class="btn btn-xs btn-primary"> Edit</a>
+                                                <a href="client_profile.php?id=<?php echo urlencode($client['id'])?>" class="btn btn-xs btn-primary"> Profile</a>
                                                 <button class=" btn-xs btn-danger">Delete</button>
                                             </td>
                                         </tr>
