@@ -434,6 +434,8 @@ class SavingController implements SavingInterface
                 } else {
                     return ['error' => "Your account does not have sufficient savings"];
                 }
+            }else{
+                return ['error' => "Error Occurred [{$balance['error']}]"];
             }
         } catch (\PDOException $exception) {
             print_r($exception->getMessage());

@@ -109,6 +109,7 @@ class LoanController extends ComplexQuery implements LoanInterface
                         "principal" => $amount,
                         "loanInterest" => $interest,
                         "loanBal" => $loanBal,
+                        "loanType"=>$loanType,
                         "clientLoanId" => $conn->lastInsertId()
                     );
                     self::createRepaymentDates($clientId, $loanType);
@@ -194,8 +195,8 @@ class LoanController extends ComplexQuery implements LoanInterface
                 $monthTwo = date('Y-m-d', strtotime($monthOne . ' + 30 days'));
                 $monthThree = date('Y-m-d', strtotime($monthTwo . ' + 30 days'));
             }elseif ($loanType == 'long_term'){
-                $days = $years * 365;
-                $days = '+'.$days.' days';
+                $d = $years * 365;
+                $days = '+'.$d.' days';
                 $monthOne = date('Y-m-d', strtotime($currentDate . $days));
             }
             $stmt = $conn->prepare("INSERT INTO loan_repayment_dates(clientId, monthOne, monthTwo, monthThree, loanType, loanDate)
@@ -300,6 +301,33 @@ class LoanController extends ComplexQuery implements LoanInterface
         $conn = $db->connect();
         try {
             $stmt = $conn->prepare("INSERT INTO monthly_loan_servicing(principal, clientId, clientLoanId, loanInterest, loanBal,createdAt)
+                                  VALUES (:principal, :clientId, :clientLoanId, :loanInterest, :loanBal, :createdAt)");
+            $stmt->bindParam(":principal", $principal);
+            $stmt->bindParam(":clientId", $clientId);
+            $stmt->bindParam(":clientLoanId", $clientLoanId);
+            $stmt->bindParam(":loanInterest", $loanInterest);
+            $stmt->bindParam(":loanBal", $loanBal);
+            $stmt->bindParam(":createdAt", $createdAt);
+            return $stmt->execute() ? true : false;
+        } catch (\PDOException $exception) {
+            echo $exception->getMessage();
+            return false;
+        }
+    }
+
+    public static function createLongTermLoanServing($config){
+
+        $clientId = $config['clientId'];
+        $principal = $config['principal'];
+        $loanInterest = $config['loanInterest'];
+        $loanBal = $config['loanBal'];
+        $clientLoanId = $config['clientLoanId'];
+        $createdAt = date("Y-m-d h:i:s");
+
+        $db = new DB();
+        $conn = $db->connect();
+        try {
+            $stmt = $conn->prepare("INSERT INTO long_term_loan_servicing(principal, clientId, clientLoanId, loanInterest, loanBal,createdAt)
                                   VALUES (:principal, :clientId, :clientLoanId, :loanInterest, :loanBal, :createdAt)");
             $stmt->bindParam(":principal", $principal);
             $stmt->bindParam(":clientId", $clientId);
