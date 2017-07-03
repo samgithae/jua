@@ -1,4 +1,7 @@
 <?php
 require_once __DIR__.'/vendor/autoload.php';
 
-print_r(Hudutech\Controller\ClientController::getClientObject(56));
+
+use Hudutech\Controller\LoanController;
+
+print_r(LoanController::checkClientHasActiveLoan(1, 3));

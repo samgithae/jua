@@ -582,10 +582,10 @@ class LoanController extends ComplexQuery implements LoanInterface
         }
     }
 
-    public static function getAmountDefaulted()
-    {
-
-    }
+//    public static function getAmountDefaulted()
+//    {
+//
+//    }
 
     public static function totalLongTermRepayment($clientLoanId)
     {
@@ -1015,9 +1015,6 @@ class LoanController extends ComplexQuery implements LoanInterface
         }
     }
 
-    public static function markAsDefaulted($clientLoanId)
-    {
-    }
 
     /**
      * @param Loan $loan
@@ -1065,6 +1062,32 @@ class LoanController extends ComplexQuery implements LoanInterface
         } catch (\PDOException $exception) {
             echo $exception->getMessage();
             return false;
+        }
+    }
+
+    public static function checkClientHasActiveLoan($clientId, $loanId){
+        $db = new DB();
+        $conn = $db->connect();
+        $loan = self::getId($loanId);
+        $loanType = isset($loan['loanType']) ? $loan['loanType'] : '';
+        try{
+           $stmt = $conn->prepare("SELECT * FROM client_loans  WHERE loanType=:loanType AND loanType !='' AND
+                                    clientId=:clientId AND status='active' LIMIT 1");
+           $stmt->bindParam(":clientId", $clientId);
+           $stmt->bindParam(":loanType", $loanType);
+           if($stmt->execute() ==1){
+               $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+               return $row;
+           }else{
+              return [
+                  'error'=> "Internal Server error"
+              ];
+           }
+        }catch (\PDOException $exception){
+            $exception->getMessage();
+            return [
+                'error'=> $exception->getMessage()
+            ];
         }
     }
 

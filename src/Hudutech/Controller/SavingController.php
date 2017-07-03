@@ -9,7 +9,7 @@
 namespace Hudutech\Controller;
 
 
-use function Couchbase\basicEncoderV1;
+
 use Hudutech\AppInterface\SavingInterface;
 use Hudutech\DBManager\DB;
 use Hudutech\Entity\Saving;
@@ -417,13 +417,20 @@ class SavingController implements SavingInterface
 
             if(!isset($balance['error'])) {
 
-                if ($balance <= $amount && $amount > 0) {
+                if ($balance >= $amount && $amount > 0) {
                     $stmt = $conn->prepare("UPDATE saving_balances SET balance = balance - '{$amount}'
                                    WHERE clientId=:clientId");
                     $stmt->bindParam(":clientId", $clientId);
 
                     if ($stmt->execute()) {
                         $db->closeConnection();
+                        ClientController::createTransactionLog(
+                            array(
+                                "clientId" => $clientId,
+                                "amount" => $amount,
+                                "details" => "Withdraw of Ksh {$amount} Savings Fund"
+                            )
+                        );
                         return true;
                     } else {
                         $db->closeConnection();
