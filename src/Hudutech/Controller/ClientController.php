@@ -168,7 +168,11 @@ class ClientController extends ComplexQuery implements ClientInterface
         $nokRelationship = $client->getNokRelationShip();
         $nokContact = $client->getNokContact();
         $dateEnrolled = $client->getDateEnrolled();
+<<<<<<< HEAD
         $passport = $client->getPassport();
+=======
+        $passport=$client->getPassport();
+>>>>>>> 0f00284e7c6af27f78d54df4cd667845d3da7dd0
 
         try {
 

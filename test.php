@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__.'/vendor/autoload.php';
 
+<<<<<<< HEAD
 
 use Hudutech\Controller\ClientController;
 
@@ -17,3 +18,6 @@ if($ctrl->update($client, 1)){
 
 
 
+=======
+print_r(Hudutech\Controller\ClientController::getClientObject(56));
+>>>>>>> 0f00284e7c6af27f78d54df4cd667845d3da7dd0
