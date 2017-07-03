@@ -16,6 +16,7 @@ use Hudutech\Entity\Loan;
 
 class LoanController extends ComplexQuery implements LoanInterface
 {
+    use LongTermLoan;
     /**
      * @var null|\PDO
      */

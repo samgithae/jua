@@ -156,7 +156,7 @@ endforeach;
 
                                         <td colspan="3">
                                             <button class="btn btn-xs btn-primary">Edit</button>
-                                            \
+
 
                                             <a href="client_profile.php?id=<?php echo urlencode($client['id'])?>" class=" btn-xs btn-primary"> Profile</a>
 

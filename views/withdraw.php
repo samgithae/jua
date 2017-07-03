@@ -81,16 +81,16 @@ $balance= SavingController::checkBalance($_GET['id']);
                                 }
                                 ?>
 
-                                <form class="form-horizontal" name="form1" id="form1" method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'])?>">
-
+                                <form class="form-horizontal" name="form1" id="form1" >
                                     <div class="form-group">
 
                                         <div class="cols-sm-10">
-                                            <label for="name" class="cols-sm-2 control-label">Select Client</label>
+                                            <label for="fullName" class="cols-sm-2 control-label">Select Client</label>
 
                                             <div class="input-group">
                                                  <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
-                                                <input type="text" class="form-control" name="fullName" value="<?php echo $client['fullName']?>" id="clientName" disabled/>
+                                                <input type="text" class="form-control" name="fullName" value="<?php echo $client['fullName']?>" id="fullName" disabled/>
+                                                <input type="hidden" class="form-control" name="clientId" value="<?php echo $_GET['id']?>" id="clientId" disabled/>
 
                                             </div>
                                         </div>
@@ -107,21 +107,24 @@ $balance= SavingController::checkBalance($_GET['id']);
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="username" class="cols-sm-2 control-label">Amount to withdraw</label>
+                                        <label for="amount" class="cols-sm-2 control-label">Amount to withdraw</label>
                                         <div class="cols-sm-10">
                                             <div class="input-group">
                                                 <span class="input-group-addon"><i class="fa fa-money fa" aria-hidden="true"></i></span>
-                                                <input type="number" class="form-control" name="amount"   placeholder="amount e.g 1000" />
+                                                <input type="number" class="form-control" name="amount" id="amount"  placeholder="amount e.g 1000" />
 
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div class="form-group ">
-                                        <input type="submit" name="submit" value="Save" class="btn btn-primary btn-lg btn-block login-button">
-                                    </div>
-                                </form>
 
+                                </form>
+                                <div class="form-group ">
+
+                                    <button class="btn btn-primary btn-lg btn-block login-button"
+                                            onclick="showWithdrawModal()">Withdraw
+                                    </button>
+                                </div>
 
                             </div>
                         </div>
@@ -135,44 +138,118 @@ $balance= SavingController::checkBalance($_GET['id']);
 
 
 
+<!-- Modal -->
+<div class="modal fade" id="confirmWithdraw"  tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">Confirm Withdraw</h4>
+                <div id="confirmFeedback">
+
+                </div>
+            </div>
+            <div class="modal-body"><p style="font-size: 16px;">Click to Confirm withdraw</p></div>
+            <div class="modal-footer">
+                <button type="button" id="btn-confirmWithdraw" class="btn btn-info">Continue</button>
+                <button type="button" data-dismiss="modal" class="btn btn-info">Cancel</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+
+
+<!--confirm withdraw module-->
+<div class="modal fade" id="confirmWithdraw">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <h4 class="modal-title">Confirm Withdraw</h4>
+            <div id="feedback">
+
+            </div>
+
+        </div>
+        <div class="modal-body">
+            <p style="font-size: 16px;">Click to Confirm withdraw</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" id="btn-confirmWithdraw" class="btn btn-info">Continue</button>
+            <button type="button" data-dismiss="modal" class="btn btn-info">Cancel</button>
+        </div>
+
+    </div>
+</div>
+<!--end of modal-->
+
+
 
 <?php  include_once 'footer.php'?>
 
 <script src="../public/assets/select/jquery-editable-select.js"></script>
-<script>
-    $(document).ready(function (e) {
-        e.preventDefault;
-        calculateBal();
-
-    })
-   //$('#clientId').editableSelect();
-</script>
-<script>
-    function calculateBal() {
-
-        var clientId = '<?php echo $_GET['id']?>';
-        var url = 'check_balance_endpoint.php?id='+clientId;
 
 
-        jQuery.ajax(
-            {
-                type: 'GET',
-                url: url,
-                dataType: 'json',
-                contentType: 'application/json; charset=utf-8;',
-                traditional: true,
-                success:function (response) {
-                    jQuery('#balance').val(response.balance);
-                    console.log(response);
-                }
-            }
-        )
+
+
+
+<script type="text/javascript">
+
+
+
+
+    function getData() {
+        return {
+            clientId: $('#clientId').val(),
+            amount: $('#amount').val()
+        }
+
     }
-</script>
-<script>
-    window.onload = function() {
-        calculateBal();
-    };
+
+    function showWithdrawModal() {
+        $('#confirmWithdraw').modal('show');
+        $('#btn-confirmWithdraw').on('click', function (e) {
+            e.preventDefault();
+            var url = 'withdraw_endpoint.php';
+            var data = getData();
+            console.log(data);
+            $.ajax(
+                {
+                    type: 'POST',
+                    url: url,
+                    data: JSON.stringify(data),
+                    dataType: 'json',
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (response) {
+                        console.log(response.statusCode);
+                        if (response.statusCode == 200) {
+                            $('#feedback').removeClass('alert alert-danger')
+                                .addClass('alert alert-success')
+                                .text(response.message);
+                            setTimeout(function () {
+                                location.reload();
+                            }, 1000);
+                        }
+                        if (response.statusCode == 500) {
+                            $('#feedback').removeClass('alert alert-success')
+                                .html('<div class="alert alert-danger alert-dismissable">' +
+                                    '<a href="#" class="close"  data-dismiss="alert" aria-label="close">&times;</a>' +
+                                    '<strong>Error! </strong> ' + response.message + '</div>')
+
+                        }
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+
+                }
+            )
+        })
+    }
+
+
 </script>
 </body>
 </html>

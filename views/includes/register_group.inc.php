@@ -30,5 +30,5 @@ if(isset($_POST['group_name'],$_POST['ref_no'])) {
 }
 else{
 
-    $errorMsg .= "KEY  FIELDS REQUIERED";
+    $errorMsg .= "KEY  FIELDS REQUIRED";
 }

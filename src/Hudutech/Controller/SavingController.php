@@ -415,7 +415,7 @@ class SavingController implements SavingInterface
 
         try{
 
-            if(!array_key_exists('error', $balance)) {
+            if(!isset($balance['error'])) {
 
                 if ($balance <= $amount && $amount > 0) {
                     $stmt = $conn->prepare("UPDATE saving_balances SET balance = balance - '{$amount}'
