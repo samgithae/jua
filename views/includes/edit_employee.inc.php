@@ -80,14 +80,24 @@ if($_SERVER['REQUEST_METHOD']=='POST') {
 
 
         $employeeControl = new \Hudutech\Controller\EmployeeController();
-        $created = $employeeControl->create($employee);
+
+        $created = $employeeControl->update($employee,$_POST['id']);
 
 
         if ($created === true) {
-            $successMsg .= "Employee details saved successfully";
+           // $successMsg .= "Client details saved successfully";
+            echo "<script type='text/javascript'>
+              alert('updated successfully!');
+              window.location.href='employee.php';
+              
+              </script>";
         } elseif (array_key_exists('error', $created)) {
-            $errorMsg .= "{$created['error']}";
-
+           // $errorMsg .= "{$created['error']}";
+            echo "<script type='text/javascript'>
+              alert('Error occured please try again later');
+              window.location.href='employee.php';
+              
+              </script>";
         }
 
 

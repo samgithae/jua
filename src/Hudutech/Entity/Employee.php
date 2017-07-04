@@ -52,6 +52,25 @@ class Employee
     private $jobDescription;
     /**
      * @var string
+     */ private $jobGrade;
+
+    /**
+     * @return string
+     */
+    public function getJobGrade()
+    {
+        return $this->jobGrade;
+    }
+
+    /**
+     * @param string $jobGrade
+     */
+    public function setJobGrade($jobGrade)
+    {
+        $this->jobGrade = $jobGrade;
+    }
+    /**
+     * @var string
      */
     private $qualification;
     /**

@@ -1,3 +1,23 @@
+<?php
+
+require_once __DIR__.'/../vendor/autoload.php';
+$clients = \Hudutech\Controller\ClientController::all();
+$groups=\Hudutech\Controller\GroupController::all();
+$employees=\Hudutech\Controller\EmployeeController::all();
+$clientCount=1;
+$employeeCount=1;
+$groupCount=1;
+foreach ($clients as $client):
+    $clientCount=$clientCount+1;
+    endforeach;
+
+    foreach ($groups as $group):
+        $groupCount=$groupCount+1;
+        endforeach;
+        foreach ($employees as $employee):
+            $employeeCount=$employeeCount+1;
+endforeach;
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -56,15 +76,15 @@
                         <div class="panel-heading">
                             <div class="row">
                                 <div class="col-xs-3">
-                                    <i class="fa fa-comments fa-5x"></i>
+                                    <i class="fa fa-user fa-5x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right">
-                                    <div class="huge">26</div>
-                                    <div>New Comments!</div>
+                                    <div class="huge"><?php echo $clientCount;?></div>
+                                    <div>Our Clients</div>
                                 </div>
                             </div>
                         </div>
-                        <a href="#">
+                        <a href="clients.php">
                             <div class="panel-footer">
                                 <span class="pull-left">View Details</span>
                                 <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -78,15 +98,15 @@
                         <div class="panel-heading">
                             <div class="row">
                                 <div class="col-xs-3">
-                                    <i class="fa fa-tasks fa-5x"></i>
+                                    <i class="fa fa-users fa-5x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right">
-                                    <div class="huge">12</div>
-                                    <div>New Tasks!</div>
+                                    <div class="huge"><?php echo $groupCount?></div>
+                                    <div>Registered Groups</div>
                                 </div>
                             </div>
                         </div>
-                        <a href="#">
+                        <a href="groups.php">
                             <div class="panel-footer">
                                 <span class="pull-left">View Details</span>
                                 <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -100,15 +120,15 @@
                         <div class="panel-heading">
                             <div class="row">
                                 <div class="col-xs-3">
-                                    <i class="fa fa-shopping-cart fa-5x"></i>
+                                    <i class="fa fa-user-plus fa-5x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right">
-                                    <div class="huge">124</div>
-                                    <div>New Orders!</div>
+                                    <div class="huge"><?php echo $employeeCount?></div>
+                                    <div>Employees</div>
                                 </div>
                             </div>
                         </div>
-                        <a href="#">
+                        <a href="employees.php">
                             <div class="panel-footer">
                                 <span class="pull-left">View Details</span>
                                 <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -125,8 +145,8 @@
                                     <i class="fa fa-support fa-5x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right">
-                                    <div class="huge">13</div>
-                                    <div>Support Tickets!</div>
+                                    <div style="font-size: 25px;"><?php echo date("d/m/Y")?></div>
+                                    <div>Today</div>
                                 </div>
                             </div>
                         </div>

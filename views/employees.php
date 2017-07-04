@@ -76,7 +76,7 @@ $counter = 1;
                                         <td colspan="3" class="btn-xs">
                                             <button class="btn-xs btn-primary">Edit</button>
 
-                                            <a href="employee_profile.php?id=<?php echo urlencode($employee['id'])?>" class=" btn-xs btn-primary"> Profile</a>
+                                            <a href="employee_profile.php?id=<?php echo urlencode($employee['id'])?>" class="btn btn-xs btn-primary"> Profile</a>
 
 
                                             <button class="btn-xs btn-danger">Delete</button>
@@ -92,17 +92,7 @@ $counter = 1;
         </div>
     </div>
 
-
-
-
-
-
     <?php include_once 'footer.php' ?>
-
-
-
-
-
 
 </body>
 </html>

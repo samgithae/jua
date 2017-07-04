@@ -14,7 +14,10 @@
 <meta name="description" content="">
 <meta name="author" content="">
 
-
+<link href= "../public/assets/css/bootstrap.min.css" rel="stylesheet">
+<link href="../public/assets/css/custom.css " rel="stylesheet">
+<script src="../public/assets/js/respond.js"></script>
+<script src="../public/assets/js/custom.js"></script>
 
 <!-- Bootstrap Core CSS -->
 <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
