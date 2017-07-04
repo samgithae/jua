@@ -38,11 +38,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $savingCtrl = new SavingController();
         $created = $savingCtrl->createSingle($saving);
 
-        if ($created) {
+        if ($created === true) {
             $successMsg .= "Contribution Received Successfully";
             header("Refresh:0");
-        } else {
-            $errorMsg .= "Error Occurred Contribution not recorded. Try again later";
+        } elseif(isset($created['error'])) {
+           // $errorMsg .= "Error Occurred Contribution not recorded. Try again later";
+            $errorMsg .= "Error Occurred  {$created['error']}";
         }
     } else {
         $errorMsg .= "All fields required";

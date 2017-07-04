@@ -1,23 +1,62 @@
 <?php
 require_once __DIR__.'/vendor/autoload.php';
 
-<<<<<<< HEAD
+use Hudutech\Controller\SavingController;
 
-use Hudutech\Controller\ClientController;
+$path = $_SERVER['REQUEST_URI'];
+echo $path;
+if($path == '/test.php'){
 
-$client = ClientController::getClientObject(1);
-$client->setPassport('uploads/se.jpg');
-print_r($client);
-
-$ctrl = new ClientController();
-if($ctrl->update($client, 1)){
-    echo "did well";
 }
 
-//echo $client->getPassport();
-
-
-
-=======
-print_r(Hudutech\Controller\ClientController::getClientObject(56));
->>>>>>> 0f00284e7c6af27f78d54df4cd667845d3da7dd0
+//$cashReceived = 7000;
+//$dumpedSaving = 0;
+//
+//$contribution = null;
+//$previousSavings = SavingController::getPreviousSavings(3);
+//$totalMonthContrib = SavingController::getTotalMonthContribution(3);
+//$totalMonthAmt = 56;
+//
+//if (empty($previousSavings['dumpedSaving'])) {
+//
+//    if ((float)$totalMonthContrib['total_contribution'] >= 0 && $totalMonthContrib['total_contribution'] <= 5000) {
+//        $totalMonthAmt = (float)$totalMonthContrib['total_contribution'];
+//
+//        $compareFactor = 5000 - $totalMonthAmt;
+//        $dumpCompareFactor = $cashReceived - $compareFactor;
+//        if($dumpCompareFactor == 0 ){
+//            $dumpedSaving = 0;
+//            $contribution = $cashReceived;
+//        }elseif($dumpCompareFactor > 0){
+//            $dumpedSaving = $dumpCompareFactor;
+//            $contribution = $compareFactor;
+//        } elseif ($dumpCompareFactor< 0){
+//            $contribution = $cashReceived;
+//            $dumpedSaving = 0;
+//        }
+//    }
+//
+//} elseif (!empty($previousSavings['dumpedSaving'])) {
+//    $time1 = strtotime($previousSavings['datePaid']);
+//    $month1 = date("m", $time1);
+//    $year1 = date("Y", $time1);
+//
+//    $time2 = strtotime(date('Y-m-d'));
+//    $month2 = date("m", $time2);
+//    $year2 = date("Y", $time2);
+//    if($year1==$year2 && $month2 > $month1){
+//        $newCash = $previousSavings['dumpedSaving'] + $cashReceived;
+//        if($newCash >=5000){
+//            $dumpedSaving = $newCash - 5000;
+//            $contribution = 5000;
+//            //execute function to put previous dump saving to Zero
+//            //
+//        } elseif ($newCash<5000){
+//            $dumpedSaving = 0;
+//            $contribution = $cashReceived;
+//        }
+//
+//    }
+//}
+//
+//echo "CONTRIB {$contribution} dump {$dumpedSaving}  cash {$cashReceived}";
