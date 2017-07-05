@@ -12,6 +12,8 @@ $groups = \Hudutech\Controller\GroupController::all();
 $savings = \Hudutech\Controller\SavingController::getClientTotalSavings($_GET['id']);
 $singleClientSavings = \Hudutech\Controller\SavingController::showClientSavingsLog($_GET['id']);
 //print_r($client);
+
+$transactionLogs = \Hudutech\Controller\TransactionLogController::clientLog($_GET['id']);
 foreach ($groups as $group):
 
     if ($group['refNo'] == $client['groupRefNo']) {
@@ -318,6 +320,39 @@ endforeach;
                                         <!--                </div>-->
                                         <div class="jumbotron">
                                             <h3>Total Savings <?php echo $savings['totalSavings'] ?></h3>
+                                            <div class="panel-body">
+                                                <div class="table-responsive">
+                                                    <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
+                                                        <thead>
+                                                        <tr>
+                                                            <th>#</th>
+                                                            <th>Details</th>
+                                                            <th>Amount</th>
+
+                                                            <th>Date</th>
+
+
+
+
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        <?php foreach ($transactionLogs as $transactionLog ): ?>
+                                                            <tr>
+                                                                <td><?php echo $counter++ ?></td>
+                                                                <td><?php echo $transactionLog['details'] ?></td>
+                                                                <td><?php echo $transactionLog['amount'] ?></td>
+
+                                                                <td><?php echo $transactionLog['transaction_date'] ?></td>
+
+
+
+                                                            </tr>
+                                                        <?php endforeach; ?>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
