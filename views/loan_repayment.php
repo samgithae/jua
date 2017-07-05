@@ -41,6 +41,27 @@ $loans= \Hudutech\Controller\LoanController::all();
                     <div class="panel-heading">
                         Repay Loan
 
+                        <?php
+                        if (empty($success_msg) && !empty($error_msg)) {
+                            ?>
+                            <div class="alert alert-danger alert-dismissable">
+                                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                <?php echo $error_msg ?>
+                            </div>
+                            <?php
+                        } elseif (empty($error_msg) and !empty($success_msg)) {
+                            ?>
+                            <div class="alert alert-success alert-dismissable">
+                                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                <?php echo $success_msg ?>
+                            </div>
+
+                            <?php
+                        } else {
+                            echo "";
+                        }
+                        ?>
+
                     </div>
                     <div class="panel-body">
                         <div class="row">
@@ -130,7 +151,7 @@ $loans= \Hudutech\Controller\LoanController::all();
                                         </div>
 
                                         <div class="form-group ">
-                                            <input type="submit" name="submit" value="Save" class="btn btn-primary btn-lg btn-block login-button">
+                                            <input type="submit" name="submit" value="Save" class="btn btn-primary btn-lg btn-block login-button"></input>
                                         </div>
 
                                     </form>

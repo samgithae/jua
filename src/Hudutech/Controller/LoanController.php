@@ -350,6 +350,7 @@ class LoanController extends ComplexQuery implements LoanInterface
      */
     public static function serviceLoan($clientId, $clientLoanId, $amount)
     {
+//        TODO: ensure no interest for repayment within the period
         $db = new DB();
         $conn = $db->connect();
 
@@ -415,6 +416,7 @@ class LoanController extends ComplexQuery implements LoanInterface
                 //previous LoanCF = new principal
                 $previousLoanCF = $loanServicing[0]['loanCF'];
                 $createdAt = $loanServicing[0]['createdAt'];
+
                 $newInterest = self::calculateInterest($loanType, $previousLoanCF);
                 $newLoanBal = $previousLoanCF + $newInterest;
                 $newLoanCF = (float)($newLoanBal - $amount);
@@ -476,9 +478,26 @@ class LoanController extends ComplexQuery implements LoanInterface
                 //previous LoanCF = new principal
                 $previousLoanCF = $previousPayment['loanCF'];
                 $createdAt = $previousPayment['createdAt'];
-                $newInterest = self::calculateInterest($loanType, $previousLoanCF);
-                $newLoanBal = $previousLoanCF + $newInterest;
-                $newLoanCF = (float)($newLoanBal - $amount);
+
+                $time1 = strtotime($previousPayment['datePaid']);
+                $month1 = date("m", $time1);
+                $year1 = date("Y", $time1);
+
+                $time2 = strtotime(date('Y-m-d'));
+                $month2 = date("m", $time2);
+                $year2 = date("Y", $time2);
+                $newLoanCF = 0;
+                if($month1 == $month2 && $year1==$year2){
+                    $newInterest = 0;
+                    $newLoanBal = $previousLoanCF;
+                    $newLoanCF = $newLoanBal - $amount;
+                }elseif($month2 > $month1 && $year1==$year2){
+                    $newInterest = self::calculateInterest($loanType, $previousLoanCF);
+                    $newLoanBal = $previousLoanCF + $newInterest;
+                    $newLoanCF = (float)($newLoanBal - $amount);
+                }
+
+
                 $datePaid = date("Y-m-d h:i:s");
 
                 if ($newLoanCF == 0) {
@@ -630,13 +649,13 @@ class LoanController extends ComplexQuery implements LoanInterface
                     $m1 = self::totalMonthRepayment($loan['clientId'], $dates['monthOne']);
                     $m2 = self::totalMonthRepayment($loan['clientId'], $dates['monthTwo']);
                     $m3 = self::totalMonthRepayment($loan['clientId'], $dates['monthThree']);
-                    if (!array_key_exists('error', $m1)) {
+                    if (!isset($m1['error'])) {
                         $monthOneRepayment = $m1;
                     }
-                    if (!array_key_exists('error', $m2)) {
+                    if (!isset($m2['error'])) {
                         $monthTwoRepayment = $m2;
                     }
-                    if (!array_key_exists('error', $m3)) {
+                    if (!isset($m3['error'])) {
                         $monthThreeRepayment = $m3;
                     }
 
@@ -804,7 +823,7 @@ class LoanController extends ComplexQuery implements LoanInterface
                     $deadline = new \DateTime($dates['monthOne']);
                     $totalRepayment = 0;
                     $m1 = self::totalLongTermRepayment($loan['id']);
-                    if (!array_key_exists('error', $m1)) {
+                    if (!isset($m1['error'])) {
                         $totalRepayment = $m1;
                     }
 
