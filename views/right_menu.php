@@ -107,7 +107,7 @@
                     <li>
 
 
-                        <a href="#" data-toggle="collapse" data-target="#submenu-4"> <div class="menu-links"><i class="fa fa-fw  fa-dollar"></i> View Savings <i class="fa fa-fw fa-angle-down pull-right"></i></div></a>
+                        <a href="#" data-toggle="collapse" data-target="#submenu-4"> <div class="menu-links"><i class="fa fa-fw  fa-dollar"></i> Savings and Withdraw <i class="fa fa-fw fa-angle-down pull-right"></i></div></a>
                         <ul id="submenu-4" class="nav nav-second-level">
 
                             <li>

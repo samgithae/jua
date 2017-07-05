@@ -353,7 +353,7 @@ class ClientController extends ComplexQuery implements ClientInterface
     {
         $savings = SavingController::checkBalance($clientId);
 
-        $loanLimit = (float)($savings['totalSavings'] * 3);
+        $loanLimit = (float)($savings * 3);
         return $loanLimit;
     }
 
@@ -361,7 +361,7 @@ class ClientController extends ComplexQuery implements ClientInterface
     {
         $savings = SavingController::checkBalance($clientId);
 
-        $loanLimit = (float)($savings['totalSavings'] * 2.5);
+        $loanLimit = (float)($savings * 2.5);
         return $loanLimit;
     }
 

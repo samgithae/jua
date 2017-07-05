@@ -9,7 +9,7 @@ $success_msg = '';
 $error_msg = '';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // …
+
 
 if(!empty($_POST['clientId'])&&!empty($_POST['loanId'])&&!empty($_POST['amount'])) {
 
