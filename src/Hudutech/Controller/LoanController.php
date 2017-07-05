@@ -1085,6 +1085,7 @@ class LoanController extends ComplexQuery implements LoanInterface
     }
 
     public static function checkClientHasActiveLoan($clientId, $loanId){
+        //TODO: fix logic return all active dont allow client with active loan to get more except topup
         $db = new DB();
         $conn = $db->connect();
         $loan = self::getId($loanId);

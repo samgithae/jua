@@ -23,6 +23,7 @@ class EmployeeController implements EmployeeInterface
         $pfNo = $employee->getPfNo();
         $fullName = $employee->getFullName();
         $jobTitle = $employee->getJobTitle();
+        $jobGrade = $employee->getJobGrade();
         $idNo = $employee->getIdNo();
         $nssfNo = $employee->getNssfNo();
         $nhifNo = $employee->getNhifNo();
@@ -49,12 +50,13 @@ class EmployeeController implements EmployeeInterface
                                             pfNo,
                                             fullName,
                                             jobTitle,
-                                            idNo, 
+                                                                                      idNo, 
                                             nssfNo, 
                                             nhifNo,
                                             kraPin,
                                             remuneration,
                                             jobDescription,
+                                             jobGrade,
                                             qualification,
                                             testimonial,
                                             bankName,
@@ -73,12 +75,14 @@ class EmployeeController implements EmployeeInterface
                                             :pfNo,
                                             :fullName,
                                             :jobTitle,
+                                            
                                             :idNo, 
                                             :nssfNo, 
                                             :nhifNo,
                                             :kraPin,
                                             :remuneration,
                                             :jobDescription,
+                                            :jobGrade,
                                             :qualification,
                                             :testimonial,
                                             :bankName,
@@ -105,6 +109,7 @@ class EmployeeController implements EmployeeInterface
             $stmt->bindParam(":kraPin", $kraPin);
             $stmt->bindParam(":remuneration", $remuneration);
             $stmt->bindParam(":jobDescription", $jobDescription);
+            $stmt->bindParam(":jobGrade", $jobGrade);
             $stmt->bindParam(":qualification", $qualification);
             $stmt->bindParam(":testimonial", $testimonial);
             $stmt->bindParam(":bankName", $bankName);
@@ -152,6 +157,7 @@ class EmployeeController implements EmployeeInterface
         $kraPin = $employee->getKraPin();
         $remuneration = $employee->getRemuneration();
         $jobDescription = $employee->getJobDescription();
+        $jobGrade = $employee->getJobGrade();
         $qualification = $employee->getQualification();
         $testimonial = $employee->getTestimonial();
         $bankName = $employee->getBankName();
@@ -177,6 +183,7 @@ class EmployeeController implements EmployeeInterface
                                         kraPin=:kraPin,
                                         remuneration=:remuneration,
                                         jobDescription=:jobDescription,
+                                        jobGrade=:jobGrade,
                                         qualification=:qualification,
                                         testimonial=:testimonial,
                                         bankName=:bankName,
@@ -204,6 +211,7 @@ class EmployeeController implements EmployeeInterface
             $stmt->bindParam(":kraPin", $kraPin);
             $stmt->bindParam(":remuneration", $remuneration);
             $stmt->bindParam(":jobDescription", $jobDescription);
+            $stmt->bindParam(":jobGrade", $jobGrade);
             $stmt->bindParam(":qualification", $qualification);
             $stmt->bindParam(":testimonial", $testimonial);
             $stmt->bindParam(":bankName", $bankName);

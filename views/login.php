@@ -10,6 +10,14 @@ include __DIR__.'/includes/login.inc.php';
 ?>
 <!DOCTYPE html>
 <html>
+<head>
+
+
+    <link href= "../public/assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../public/assets/css/custom.css " rel="stylesheet">
+    <script src="../public/assets/js/respond.js"></script>
+    <script src="../public/assets/js/custom.js"></script>
+</head>
 <?php
 include_once 'head_views.php';
 

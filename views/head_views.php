@@ -15,7 +15,6 @@
 <meta name="author" content="">
 
 
-
 <!-- Bootstrap Core CSS -->
 <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 

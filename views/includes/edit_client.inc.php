@@ -8,7 +8,8 @@ $successMsg = '';
 $errorMsg = '';
 if($_SERVER['REQUEST_METHOD']=='POST') {
     if (isset($_POST['first_name'], $_POST['middle_name'], $_POST['last_name'])) {
-        $client =  ClientController::getClientObject($_POST['id']);
+        //$client =  ClientController::getClientObject($_POST['id']);
+        $client= new Hudutech\Entity\Client();
         $fullName = $_POST['first_name'] . " " . $_POST['middle_name'] . " " . $_POST['last_name'];
         $client->setGroupRefNo($_POST['group_ref_no']);
         $client->setFullName($fullName);

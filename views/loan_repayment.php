@@ -102,17 +102,17 @@ $loans= \Hudutech\Controller\LoanController::all();
                                                 </div>
                                             </div>
                                         </div>
-
-                                        <div class="form-group">
-                                            <label for="username" class="cols-sm-2 control-label">Loan Balance</label>
-                                            <div class="cols-sm-10">
-                                                <div class="input-group">
-                                                    <span class="input-group-addon"><i class="fa fa-money fa" aria-hidden="true"></i></span>
-                                                    <input type="number" class="form-control" name="loanBalance" id="amount"  placeholder="Loan amount"/>
-
-                                                </div>
-                                            </div>
-                                        </div>
+<!---->
+<!--                                        <div class="form-group">-->
+<!--                                            <label for="username" class="cols-sm-2 control-label">Loan Balance</label>-->
+<!--                                            <div class="cols-sm-10">-->
+<!--                                                <div class="input-group">-->
+<!--                                                    <span class="input-group-addon"><i class="fa fa-money fa" aria-hidden="true"></i></span>-->
+<!--                                                    <input type="number" class="form-control" name="loanBalance" id="amount"  placeholder="Loan amount"/>-->
+<!---->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
 
                                         <div class="form-group">
                                             <label for="username" class="cols-sm-2 control-label">Amount Paid</label>

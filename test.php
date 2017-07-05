@@ -3,8 +3,13 @@ require_once __DIR__.'/vendor/autoload.php';
 
 use Hudutech\Controller\SavingController;
 
+use Hudutech\Controller\LoanController;
+use Hudutech\Controller\ClientController;
 
-
+$savings = SavingController::checkBalance(57);
+echo $savings;
+//echo ClientController::getShortTermLoanLimit(57).PHP_EOL;
+//print_r(LoanController::calculateInterest('monthly', 5000));
 //$cashReceived = 7000;
 //$dumpedSaving = 0;
 //
@@ -23,7 +28,7 @@ $arr1 = array(
     "age"=>24
 );
 
-print_r($arr1);
+//print_r($arr1);
 
 //$totalMonthContrib = SavingController::getTotalMonthContribution(3);
 //$totalMonthAmt = 56;
