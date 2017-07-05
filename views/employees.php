@@ -79,7 +79,10 @@ $counter = 1;
                                             <a href="employee_profile.php?id=<?php echo urlencode($employee['id'])?>" class="btn btn-xs btn-primary"> Profile</a>
 
 
-                                            <button class="btn-xs btn-danger">Delete</button>
+                                            <button class="btn btn-xs btn-danger  btn-red"
+                                                    onclick="deleteEmployee('<?php echo $employee['id'] ?>')"><i
+                                                        class="entypo-cancel"></i>Delete
+                                            </button>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
@@ -94,5 +97,65 @@ $counter = 1;
 
     <?php include_once 'footer.php' ?>
 
+    <!-- Modal -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title"  id="confirmTitle">Confirm Action</h4>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this Employee</div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button"  id='btnConfirmDelete' class="btn btn-danger">Delete</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+        <
+        <!-- /.modal -->
+    </div>
+    <!-- .panel-body -->
+
+
+    <script>
+        function deleteEmployee(id) {
+            $('#confirmTitle').text('Delete Patient');
+            $('#confirmDeleteModal').modal('show');
+            var url = 'employee_endpoint.php';
+            $('#btnConfirmDelete').on('click', function (e) {
+                e.preventDefault;
+                $.ajax(
+                    {
+                        type: 'DELETE',
+                        url: url,
+                        data: JSON.stringify({'id': id}),
+                        dataType: 'json',
+                        contentType: 'application/json; charset=utf-8',
+                        success: function (response) {
+                            if (response.statusCode == 204) {
+                                $('#confirmFeedback').removeClass('alert alert-danger')
+                                    .addClass('alert alert-success')
+                                    .text(response.message);
+                                setTimeout(function () {
+                                    location.reload();
+                                }, 1000);
+                            }
+                            if (response.statusCode == 500) {
+                                $('#confirmFeedback').removeClass('alert alert-success')
+                                    .html('<div class="alert alert-danger alert-dismissable">' +
+                                        '<a href="#" class="close"  data-dismiss="alert" aria-label="close">&times;</a>' +
+                                        '<strong>Error! </strong> ' + response.message + '</div>')
+
+                            }
+                        }
+                    }
+                )
+            });
+        }
+    </script>
 </body>
 </html>

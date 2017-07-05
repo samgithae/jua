@@ -82,7 +82,10 @@ $counter = 1;
 
                                                 <a href="edit_client.php?id=<?php echo urlencode($client['id'])?>" class="btn btn-xs btn-primary"> Edit</a>
                                                 <a href="client_profile.php?id=<?php echo urlencode($client['id'])?>" class="btn btn-xs btn-primary"> Profile</a>
-                                                <button class=" btn-xs btn-danger">Delete</button>
+                                                <button class="btn btn-xs btn-danger  btn-red"
+                                                        onclick="deletePatient('<?php echo $client['id'] ?>')"><i
+                                                            class="entypo-cancel"></i>Delete
+                                                </button>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -98,7 +101,69 @@ $counter = 1;
 
 
 
+        <!-- /.panel-heading -->
 
+
+            <!-- Modal -->
+            <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title"  id="confirmTitle">Confirm Action</h4>
+                        </div>
+                        <div class="modal-body">
+                           Are you sure you want to delete this client</div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="button"  id='btnConfirmDelete' class="btn btn-danger">Delete</button>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            <
+            <!-- /.modal -->
+        </div>
+        <!-- .panel-body -->
+
+
+        <script>
+            function deletePatient(id) {
+                $('#confirmTitle').text('Delete Patient');
+                $('#confirmDeleteModal').modal('show');
+                var url = 'client_endpoint.php';
+                $('#btnConfirmDelete').on('click', function (e) {
+                    e.preventDefault;
+                    $.ajax(
+                        {
+                            type: 'DELETE',
+                            url: url,
+                            data: JSON.stringify({'id': id}),
+                            dataType: 'json',
+                            contentType: 'application/json; charset=utf-8',
+                            success: function (response) {
+                                if (response.statusCode == 204) {
+                                    $('#confirmFeedback').removeClass('alert alert-danger')
+                                        .addClass('alert alert-success')
+                                        .text(response.message);
+                                    setTimeout(function () {
+                                        location.reload();
+                                    }, 1000);
+                                }
+                                if (response.statusCode == 500) {
+                                    $('#confirmFeedback').removeClass('alert alert-success')
+                                        .html('<div class="alert alert-danger alert-dismissable">' +
+                                            '<a href="#" class="close"  data-dismiss="alert" aria-label="close">&times;</a>' +
+                                            '<strong>Error! </strong> ' + response.message + '</div>')
+
+                                }
+                            }
+                        }
+                    )
+                });
+            }
+        </script>
 
 </body>
 </html>
