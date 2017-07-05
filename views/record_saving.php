@@ -9,6 +9,8 @@ require_once __DIR__ . '/../vendor/autoload.php';
 use Hudutech\DBManager\ComplexQuery;
 use Hudutech\Controller\SavingController;
 use Hudutech\Entity\Saving;
+use Hudutech\Controller\ClientController;
+use Hudutech\Controller\GroupController;
 
 $contributions = SavingController::getTodaySaving();
 $successMsg = '';
@@ -169,8 +171,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                             <tbody>
                                             <?php foreach ($contributions as $contribution): ?>
                                                 <tr>
-                                                    <td><?php echo $contribution['fullName'] ?></td>
-                                                    <td><?php echo $contribution['groupName'] ?></td>
+                                                    <td><?php echo ClientController::getId($contribution['clientId'])['fullName']?></td>
+                                                    <td><?php echo GroupController::customFilter(
+                                                        'sacco_group',
+                                                        ['groupName'],
+                                                        ['id'=>$contribution['groupId'],
+                                                        'limit'=>1]
+                                                        )[0]['groupName']
+                                                        ?></td>
                                                     <td><?php echo $contribution['contribution'] ?></td>
                                                 </tr>
                                             <?php endforeach; ?>

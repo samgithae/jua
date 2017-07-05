@@ -3,20 +3,31 @@ require_once __DIR__.'/vendor/autoload.php';
 
 use Hudutech\Controller\SavingController;
 
-$path = $_SERVER['REQUEST_URI'];
-echo $path;
-if($path == '/test.php'){
 
-}
 
 //$cashReceived = 7000;
 //$dumpedSaving = 0;
 //
 //$contribution = null;
-//$previousSavings = SavingController::getPreviousSavings(3);
+//$updated = SavingController::clearPreviousDumpSaving(13);
+//if($updated){
+//    echo "ndani ndani kabisa";
+//}else{
+//    echo "nasa hawa";
+//}
+//$prev =  SavingController::getPreviousSavings(3);
+//echo "id is {$prev['id']}";
+
+$arr1 = array(
+    "name"=>"githae",
+    "age"=>24
+);
+
+print_r($arr1);
+
 //$totalMonthContrib = SavingController::getTotalMonthContribution(3);
 //$totalMonthAmt = 56;
-//
+
 //if (empty($previousSavings['dumpedSaving'])) {
 //
 //    if ((float)$totalMonthContrib['total_contribution'] >= 0 && $totalMonthContrib['total_contribution'] <= 5000) {

@@ -106,6 +106,11 @@ class SavingController implements SavingInterface
                     $contribution = $cashReceived;
                 }
 
+            }elseif ($year1==$year2 && $month2 == $month1){
+                $newCash = $previousSavings['dumpedSaving'] + $cashReceived;
+                $dumpedSaving = $newCash;
+               $contribution =0;
+                self::clearPreviousDumpSaving($previousSavings['id']);
             }
         }
 
@@ -222,6 +227,7 @@ class SavingController implements SavingInterface
                         } elseif ($dumpCompareFactor< 0){
                             $contribution = $cashReceived;
                             $dumpedSaving = 0;
+
                         }
                     }
 
@@ -245,6 +251,11 @@ class SavingController implements SavingInterface
                             $contribution = $cashReceived;
                         }
 
+                    }elseif ($year1==$year2 && $month2 == $month1){
+                        $newCash = $previousSavings['dumpedSaving'] + $cashReceived;
+                        $dumpedSaving = $newCash;
+                        $contribution =0;
+                        self::clearPreviousDumpSaving($previousSavings['id']);
                     }
                 }
 
@@ -453,11 +464,7 @@ class SavingController implements SavingInterface
     {
         $db = new DB();
         $conn = $db->connect();
-        $datePaid = date('Y-m-d');
-        $sql = "SELECT c.fullName, g.groupName, (SUM(s.cashReceived) - SUM(s.dumpedSaving)) as contribution,s.paymentMethod, s.datePaid
-                    FROM clients c , sacco_group g, savings s
-                    WHERE s.clientId=c.id AND s.groupId=g.id AND DATE(s.datePaid)='{$datePaid}'";
-
+        $sql = "SELECT clientId, groupId, SUM(contribution) as contribution FROM savings WHERE date(datePaid)=CURDATE() GROUP BY clientId;";
         try {
             $stmt = $conn->prepare($sql);
             return $stmt->execute() && $stmt->rowCount() > 0 ? $stmt->fetchAll(\PDO::FETCH_ASSOC) : [];
