@@ -9,13 +9,45 @@
 namespace Hudutech\Controller;
 
 
-
 use Hudutech\AppInterface\SavingInterface;
 use Hudutech\DBManager\DB;
 use Hudutech\Entity\Saving;
 
 class SavingController implements SavingInterface
 {
+    public static function getTotalMonthContribution($clientId)
+    {
+        $db = new DB();
+        $conn = $db->connect();
+        $time2 = strtotime(date('Y-m-d'));
+        $month2 = date("m", $time2);
+        $year2 = date("Y", $time2);
+        try {
+            $stmt = $conn->prepare("SELECT sum(contribution) as total_contribution FROM savings
+                                    WHERE MONTH(datePaid)='{$month2}' AND YEAR(datePaid)='{$year2}'
+                                    AND clientId='{$clientId}'");
+            if ($stmt->execute()) {
+                return $stmt->fetch(\PDO::FETCH_ASSOC);
+            } else {
+                return [];
+            }
+        } catch (\PDOException $exception) {
+            return ['error' => $exception->getMessage()];
+        }
+    }
+
+    public static function clearPreviousDumpSaving($id){
+        $db = new DB();
+        $conn = $db->connect();
+        try{
+            $stmt = $conn->prepare("UPDATE savings SET dumpedSaving=0 WHERE id=:id");
+            $stmt->bindParam(":id", $id);
+            return $stmt->execute() ? true : false;
+        }catch (\PDOException $exception){
+            return['error'=>$exception->getMessage()];
+        }
+    }
+
     public function createSingle(Saving $saving)
     {
         $db = new DB();
@@ -30,26 +62,58 @@ class SavingController implements SavingInterface
         $dumpedSaving = null;
         $fine = null;
         $previousSavings = self::getPreviousSavings($clientId);
+        $totalMonthContrib = self::getTotalMonthContribution($clientId);
+        $totalMonthAmt = 0;
 
-        if (!empty($previousSavings['dumpedSaving'])) {
-            $previousDump = $previousSavings['dumpedSaving'];
-            $totalCash = $cashReceived + $previousDump;
-            if ($totalCash >= 200 && $totalCash <= 5000 && $cashReceived < 5000) {
-                $contribution = $totalCash;
-            } elseif ($totalCash > 5000) {
+        if (empty($previousSavings['dumpedSaving'])) {
 
-                $contribution = 5000;
-                $dumpedSaving = $totalCash - 5000;
+            if ((float)$totalMonthContrib['total_contribution'] >= 0 && $totalMonthContrib['total_contribution'] <= 5000) {
+                $totalMonthAmt = (float)$totalMonthContrib['total_contribution'];
+
+                $compareFactor = 5000 - $totalMonthAmt;
+                $dumpCompareFactor = $cashReceived - $compareFactor;
+                if($dumpCompareFactor == 0 ){
+
+                    $dumpedSaving = 0;
+                    $contribution = $cashReceived;
+
+                }elseif($dumpCompareFactor > 0){
+                    $dumpedSaving = $dumpCompareFactor;
+                    $contribution = $compareFactor;
+                } elseif ($dumpCompareFactor< 0){
+                    $contribution = $cashReceived;
+                    $dumpedSaving = 0;
+                }
+            }
+
+        } elseif (!empty($previousSavings['dumpedSaving'])) {
+            $time1 = strtotime($previousSavings['datePaid']);
+            $month1 = date("m", $time1);
+            $year1 = date("Y", $time1);
+
+            $time2 = strtotime(date('Y-m-d'));
+            $month2 = date("m", $time2);
+            $year2 = date("Y", $time2);
+            if($year1==$year2 && $month2 > $month1){
+                $newCash = $previousSavings['dumpedSaving'] + $cashReceived;
+                if($newCash >=5000){
+                    $dumpedSaving = $newCash - 5000;
+                    $contribution = 5000;
+                    //execute function to put previous dump saving to Zero
+                    self::clearPreviousDumpSaving($previousSavings['id']);
+                } elseif ($newCash<5000){
+                    $dumpedSaving = 0;
+                    $contribution = $cashReceived;
+                }
+
+            }elseif ($year1==$year2 && $month2 == $month1){
+                $newCash = $previousSavings['dumpedSaving'] + $cashReceived;
+                $dumpedSaving = $newCash;
+               $contribution =0;
+                self::clearPreviousDumpSaving($previousSavings['id']);
             }
         }
 
-        if ($cashReceived > 5000 && empty($previousSavings['dumpedSaving'])) {
-            $dumpedSaving = $cashReceived - 5000;
-            $contribution = 5000;
-        }
-        if ($cashReceived >= 200 && $cashReceived < 5000 && empty($previousSavings['dumpedSaving'])) {
-            $contribution = $cashReceived;
-        }
 
         try {
 
@@ -93,12 +157,14 @@ class SavingController implements SavingInterface
                 self::updateBalance($clientId, $contribution);
                 return true;
             } else {
-                return false;
+                return [
+                    "error" => "Error Occurred:=> [{$stmt->errorInfo()[0]} {$stmt->errorInfo()[1]}  {$stmt->errorInfo()[2]}]"
+                ];
             }
 
         } catch (\PDOException $exception) {
             echo $exception->getMessage();
-            return false;
+            return ['error' => $exception->getMessage()];
         }
     }
 
@@ -140,30 +206,62 @@ class SavingController implements SavingInterface
                 $fine = null;
                 $datePaid = date("Y-m-d h:i:s");
                 $previousSavings = self::getPreviousSavings($clientId);
+                $totalMonthContrib = self::getTotalMonthContribution($clientId);
+                $totalMonthAmt = 0;
 
-                if (!empty($previousSavings['dumpedSaving'])) {
-                    $previousDump = $previousSavings['dumpedSaving'];
-                    $totalCash = $cashReceived + $previousDump;
-                    if ($totalCash >= 200 && $totalCash <= 5000 && $cashReceived < 5000) {
-                        $contribution = $totalCash;
-                    } elseif ($totalCash > 5000) {
+                if (empty($previousSavings['dumpedSaving'])) {
 
-                        $contribution = 5000;
-                        $dumpedSaving = $totalCash - 5000;
+                    if ((float)$totalMonthContrib['total_contribution'] >= 0 && $totalMonthContrib['total_contribution'] <= 5000) {
+                        $totalMonthAmt = (float)$totalMonthContrib['total_contribution'];
+
+                        $compareFactor = 5000 - $totalMonthAmt;
+                        $dumpCompareFactor = $cashReceived - $compareFactor;
+                        if($dumpCompareFactor == 0 ){
+
+                            $dumpedSaving = 0;
+                            $contribution = $cashReceived;
+
+                        }elseif($dumpCompareFactor > 0){
+                            $dumpedSaving = $dumpCompareFactor;
+                            $contribution = $compareFactor;
+                        } elseif ($dumpCompareFactor< 0){
+                            $contribution = $cashReceived;
+                            $dumpedSaving = 0;
+
+                        }
                     }
-                }
 
-                if ($cashReceived > 5000 && empty($previousSavings['dumpedSaving'])) {
-                    $dumpedSaving = $cashReceived - 5000;
-                    $contribution = 5000;
-                }
-                if ($cashReceived >= 200 && $cashReceived < 5000 && empty($previousSavings['dumpedSaving'])) {
-                    $contribution = $cashReceived;
+                } elseif (!empty($previousSavings['dumpedSaving'])) {
+                    $time1 = strtotime($previousSavings['datePaid']);
+                    $month1 = date("m", $time1);
+                    $year1 = date("Y", $time1);
+
+                    $time2 = strtotime(date('Y-m-d'));
+                    $month2 = date("m", $time2);
+                    $year2 = date("Y", $time2);
+                    if($year1==$year2 && $month2 > $month1){
+                        $newCash = $previousSavings['dumpedSaving'] + $cashReceived;
+                        if($newCash >=5000){
+                            $dumpedSaving = $newCash - 5000;
+                            $contribution = 5000;
+                            //execute function to put previous dump saving to Zero
+                            self::clearPreviousDumpSaving($previousSavings['id']);
+                        } elseif ($newCash<5000){
+                            $dumpedSaving = 0;
+                            $contribution = $cashReceived;
+                        }
+
+                    }elseif ($year1==$year2 && $month2 == $month1){
+                        $newCash = $previousSavings['dumpedSaving'] + $cashReceived;
+                        $dumpedSaving = $newCash;
+                        $contribution =0;
+                        self::clearPreviousDumpSaving($previousSavings['id']);
+                    }
                 }
 
                 $stmt->bindParam(":clientId", $clientId);
                 $stmt->bindParam(":groupId", $groupId);
-                $stmt->bindParam(":cashReceived", $cashReceived);
+                $stmt->bindParam(":cashReceived", $newContribution);
                 $stmt->bindParam(":contribution", $contribution);
                 $stmt->bindParam(":dumpedSaving", $dumpedSaving);
                 $stmt->bindParam(":fine", $fine);
@@ -173,7 +271,7 @@ class SavingController implements SavingInterface
                 ClientController::createTransactionLog(
                     array(
                         "clientId" => $clientId,
-                        "amount" => $cashReceived,
+                        "amount" => $newContribution,
                         "details" => "Savings Payment"
                     )
                 );
@@ -366,11 +464,7 @@ class SavingController implements SavingInterface
     {
         $db = new DB();
         $conn = $db->connect();
-        $datePaid = date('Y-m-d');
-        $sql = "SELECT c.fullName, g.groupName, s.contribution,s.paymentMethod, s.datePaid
-                    FROM clients c , sacco_group g, savings s
-                    WHERE s.clientId=c.id AND s.groupId=g.id AND DATE(s.datePaid)='{$datePaid}'";
-
+        $sql = "SELECT clientId, groupId, SUM(contribution) as contribution FROM savings WHERE date(datePaid)=CURDATE() GROUP BY clientId;";
         try {
             $stmt = $conn->prepare($sql);
             return $stmt->execute() && $stmt->rowCount() > 0 ? $stmt->fetchAll(\PDO::FETCH_ASSOC) : [];
@@ -413,9 +507,9 @@ class SavingController implements SavingInterface
         $conn = $db->connect();
         $balance = self::checkBalance($clientId);
 
-        try{
+        try {
 
-            if(!isset($balance['error'])) {
+            if (!isset($balance['error'])) {
 
                 if ($balance >= $amount && $amount > 0) {
                     $stmt = $conn->prepare("UPDATE saving_balances SET balance = balance - '{$amount}'
@@ -441,7 +535,7 @@ class SavingController implements SavingInterface
                 } else {
                     return ['error' => "Your account does not have sufficient savings"];
                 }
-            }else{
+            } else {
                 return ['error' => "Error Occurred [{$balance['error']}]"];
             }
         } catch (\PDOException $exception) {
@@ -459,16 +553,16 @@ class SavingController implements SavingInterface
         try {
             $stmt = $conn->prepare("SELECT balance FROM saving_balances WHERE clientId=:clientId LIMIT 1");
             $stmt->bindParam(":clientId", $clientId);
-            $balance=0;
+            $balance = 0;
             if ($stmt->execute() && $stmt->rowCount() == 1) {
                 $row = $stmt->fetch(\PDO::FETCH_ASSOC);
                 $balance = (float)$row['balance'];
                 return $balance;
 
-            }elseif($stmt->rowCount() <=0){
+            } elseif ($stmt->rowCount() <= 0) {
                 $db->closeConnection();
                 return $balance;
-            }else{
+            } else {
                 $db->closeConnection();
                 return [
                     "error" => "Error Occurred:=> [{$stmt->errorInfo()[0]} {$stmt->errorInfo()[1]}  {$stmt->errorInfo()[2]}]"
@@ -482,10 +576,11 @@ class SavingController implements SavingInterface
         }
     }
 
-    public static function createBalance($clientId){
+    public static function createBalance($clientId)
+    {
         $db = new DB();
         $conn = $db->connect();
-        try{
+        try {
             $stmt = $conn->prepare("INSERT INTO saving_balances(clientId) VALUES (:clientId)");
             $stmt->bindParam(":clientId", $clientId);
 
