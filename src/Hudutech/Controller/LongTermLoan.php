@@ -77,7 +77,7 @@ trait LongTermLoan
     }
 
     public static function serviceLongTermLoan($clientId, $clientLoanId, $amount){
-
+// TODO: make sure interest is calculated only yearly bases
         $db = new DB();
         $conn = $db->connect();
 
@@ -203,10 +203,25 @@ trait LongTermLoan
                 // get the previous payment and create an new record
                 //previous LoanCF = new principal
                 $previousLoanCF = $previousPayment['loanCF'];
-                $createdAt = $previousPayment['createdAt'];
-                $newInterest = self::calculateInterest($loanType, $previousLoanCF);
-                $newLoanBal = $previousLoanCF + $newInterest;
-                $newLoanCF = (float)($newLoanBal - $amount);
+
+                $time1 = strtotime($previousPayment['datePaid']);
+                $year1 = date("Y", $time1);
+                $time2 = strtotime(date('Y-m-d'));
+                $year2 = date("Y", $time2);
+                $newLoanCF = 0;
+                if($year1 == $year2){
+                    //payment done on same year therefore no subsequent interest
+                    $createdAt = $previousPayment['createdAt'];
+                    $newInterest = 0;
+                    $newLoanBal = $previousPayment['loanCF'];
+                    $newLoanCF = (float)($newLoanBal - $amount);
+                } else if($year2 > $year1){
+
+                    $newInterest = self::calculateInterest($loanType, $previousLoanCF);
+                    $newLoanBal = $previousLoanCF + $newInterest;
+                    $newLoanCF = (float)($newLoanBal - $amount);
+                }
+
                 $datePaid = date("Y-m-d h:i:s");
 
                 if ($newLoanCF == 0) {
@@ -215,7 +230,7 @@ trait LongTermLoan
 
                 //create new row for the payment
 
-                $stmt = $conn->prepare("INSERT INTO monthly_loan_servicing(
+                $stmt = $conn->prepare("INSERT INTO long_term_loan_servicing(
                                                                             principal,
                                                                             clientId,
                                                                             clientLoanId,
