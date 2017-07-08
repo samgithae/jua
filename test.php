@@ -7,7 +7,11 @@ use Hudutech\Controller\LoanController;
 use Hudutech\Controller\ClientController;
 
 $savings = SavingController::checkBalance(57);
-echo $savings;
+
+$loans = LoanController::getLoan();
+print_r($loans);
+$loan = LoanController::getPreviousRepayment(3, 9);
+//print_r($loan);
 //echo ClientController::getShortTermLoanLimit(57).PHP_EOL;
 //print_r(LoanController::calculateInterest('monthly', 5000));
 //$cashReceived = 7000;

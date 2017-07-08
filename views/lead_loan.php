@@ -174,33 +174,34 @@ include  __DIR__.'/includes/lead_loan.inc.php';
     function checkHasActiveLoan() {
         var url = 'check_has_loan_endpoint.php';
         var clientId = $('#clientId').val();
-        var loanId = $('#loanId').val();
         $('#feedBack').text('');
         $(':input[type="submit"]').prop('disabled', false);
-        console.log({clientId: clientId, loanId:loanId});
+        console.log({clientId: clientId});
         $.ajax(
             {
                 type: 'POST',
                 url: url,
-                data:JSON.stringify({clientId: clientId, loanId:loanId}),
+                data:JSON.stringify({clientId: clientId}),
                 dataType: 'json',
                 contentType: 'application/json; charset=utf-8',
                 traditional: true,
                 success: function (response) {
                     console.log(response);
-                    if(response.statusCode == 200 && response['loanType']=='long_term' ){
-                        $(':input[type="submit"]').prop('disabled', false);
+                    if(response.statusCode == 200){
+                        jQuery(':input[type="submit"]').prop('disabled', false);
+                        if(response['loanType'] == 'long_term') {
+                            $('#feedBack').text('You already have a loan not settled. However you can take a TopUP Loan' +
+                                ' click lend loan button to continue');
+                        }
+                        else if(response['loanType'] !='long_term'){
+                            $(':input[type="submit"]').prop('disabled', true);
+                            jQuery('#feedBack').text('');
+                            $('#feedBack').text('You already have an active loan please pay the loan and try again');
 
-                        $('#feedBack').text('You already have a loan not settled. However you can take a TopUP Loan' +
-                            ' click lend loan button to continue');
+                        }
 
                     }
-                    else if(response.statusCode == 200 && response['loanType'] !='long_term'){
-                        $(':input[type="submit"]').prop('disabled', true);
-                        jQuery('#feedBack').text('');
-                        $('#feedBack').text('You already have an active loan please pay the loan and try again');
-
-                    }else{
+                    else{
                         console.log(response);
                     }
                 },
