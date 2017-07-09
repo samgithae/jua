@@ -43,28 +43,6 @@ $loans= LoanController::all();
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         Repay Loan
-
-                        <?php
-                        if (empty($success_msg) && !empty($error_msg)) {
-                            ?>
-                            <div class="alert alert-danger alert-dismissable">
-                                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                <?php echo $error_msg ?>
-                            </div>
-                            <?php
-                        } elseif (empty($error_msg) and !empty($success_msg)) {
-                            ?>
-                            <div class="alert alert-success alert-dismissable">
-                                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                <?php echo $success_msg ?>
-                            </div>
-
-                            <?php
-                        } else {
-                            echo "";
-                        }
-                        ?>
-
                     </div>
                     <div class="panel-body">
                         <div class="row">
@@ -100,27 +78,21 @@ $loans= LoanController::all();
                                     <form class="form-horizontal" method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'])?>">
 
                                         <div class="form-group">
-                                            <label for="name" class="cols-sm-2 control-label">Client Name</label>
+                                            <label for="clientName" class="cols-sm-2 control-label">Client Name</label>
                                             <div class="cols-sm-10">
                                                 <div class="input-group">
                                                     <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
-                                                    <select name="group_ref_no" class="form-control">
-                                                        <option>--Select Client here--</option>
-                                                        <?php foreach ($clients as $client): ?>
-                                                            <option value="<?php echo $client['id']?>"><?php echo $client['fullName']?></option>
-                                                        <?php endforeach ?>
-
-                                                    </select>
+                                                    <input type="text" value="<?php echo isset($_GET['name']) ? $_GET['name']: ''?>" class="form-control" id="clientName" disabled>
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="email" class="cols-sm-2 control-label">Loan Type</label>
+                                            <label for="loanType" class="cols-sm-2 control-label">Loan Type</label>
                                             <div class="cols-sm-10">
                                                 <div class="input-group">
                                                     <span class="input-group-addon"><i class="fa fa-cog fa" aria-hidden="true"></i></span>
-                                                    <input type="text" value="<?php echo isset($_GET['type']) ? $_GET['type'] : ''; ?>" class="form-control" disabled>
+                                                    <input type="text" value="<?php echo isset($_GET['type']) ? $_GET['type'] : ''; ?>" class="form-control" id="loanType"disabled>
                                                 </div>
                                             </div>
                                         </div>

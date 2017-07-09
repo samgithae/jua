@@ -65,9 +65,10 @@ $counter = 1;
                                         <td><?php echo $active_loan['loanBal']?></td>
                                         <td><?php echo $active_loan['dateBorrowed']?></td>
 
-                                        <td> <a class="btn btn-primary" href="loan_repayment.php?id=<?php echo $active_loan['clientId']?>&
-                                        lid=<?php echo $active_loan['clientLoanId']?>
-                                        &amt=<?php echo $active_loan['loanBal']?>&type=<?php echo LoanController::getId($active_loan['clientLoanId'])['loanType']?>">
+                                        <td> <a class="btn btn-primary" href="loan_repayment.php?id=<?php echo urlencode($active_loan['clientId'])?>&
+                                        lid=<?php echo urlencode($active_loan['clientLoanId'])?>
+                                        &amt=<?php echo urlencode($active_loan['loanBal'])?>&type=<?php echo urlencode($active_loan['loanType'])?>&
+                                        name=<?php echo $active_loan['fullName']?>">
                                                 RepayLoan</a></td>
 
                                     </tr>
