@@ -48,13 +48,7 @@
             </p></a>
                 <ul class="nav" id="side-menu">
 
-
-
-
-
                     <li>
-
-
                         <a href="#" data-toggle="collapse" data-target="#submenu-1"> <div class="menu-links"><i class="fa fa-fw fa-user-plus"></i> Registration <i class="fa fa-fw fa-angle-down pull-right"></i></div></a>
                         <ul id="submenu-1" class="nav nav-second-level">
                             <li >
@@ -71,9 +65,7 @@
                     </li>
 
                     <li>
-
-
-                        <a href="#" data-toggle="collapse" data-target="#submenu-2"> <div class="menu-links"><i class="fa fa-fw  fa-search"></i> View <i class="fa fa-fw fa-angle-down pull-right"></i></div></a>
+                      <a href="#" data-toggle="collapse" data-target="#submenu-2"> <div class="menu-links"><i class="fa fa-fw  fa-search"></i> View <i class="fa fa-fw fa-angle-down pull-right"></i></div></a>
                         <ul id="submenu-2" class="nav nav-second-level">
                             <li >
                                 <a href="clients.php"><div class="menu-links" > <i class="fa fa-fw fa-user"></i> View Clients</div> </a>

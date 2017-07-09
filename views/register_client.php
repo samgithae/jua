@@ -9,6 +9,7 @@ require_once __DIR__.'/../vendor/autoload.php';
 include  __DIR__.'/includes/register_client.inc.php';
 
 $groups = \Hudutech\Controller\GroupController::all();
+//Todo add default values in the form to avoid retyping during form resubmission on error
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -106,7 +107,7 @@ $groups = \Hudutech\Controller\GroupController::all();
                                         <div class="form-group">
                                             <div class="col-sm-4">
                                                 <label for="first_name">First Name</label>
-                                                <input type="text" name="first_name" id="first_name" placeholder="First Name" class="form-control">
+                                                <input type="text" name="first_name" id="first_name" value="<?php echo isset($_POST['first_name'])? $_POST['first_name'] : '' ?>" placeholder="First Name" class="form-control">
                                             </div>
                                             <div class="col-sm-4">
                                                 <label for="middle_name">Middle Name</label>

@@ -103,7 +103,7 @@ class Client
     private $nokContact;
 
     /**
-     * @var \DateTime
+     * @var string
      */
     private $dateEnrolled;
     /**
@@ -216,7 +216,7 @@ class Client
     }
 
     /**
-     * @param \DateTime $dob
+     * @param string $dob
      */
     public function setDob($dob)
     {
