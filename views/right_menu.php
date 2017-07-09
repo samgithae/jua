@@ -129,7 +129,7 @@
                                 <a href="lead_loan.php"><div class="menu-links" ><i class="fa fa-fw fa-fw fa-university"></i> Loan Leading</div></a>
                             </li>
                             <li>
-                                <a href="loan_repayment.php"><div class="menu-links" ><i class="fa fa-fw  fa-check-square"></i> Loan Repayments</div></a>
+                                <a href="active_loans.php"><div class="menu-links" ><i class="fa fa-fw  fa-check-square"></i> Loan Repayments</div></a>
                             </li>
                         </ul>
                     </li>

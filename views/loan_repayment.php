@@ -42,39 +42,13 @@ $loans= LoanController::all();
             <div class="col-lg-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        Repay Loan
+                        Repay Loan <p class="pull-right"><a href="active_loans.php" class="btn-link" style="color: red">Back to Active loan List</a> </p>
                     </div>
                     <div class="panel-body">
                         <div class="row">
                             <div class="col-lg-6 col-md-offset-3">
                                 <div class="main-login main-center">
-                                    <div>
-                                        <?php
-                                        if(empty($success_msg) && !empty($error_msg)){
-                                            ?>
-                                            <div class="alert alert-danger alert-dismissable">
-                                                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                                <?php echo $error_msg ?>
-                                            </div>
-                                            <?php
-                                        }
-                                        elseif(empty($error_msg) and !empty($success_msg)){
-                                            ?>
-                                            <div class="alert alert-success alert-dismissable">
-                                                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                                <?php echo $success_msg  ?>
-                                            </div>
 
-                                            <?php
-                                        }
-                                        else
-                                        {
-                                            echo "";
-                                        }
-                                        ?>
-
-
-                                    </div>
                                     <form class="form-horizontal">
 
                                         <div class="form-group">
@@ -186,7 +160,7 @@ include 'footer.php';
             '  For Account Name:' + $('#clientName').val() + '</p>');
 
         $('#confirmRepay').modal('show');
-        $('#btn-confirmrepay').on('click', function (e) {
+        $('#btn-confirmRepay').on('click', function (e) {
             e.preventDefault;
             $.ajax({
                 type: 'POST',

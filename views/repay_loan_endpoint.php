@@ -13,7 +13,7 @@ $requestMethod = $_SERVER['REQUEST_METHOD'];
 $data = json_decode(file_get_contents('php://input'), true);
 
 if($requestMethod == 'POST') {
-    if(!empty($data)){
+    if(!empty($data['clientId']) && !empty($data['clientLoanId']) && !empty($data['amount'])  ){
      if($data['loanType'] !='long_term'){
          $repaid = LoanController::serviceLoan($data['clientId'], $data['clientLoanId'], $data['amount']);
          if($repaid === true){
@@ -36,5 +36,10 @@ if($requestMethod == 'POST') {
              )));
          }
      }
+    } else{
+        print_r(json_encode(array(
+            "statusCode"=>500,
+            "message"=>"No LoanRepayment data submitted. Please fill in the required data and try again"
+        )));
     }
 }
