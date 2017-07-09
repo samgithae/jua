@@ -5,7 +5,8 @@
  * Date: 7/9/17
  * Time: 5:55 PM
  */
-require_once  __DIR__.'/../../vendor/autoload.php';
+require_once  __DIR__.'/../vendor/autoload.php';
+
 use Hudutech\Controller\LoanController;
 
 $requestMethod = $_SERVER['REQUEST_METHOD'];
