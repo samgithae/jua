@@ -6,11 +6,44 @@
  * Time: 10:22
  */
 
-require_once __DIR__.'/../../vendor/autoload.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 use Hudutech\Services\FileUploader;
-$successMsg = '';
-$errorMsg = '';
-if($_SERVER['REQUEST_METHOD']==='POST') {
+
+$errorMsg = $firstNameErr = $groupRefNoErr = $middleNameErr =
+$lastNameErr = $idNoErr = $kraPinErr = $dobErr = $occupationErr=
+$phoneNumberErr = $countyErr = $subCountyErr = $locationErr=
+$subLocationErr = $emergencyContactErr = '';
+
+$firstName = $groupRefNo = $middleName =
+$lastName = $idNoErr = $kraPin = $dob = $occupation=
+$phoneNumber = $county = $subCounty = $location=
+$subLocation = $emergencyContact = '';
+
+
+
+function cleanInput($data){
+    $data = trim($data);
+    $data = stripcslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
+}
+
+if($firstNameErr == ''){
+    $firstNameErr = 'First Name field required';
+}else{
+    $firstName = cleanInput($_POST['first_name']);
+}
+if($middleNameErr == ''){
+    $middleNameErr = 'Middle Name required';
+}else{
+    $middleName = cleanInput($_POST['middle_name']);
+}
+if($lastNameErr == ''){
+    $lastName = cleanInput($_POST['last_name']);
+}
+
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['first_name'], $_POST['middle_name'], $_POST['last_name'])) {
         $client = new \Hudutech\Entity\Client();
         $fullName = $_POST['first_name'] . " " . $_POST['middle_name'] . " " . $_POST['last_name'];

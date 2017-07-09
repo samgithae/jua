@@ -7,8 +7,11 @@
  */
 require_once __DIR__.'/../vendor/autoload.php';
 
-$clients = \Hudutech\Controller\ClientController::all();
-$loans= \Hudutech\Controller\LoanController::all();
+use Hudutech\Controller\ClientController;
+use Hudutech\Controller\LoanController;
+
+$clients = ClientController::all();
+$loans= LoanController::all();
 
 ?>
 <!DOCTYPE html>
@@ -113,45 +116,41 @@ $loans= \Hudutech\Controller\LoanController::all();
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="email" class="cols-sm-2 control-label">Loan </label>
+                                            <label for="email" class="cols-sm-2 control-label">Loan Type</label>
                                             <div class="cols-sm-10">
                                                 <div class="input-group">
                                                     <span class="input-group-addon"><i class="fa fa-cog fa" aria-hidden="true"></i></span>
-                                                    <select name="group_ref_no" class="form-control">
-                                                        <option>--Select Loan type--</option>
-                                                        <?php foreach ($loans as $loan): ?>
-                                                            <option value="<?php echo $loan['id']?>"><?php echo $loan['loanType']?></option>
-                                                        <?php endforeach ?>
-
-                                                    </select>
+                                                    <input type="text" value="<?php echo isset($_GET['type']) ? $_GET['type'] : ''; ?>" class="form-control" disabled>
                                                 </div>
                                             </div>
                                         </div>
 <!---->
-<!--                                        <div class="form-group">-->
-<!--                                            <label for="username" class="cols-sm-2 control-label">Loan Balance</label>-->
-<!--                                            <div class="cols-sm-10">-->
-<!--                                                <div class="input-group">-->
-<!--                                                    <span class="input-group-addon"><i class="fa fa-money fa" aria-hidden="true"></i></span>-->
-<!--                                                    <input type="number" class="form-control" name="loanBalance" id="amount"  placeholder="Loan amount"/>-->
-<!---->
-<!--                                                </div>-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-
                                         <div class="form-group">
-                                            <label for="username" class="cols-sm-2 control-label">Amount Paid</label>
+                                            <label for="loanBal" class="cols-sm-2 control-label">Current Loan Balance</label>
                                             <div class="cols-sm-10">
                                                 <div class="input-group">
                                                     <span class="input-group-addon"><i class="fa fa-money fa" aria-hidden="true"></i></span>
-                                                    <input type="number" class="form-control" name="amount" id="amount"  placeholder="Loan amount"/>
+                                                    <input type="number" class="form-control" name="loanBal" id="loanBal" value="<?php echo isset($_GET['amt']) ? $_GET['amt'] : ''; ?>" disabled/>
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="amount" class="cols-sm-2 control-label">Amount RePaid</label>
+                                            <div class="cols-sm-10">
+                                                <div class="input-group">
+                                                    <input type="hidden" name="clientLoanId" value="<?php echo isset($_GET['lid'])? $_GET['lid']: '' ?>">
+                                                    <input type="hidden" name="clientId" value="<?php echo isset($_GET['id'])? $_GET['id']: '' ?>">
+                                                    <span class="input-group-addon"><i class="fa fa-money fa" aria-hidden="true"></i></span>
+                                                    <input type="number" class="form-control" name="amount" id="amount"  placeholder="Enter Amount to repay"/>
 
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div class="form-group ">
-                                            <input type="submit" name="submit" value="Save" class="btn btn-primary btn-lg btn-block login-button"></input>
+                                            <input type="submit" name="submit" value="Repay Loan" class="btn btn-primary btn-lg btn-block login-button">
                                         </div>
 
                                     </form>
@@ -165,13 +164,18 @@ $loans= \Hudutech\Controller\LoanController::all();
     </div>
 </div>
 
-
-
-
-
 <?php
 include 'footer.php';
 ?>
+<script src="../public/assets/js/jquery-1.11.3.min.js"></script>
+
+<script>
+   $(document).ready(function (e) {
+       e.preventDefault;
+
+
+   })
+</script>
 
 
 </body>
