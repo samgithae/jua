@@ -75,7 +75,7 @@ $loans= LoanController::all();
 
 
                                     </div>
-                                    <form class="form-horizontal" method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'])?>">
+                                    <form class="form-horizontal">
 
                                         <div class="form-group">
                                             <label for="clientName" class="cols-sm-2 control-label">Client Name</label>
@@ -92,7 +92,7 @@ $loans= LoanController::all();
                                             <div class="cols-sm-10">
                                                 <div class="input-group">
                                                     <span class="input-group-addon"><i class="fa fa-cog fa" aria-hidden="true"></i></span>
-                                                    <input type="text" value="<?php echo isset($_GET['type']) ? $_GET['type'] : ''; ?>" class="form-control" id="loanType"disabled>
+                                                    <input type="text" value="<?php echo isset($_GET['type']) ? $_GET['type'] : ''; ?>" class="form-control" id="loanType" disabled>
                                                 </div>
                                             </div>
                                         </div>
@@ -112,20 +112,18 @@ $loans= LoanController::all();
                                             <label for="amount" class="cols-sm-2 control-label">Amount RePaid</label>
                                             <div class="cols-sm-10">
                                                 <div class="input-group">
-                                                    <input type="hidden" name="clientLoanId" value="<?php echo isset($_GET['lid'])? $_GET['lid']: '' ?>">
-                                                    <input type="hidden" name="clientId" value="<?php echo isset($_GET['id'])? $_GET['id']: '' ?>">
+                                                    <input type="hidden" name="clientLoanId" value="<?php echo isset($_GET['lid'])? $_GET['lid']: '' ?>" id="clientLoanId">
+                                                    <input type="hidden" name="clientId" value="<?php echo isset($_GET['id'])? $_GET['id']: '' ?>" id="clientId">
                                                     <span class="input-group-addon"><i class="fa fa-money fa" aria-hidden="true"></i></span>
                                                     <input type="number" class="form-control" name="amount" id="amount"  placeholder="Enter Amount to repay"/>
 
                                                 </div>
                                             </div>
                                         </div>
-
-                                        <div class="form-group ">
-                                            <input type="submit" name="submit" value="Repay Loan" class="btn btn-primary btn-lg btn-block login-button">
-                                        </div>
-
                                     </form>
+                                    <div class="form-group ">
+                                        <button onclick="submitRepayLoanFormData()" value="Repay Loan" class="btn btn-primary btn-lg btn-block login-button">Repay Loan</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -136,17 +134,94 @@ $loans= LoanController::all();
     </div>
 </div>
 
+
+
+<!-- Modal -->
+<div class="modal fade" id="confirmRepay" tabindex="-1" role="dialog" aria-labelledby="confirmRepay"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="confirmTitle">Confirm Repayment </h4>
+                <div id="confirmFeedback">
+
+                </div>
+            </div>
+            <div class="modal-body" id="confirmMessage"></div>
+            <div class="modal-footer">
+                <button type="button" id="btn-confirmRepay" class="btn btn-info">Continue</button>
+                <button type="button" data-dismiss="modal" class="btn btn-info">Cancel</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
 <?php
 include 'footer.php';
 ?>
-<script src="../public/assets/js/jquery-1.11.3.min.js"></script>
-
+<script src="../public/assets/select/jquery-editable-select.js"></script>
 <script>
-   $(document).ready(function (e) {
-       e.preventDefault;
+    $(document).ready(function (e) {
+        e.preventDefault;
+    })
+</script>
+<script>
+    function getData() {
+        return {
+            clientLoanId: $('#clientLoanId').val(),
+            clientId: $('#clientId').val(),
+            amount: $('#amount').val(),
+            loanType: $('#loanType').val()
+        };
+    }
+    function submitRepayLoanFormData() {
+        var data = JSON.stringify(getData());
+        var url = 'repay_loan_endpoint.php';
+
+        $('#confirmMessage').html('<p>Confirm Repay Ksh  ' + $('#amount').val() +
+            '  For Account Name:' + $('#clientName').val() + '</p>');
+
+        $('#confirmRepay').modal('show');
+        $('#btn-confirmrepay').on('click', function (e) {
+            e.preventDefault;
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: data,
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8;',
+                traditional: true,
+                success: function (response) {
+
+                    if (response.statusCode == 200) {
+                        $('#confirmFeedback').removeClass('alert alert-danger')
+                            .addClass('alert alert-success')
+                            .text(response.message);
+                        setTimeout(function () {
+                            location.reload();
+                        }, 1000);
+                    }
+                    if (response.statusCode == 500) {
+                        $('#confirmFeedback').removeClass('alert alert-success')
+                            .html('<div class="alert alert-danger alert-dismissable">' +
+                                '<a href="#" class="close"  data-dismiss="alert" aria-label="close">&times;</a>' +
+                                '<strong>Error! </strong> ' + response.message + '</div>')
+
+                    }
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+
+            })
+        });
 
 
-   })
+    }
 </script>
 
 

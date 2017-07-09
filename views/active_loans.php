@@ -68,7 +68,7 @@ $counter = 1;
                                         <td> <a class="btn btn-primary" href="loan_repayment.php?id=<?php echo urlencode($active_loan['clientId'])?>&
                                         lid=<?php echo urlencode($active_loan['clientLoanId'])?>
                                         &amt=<?php echo urlencode($active_loan['loanBal'])?>&type=<?php echo urlencode($active_loan['loanType'])?>&
-                                        name=<?php echo $active_loan['fullName']?>">
+                                        name=<?php echo urlencode($active_loan['fullName'])?>">
                                                 RepayLoan</a></td>
 
                                     </tr>
@@ -84,6 +84,7 @@ $counter = 1;
 
 </div>
 <?php  include_once 'footer.php'?>
+
 
 </body>
 </html>
