@@ -9,7 +9,7 @@
 require_once __DIR__ . '/../../vendor/autoload.php';
 use Hudutech\Services\FileUploader;
 
-$successMsg=$errorMsg = $firstNameErr = $groupRefNoErr = $middleNameErr =
+$successMsg = $errorMsg = $firstNameErr = $groupRefNoErr = $middleNameErr =
 $lastNameErr = $idNoErr = $kraPinErr = $dobErr = $occupationErr =
 $phoneNumberErr = $countyErr = $subCountyErr = $locationErr =
 $subLocationErr = $emergencyContactErr = '';
@@ -27,7 +27,6 @@ function cleanInput($data)
     $data = htmlspecialchars($data);
     return $data;
 }
-
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -93,10 +92,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
 
-    if ($firstNameErr = $groupRefNoErr = $middleNameErr =
-    $lastNameErr = $idNoErr = $kraPinErr = $dobErr = $occupationErr =
-    $phoneNumberErr = $countyErr = $subCountyErr = $locationErr =
-    $subLocationErr = $emergencyContactErr != ''
+    if ($firstNameErr != '' && $groupRefNoErr != '' && $middleNameErr != '' &&
+        $lastNameErr != '' && $idNoErr != '' && $kraPinErr != '' && $dobErr != '' &&
+        $occupationErr != '' && $phoneNumberErr != '' && $countyErr != '' && $subCountyErr != ''
+        && $locationErr != '' && $subLocationErr != '' && $emergencyContactErr != ''
     ) {
         $client = new \Hudutech\Entity\Client();
         $fullName = $firstName . " " . $middleName . " " . $lastName;
@@ -161,7 +160,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         }
     } else {
-        $errorMsg .= "KEY  FIELDS REQUIERED";
+        $errorMsg .= "Please Correct the Errors Below to Continue";
     }
 }
 ?>

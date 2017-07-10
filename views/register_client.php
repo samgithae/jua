@@ -5,10 +5,6 @@
  * Date: 25/04/2017
  * Time: 11:19
  */
-$firstNameErr = $groupRefNoErr = $middleNameErr =
-$lastNameErr = $idNoErr = $kraPinErr = $dobErr = $occupationErr =
-$phoneNumberErr = $countyErr = $subCountyErr = $locationErr =
-$subLocationErr = $emergencyContactErr = '';
 require_once __DIR__.'/../vendor/autoload.php';
 include  __DIR__.'/includes/register_client.inc.php';
 
