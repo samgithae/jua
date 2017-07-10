@@ -121,7 +121,7 @@ $groups = \Hudutech\Controller\GroupController::all();
                                         <!-- Text input-->
                                         <div class="form-group">
                                             <div class="col-sm-4">
-                                                <label for="membership_no">Membership Number</label>
+                                                <label for="membership_no">Membership Number <span style="color: red">* <?php echo $membershipNoErr ?></span></label>
                                                 <input type="text" name="membership_no" id="membership_no" placeholder="Membership Number" value="<?php echo isset($_POST['membership_no'])? $_POST['membership_no'] : ''?>" class="form-control">
                                             </div>
 

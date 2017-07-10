@@ -12,12 +12,13 @@ use Hudutech\Services\FileUploader;
 $successMsg = $errorMsg = $firstNameErr = $groupRefNoErr = $middleNameErr =
 $lastNameErr = $idNoErr = $kraPinErr = $dobErr = $occupationErr =
 $phoneNumberErr = $countyErr = $subCountyErr = $locationErr =
-$subLocationErr = $emergencyContactErr = '';
+$subLocationErr = $emergencyContactErr =
+$membershipNoErr= '';
 
 $firstName = $groupRefNo = $middleName =
 $lastName = $idNo = $kraPin = $dob = $occupation =
 $phoneNumber = $county = $subCounty = $location =
-$subLocation = $emergencyContact = '';
+$subLocation = $emergencyContact = $membershipNo='';
 
 
 function cleanInput($data)
@@ -41,6 +42,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $middleName = cleanInput($_POST['middle_name']);
     }
     if ($_POST['last_name'] == '') {
+        $lastNameErr = 'Last Name Field Required';
+    }else{
         $lastName = cleanInput($_POST['last_name']);
     }
 
@@ -91,11 +94,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $emergencyContact = cleanInput($_POST['emergency_contact']);
     }
 
+    if($_POST['kra_pin'] == ''){
+        $kraPinErr = "Kra Pin Field Required";
+    }
+    else{
+        $kraPin = cleanInput($_POST['kra_pin']);
+    }
+
+    if($_POST['membership_no'] == ''){
+        $membershipNoErr = 'Membership Number Required';
+    }else{
+        $membershipNo = cleanInput($_POST['membership_no']);
+    }
+
+
+
 
     if ($firstNameErr != '' && $groupRefNoErr != '' && $middleNameErr != '' &&
         $lastNameErr != '' && $idNoErr != '' && $kraPinErr != '' && $dobErr != '' &&
         $occupationErr != '' && $phoneNumberErr != '' && $countyErr != '' && $subCountyErr != ''
-        && $locationErr != '' && $subLocationErr != '' && $emergencyContactErr != ''
+        && $locationErr != '' && $subLocationErr != '' && $emergencyContactErr != '' && $membershipNoErr==''
     ) {
         $client = new \Hudutech\Entity\Client();
         $fullName = $firstName . " " . $middleName . " " . $lastName;
