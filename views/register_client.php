@@ -148,7 +148,7 @@ $groups = \Hudutech\Controller\GroupController::all();
                                             </div>
 
                                             <div class="col-sm-4">
-                                                <label for="date_enrolled">Date of enrollment</label>
+                                                <label for="date_enrolled">Date Enrolled <span style="color: red">* <?php echo $dateEnrolledErr?></span></label>
                                                 <input placeholder="Date of enrollment" name="date_enrolled" id="date_enrolled" class="form-control" type="text" onfocus="(this.type='date')" onblur="(this.type='text')" value="<?php echo isset($_POST['date_enrolled'])? $_POST['date_enrolled'] : ''?>" >
                                             </div>
 
@@ -229,11 +229,11 @@ $groups = \Hudutech\Controller\GroupController::all();
                                         <!-- Text input-->
                                         <div class="form-group">
                                             <div class="col-sm-4">
-                                                <label for="nok_name">Full Name</label>
+                                                <label for="nok_name">Full Name <span style="color: red">* <?php echo $nokNameErr ?></span></label>
                                                 <input type="text" name="nok_name" id="nok_name" value="<?php echo isset($_POST['nok_name'])? $_POST['nok_name'] : ''?>"" placeholder="Full Name" class="form-control">
                                             </div>
                                             <div class="col-sm-4">
-                                                <label for="nok_contact">Contact</label>
+                                                <label for="nok_contact">Contact <span style="color: red">* <?php echo $nokContactErr?></span></label>
                                                 <input type="text" name="nok_contact" id="nok_contact" value="<?php echo isset($_POST['nok_contact'])? $_POST['nok_contact'] : ''?>" placeholder="Contact" class="form-control">
                                             </div>
                                             <div class="col-sm-4">
