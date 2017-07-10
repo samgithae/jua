@@ -1137,6 +1137,9 @@ class LoanController extends ComplexQuery implements LoanInterface
                     $dataItem['fullName'] = $clientName;
                     $dataItem['groupName'] = $clientGroup;
                     $dataItem['dateBorrowed'] = $previousPayment['createdAt'];
+                    $dataItem['clientLoanId'] = $previousPayment['clientLoanId'];
+                    $dataItem['clientId'] = $previousPayment['clientId'];
+                    $dataItem['loanType'] = $loanType;
 
                     array_push($data, $dataItem);
 
@@ -1161,6 +1164,9 @@ class LoanController extends ComplexQuery implements LoanInterface
                         $dataItem['fullName'] = $clientName;
                         $dataItem['groupName'] = $clientGroup;
                         $dataItem['dateBorrowed'] = $previousPayment['createdAt'];
+                        $dataItem['clientLoanId'] = $previousPayment['clientLoanId'];
+                        $dataItem['clientId'] = $previousPayment['clientId'];
+                        $dataItem['loanType'] = $loanType;
                         array_push($data, $dataItem);
                     }
 
@@ -1172,6 +1178,7 @@ class LoanController extends ComplexQuery implements LoanInterface
                         $dataItem['fullName'] = ClientController::getId($previousPayment)['fullName'];
                         $dataItem['groupName'] = ClientController::getClientsGroup($previousPayment['clientId'])['groupName'];
                         $dataItem['dateBorrowed'] = $previousPayment['createdAt'];
+                        $dataItem['loanType'] = $loanType;
                         array_push($data, $dataItem);
                     }
                     if ($year2 == $year1 && $year3 == $year2) {
@@ -1180,6 +1187,9 @@ class LoanController extends ComplexQuery implements LoanInterface
                         $dataItem['fullName'] = ClientController::getId($previousPayment)['fullName'];
                         $dataItem['groupName'] = ClientController::getClientsGroup($previousPayment['clientId'])['groupName'];
                         $dataItem['dateBorrowed'] = $previousPayment['createdAt'];
+                        $dataItem['clientLoanId'] = $previousPayment['clientLoanId'];
+                        $dataItem['clientId'] = $previousPayment['clientId'];
+                        $dataItem['loanType'] = $loanType;
                         array_push($data, $dataItem);
                     }
 
@@ -1193,6 +1203,9 @@ class LoanController extends ComplexQuery implements LoanInterface
                     $dataItem['fullName'] = ClientController::getId($previousPayment['clientId'])['fullName'];
                     $dataItem['groupName'] = ClientController::getClientsGroup($previousPayment['clientId'])['groupName'];
                     $dataItem['dateBorrowed'] = $previousPayment['createdAt'];
+                    $dataItem['clientLoanId'] = $previousPayment['clientLoanId'];
+                    $dataItem['clientId'] = $previousPayment['clientId'];
+                    $dataItem['loanType'] = $loanType;
                     array_push($data, $dataItem);
 
                 } elseif (!is_null($previousPayment['loanCF']) && (float)($previousPayment['loanCF']) > 0) {
@@ -1214,6 +1227,10 @@ class LoanController extends ComplexQuery implements LoanInterface
                         $dataItem['fullName'] = ClientController::getId($previousPayment['clientId'])['fullName'];
                         $dataItem['groupName'] = ClientController::getClientsGroup($previousPayment['clientId'])['groupName'];
                         $dataItem['dateBorrowed'] = $previousPayment['createdAt'];
+                        $dataItem['clientLoanId'] = $previousPayment['clientLoanId'];
+                        $dataItem['clientId'] = $previousPayment['clientId'];
+                        $dataItem['loanType'] = $loanType;
+
                         array_push($data, $dataItem);
 
                     }
@@ -1224,6 +1241,9 @@ class LoanController extends ComplexQuery implements LoanInterface
                         $dataItem['fullName'] = ClientController::getId($previousPayment['clientId'])['fullName'];
                         $dataItem['groupName'] = ClientController::getClientsGroup($previousPayment['clientId'])['groupName'];
                         $dataItem['dateBorrowed'] = $previousPayment['createdAt'];
+                        $dataItem['clientLoanId'] = $previousPayment['clientLoanId'];
+                        $dataItem['clientId'] = $previousPayment['clientId'];
+                        $dataItem['loanType'] = $loanType;
                         array_push($data, $dataItem);
                     }
                 }
@@ -1236,6 +1256,9 @@ class LoanController extends ComplexQuery implements LoanInterface
                     $dataItem['fullName'] = ClientController::getId($previousPayment['clientId'])['fullName'];
                     $dataItem['groupName'] = ClientController::getClientsGroup($previousPayment['clientId'])['groupName'];
                     $dataItem['dateBorrowed'] = $previousPayment['createdAt'];
+                    $dataItem['clientLoanId'] = $previousPayment['clientLoanId'];
+                    $dataItem['clientId'] = $previousPayment['clientId'];
+                    $dataItem['loanType'] = $loanType;
                     array_push($data, $dataItem);
 
                 } elseif (!is_null($previousPayment['loanCF']) && (float)($previousPayment['loanCF']) > 0) {
@@ -1252,6 +1275,9 @@ class LoanController extends ComplexQuery implements LoanInterface
                         $dataItem['fullName'] = ClientController::getId($previousPayment['clientId'])['fullName'];
                         $dataItem['groupName'] = ClientController::getClientsGroup($previousPayment['clientId'])['groupName'];
                         $dataItem['dateBorrowed'] = $previousPayment['createdAt'];
+                        $dataItem['clientLoanId'] = $previousPayment['clientLoanId'];
+                        $dataItem['clientId'] = $previousPayment['clientId'];
+                        $dataItem['loanType'] = $loanType;
                         array_push($data, $dataItem);
 
                     }
@@ -1262,6 +1288,9 @@ class LoanController extends ComplexQuery implements LoanInterface
                         $dataItem['fullName'] = ClientController::getId($previousPayment['clientId'])['fullName'];
                         $dataItem['groupName'] = ClientController::getClientsGroup($previousPayment['clientId'])['groupName'];
                         $dataItem['dateBorrowed'] = $previousPayment['createdAt'];
+                        $dataItem['clientLoanId'] = $previousPayment['clientLoanId'];
+                        $dataItem['clientId'] = $previousPayment['clientId'];
+                        $dataItem['loanType'] = $loanType;
                         array_push($data, $dataItem);
                     }
                 }

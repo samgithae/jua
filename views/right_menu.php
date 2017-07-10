@@ -125,14 +125,12 @@
                         <a href="#" data-toggle="collapse" data-target="#submenu-5"> <div class="menu-links"><i class="fa fa-fw  fa-suitcase" ></i> Loans <i class="fa fa-fw fa-angle-down pull-right"></i></div></a>
                         <ul id="submenu-5" class="nav nav-second-level">
 
-
-                            <li>
-                                <a href="active_loans.php"><div class="menu-links" ><i class="fa fa-fw fa-fw fa-check-square"></i> Active Loans</div></a>
-                            </li>
                             <li>
                                 <a href="lead_loan.php"><div class="menu-links" ><i class="fa fa-fw fa-fw fa-university"></i> Loan Leading</div></a>
                             </li>
-
+                            <li>
+                                <a href="loan_repayment.php"><div class="menu-links" ><i class="fa fa-fw  fa-check-square"></i> Loan Repayments</div></a>
+                            </li>
                         </ul>
                     </li>
 

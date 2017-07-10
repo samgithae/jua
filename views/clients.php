@@ -7,7 +7,7 @@
  */
 require_once __DIR__.'/../vendor/autoload.php';
 $clients = \Hudutech\Controller\ClientController::all();
-//print_r($clients);
+
 $counter = 1;
 ?>
 <!DOCTYPE html>

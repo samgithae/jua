@@ -6,30 +6,133 @@
  * Time: 10:22
  */
 
-require_once __DIR__.'/../../vendor/autoload.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 use Hudutech\Services\FileUploader;
-$successMsg = '';
-$errorMsg = '';
-if($_SERVER['REQUEST_METHOD']==='POST') {
-    if (isset($_POST['first_name'], $_POST['middle_name'], $_POST['last_name'])) {
+
+$successMsg = $errorMsg = $firstNameErr = $groupRefNoErr = $middleNameErr =
+$lastNameErr = $idNoErr = $kraPinErr = $dobErr = $occupationErr =
+$phoneNumberErr = $countyErr = $subCountyErr = $locationErr =
+$subLocationErr = $emergencyContactErr =
+$membershipNoErr= '';
+
+$firstName = $groupRefNo = $middleName =
+$lastName = $idNo = $kraPin = $dob = $occupation =
+$phoneNumber = $county = $subCounty = $location =
+$subLocation = $emergencyContact = $membershipNo='';
+
+
+function cleanInput($data)
+{
+    $data = trim($data);
+    $data = stripcslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
+}
+
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if ($_POST['first_name'] == '') {
+        $firstNameErr = 'First Name field required';
+    } else {
+        $firstName = cleanInput($_POST['first_name']);
+    }
+    if ($_POST['middle_name'] == '') {
+        $middleNameErr = 'Middle Name required';
+    } else {
+        $middleName = cleanInput($_POST['middle_name']);
+    }
+    if ($_POST['last_name'] == '') {
+        $lastNameErr = 'Last Name Field Required';
+    }else{
+        $lastName = cleanInput($_POST['last_name']);
+    }
+
+    if ($_POST['id_no'] == '') {
+        $idNoErr = 'ID NO field  required';
+    } else {
+        $idNo = cleanInput($_POST['id_no']);
+    }
+
+    if ($_POST['group_ref_no'] == '') {
+        $groupRefNoErr = 'Group Ref Number field is required';
+    } else {
+        $groupRefNo = cleanInput($_POST['group_ref_no']);
+    }
+    if ($_POST['occupation'] == '') {
+        $occupationErr = 'Occupation Required';
+    } else {
+        $occupation = cleanInput($_POST['occupation']);
+    }
+    if ($_POST['phone_number'] == '') {
+        $phoneNumberErr = 'Phone Number Field required';
+    } else {
+        $phoneNumber = cleanInput($_POST['phone_number']);
+    }
+    if ($_POST['county'] == '') {
+        $countyErr = 'County field is required';
+    } else {
+        $county = cleanInput($_POST['county']);
+    }
+    if ($_POST['sub_county'] == '') {
+        $subCountyErr = 'Sub County Field required';
+    } else {
+        $subCounty = cleanInput($_POST['sub_county']);
+    }
+    if ($_POST['location'] == '') {
+        $locationErr = 'Location Field required';
+    } else {
+        $location = cleanInput($_POST['location']);
+    }
+    if ($_POST['sub_location'] == '') {
+        $subLocationErr = 'Sub Location Field Required';
+    } else {
+        $subLocation = cleanInput($_POST['sub_location']);
+    }
+    if ($_POST['emergency_contact'] == '') {
+        $emergencyContactErr = 'Emergency Contact Field is required';
+    } else {
+        $emergencyContact = cleanInput($_POST['emergency_contact']);
+    }
+
+    if($_POST['kra_pin'] == ''){
+        $kraPinErr = "Kra Pin Field Required";
+    }
+    else{
+        $kraPin = cleanInput($_POST['kra_pin']);
+    }
+
+    if($_POST['membership_no'] == ''){
+        $membershipNoErr = 'Membership Number Required';
+    }else{
+        $membershipNo = cleanInput($_POST['membership_no']);
+    }
+
+
+
+
+    if ($firstNameErr != '' && $groupRefNoErr != '' && $middleNameErr != '' &&
+        $lastNameErr != '' && $idNoErr != '' && $kraPinErr != '' && $dobErr != '' &&
+        $occupationErr != '' && $phoneNumberErr != '' && $countyErr != '' && $subCountyErr != ''
+        && $locationErr != '' && $subLocationErr != '' && $emergencyContactErr != '' && $membershipNoErr==''
+    ) {
         $client = new \Hudutech\Entity\Client();
-        $fullName = $_POST['first_name'] . " " . $_POST['middle_name'] . " " . $_POST['last_name'];
-        $client->setGroupRefNo($_POST['group_ref_no']);
+        $fullName = $firstName . " " . $middleName . " " . $lastName;
+        $client->setGroupRefNo($groupRefNo);
         $client->setFullName($fullName);
-        $client->setMembershipNo($_POST['membership_no']);
-        $client->setIdNo($_POST['id_no']);
-        $client->setKraPin($_POST['kra_pin']);
-        $client->setDob($_POST['dob']);
-        $client->setOccupation($_POST['occupation']);
-        $client->setPostalAddress($_POST['postal_address']);
-        $client->setEmail($_POST['email']);
-        $client->setPhoneNumber($_POST['phone_number']);
-        $client->setCounty($_POST['county']);
-        $client->setSubCounty($_POST['sub_county']);
-        $client->setLocation($_POST['location']);
-        $client->setSubLocation($_POST['sub_location']);
-        $client->setVillage($_POST['village']);
-        $client->setEmergencyContact($_POST['emergency_contact']);
+        $client->setMembershipNo(cleanInput($_POST['membership_no']));
+        $client->setIdNo($idNo);
+        $client->setKraPin($kraPin);
+        $client->setDob(cleanInput($_POST['dob']));
+        $client->setOccupation($occupation);
+        $client->setPostalAddress(cleanInput($_POST['postal_address']));
+        $client->setEmail(cleanInput($_POST['email']));
+        $client->setPhoneNumber($phoneNumber);
+        $client->setCounty($county);
+        $client->setSubCounty($subCounty);
+        $client->setLocation($location);
+        $client->setSubLocation($subLocation);
+        $client->setVillage(cleanInput($_POST['village']));
+        $client->setEmergencyContact($emergencyContact);
         if (isset($_POST['is_member_of_other_org'])) {
             $client->setMemberOfOtherOrg('YES');
         } else {
@@ -75,7 +178,7 @@ if($_SERVER['REQUEST_METHOD']==='POST') {
 
         }
     } else {
-        $errorMsg .= "KEY  FIELDS REQUIERED";
+        $errorMsg .= "Please Correct the Errors Below to Continue";
     }
 }
 ?>
