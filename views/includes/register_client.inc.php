@@ -9,7 +9,7 @@
 require_once __DIR__ . '/../../vendor/autoload.php';
 use Hudutech\Services\FileUploader;
 
-$errorMsg = $firstNameErr = $groupRefNoErr = $middleNameErr =
+$successMsg=$errorMsg = $firstNameErr = $groupRefNoErr = $middleNameErr =
 $lastNameErr = $idNoErr = $kraPinErr = $dobErr = $occupationErr =
 $phoneNumberErr = $countyErr = $subCountyErr = $locationErr =
 $subLocationErr = $emergencyContactErr = '';
