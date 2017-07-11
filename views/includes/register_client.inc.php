@@ -13,12 +13,13 @@ $successMsg = $errorMsg = $firstNameErr = $groupRefNoErr = $middleNameErr =
 $lastNameErr = $idNoErr = $kraPinErr = $dobErr = $occupationErr =
 $phoneNumberErr = $countyErr = $subCountyErr = $locationErr =
 $subLocationErr = $emergencyContactErr =
-$membershipNoErr= '';
+$membershipNoErr= $dateEnrolledErr=$nokContactErr=$nokNameErr= '';
 
 $firstName = $groupRefNo = $middleName =
 $lastName = $idNo = $kraPin = $dob = $occupation =
 $phoneNumber = $county = $subCounty = $location =
-$subLocation = $emergencyContact = $membershipNo='';
+$subLocation = $emergencyContact = $membershipNo=
+$dateEnrolled = $nokName=$nokContact='';
 
 
 function cleanInput($data)
@@ -32,7 +33,7 @@ function cleanInput($data)
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($_POST['first_name'] == '') {
-        $firstNameErr = 'First Name field required';
+        $firstNameErr = 'First Name  required';
     } else {
         $firstName = cleanInput($_POST['first_name']);
     }
@@ -42,19 +43,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $middleName = cleanInput($_POST['middle_name']);
     }
     if ($_POST['last_name'] == '') {
-        $lastNameErr = 'Last Name Field Required';
+        $lastNameErr = 'Last Name  Required';
     }else{
         $lastName = cleanInput($_POST['last_name']);
     }
 
     if ($_POST['id_no'] == '') {
-        $idNoErr = 'ID NO field  required';
+        $idNoErr = 'ID NO   required';
     } else {
         $idNo = cleanInput($_POST['id_no']);
     }
 
     if ($_POST['group_ref_no'] == '') {
-        $groupRefNoErr = 'Group Ref Number field is required';
+        $groupRefNoErr = 'Group Ref Number  is required';
     } else {
         $groupRefNo = cleanInput($_POST['group_ref_no']);
     }
@@ -64,38 +65,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $occupation = cleanInput($_POST['occupation']);
     }
     if ($_POST['phone_number'] == '') {
-        $phoneNumberErr = 'Phone Number Field required';
+        $phoneNumberErr = 'Phone Number required';
     } else {
         $phoneNumber = cleanInput($_POST['phone_number']);
     }
     if ($_POST['county'] == '') {
-        $countyErr = 'County field is required';
+        $countyErr = 'County is required';
     } else {
         $county = cleanInput($_POST['county']);
     }
     if ($_POST['sub_county'] == '') {
-        $subCountyErr = 'Sub County Field required';
+        $subCountyErr = 'Sub County  required';
     } else {
         $subCounty = cleanInput($_POST['sub_county']);
     }
     if ($_POST['location'] == '') {
-        $locationErr = 'Location Field required';
+        $locationErr = 'Location  required';
     } else {
         $location = cleanInput($_POST['location']);
     }
     if ($_POST['sub_location'] == '') {
-        $subLocationErr = 'Sub Location Field Required';
+        $subLocationErr = 'Sub Location  Required';
     } else {
         $subLocation = cleanInput($_POST['sub_location']);
     }
     if ($_POST['emergency_contact'] == '') {
-        $emergencyContactErr = 'Emergency Contact Field is required';
+        $emergencyContactErr = 'Emergency Contact  is required';
     } else {
         $emergencyContact = cleanInput($_POST['emergency_contact']);
     }
 
     if($_POST['kra_pin'] == ''){
-        $kraPinErr = "Kra Pin Field Required";
+        $kraPinErr = "Kra Pin  Required";
     }
     else{
         $kraPin = cleanInput($_POST['kra_pin']);
@@ -107,13 +108,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $membershipNo = cleanInput($_POST['membership_no']);
     }
 
+    if($_POST['dob'] == ''){
+        $dobErr = "Date Of Birth Required";
+    }else{
+        $dob = cleanInput($_POST['dob']);
+    }
+
+    if($_POST['date_enrolled'] == ''){
+        $dateEnrolledErr = 'Date Enrolled Required';
+    }else{
+        $dateEnrolled = cleanInput($_POST['date_enrolled']);
+    }
+    if($_POST['nok_name'] == ''){
+        $nokNameErr = 'This field is required';
+    }else{
+        $nokName = cleanInput($_POST['nok_name']);
+    }
+    if($_POST['nok_contact'] == ''){
+        $nokContactErr = 'This Field Is required';
+    }else{
+        $nokContact = cleanInput($_POST['nok_contact']);
+    }
+
 
 
 
     if ($firstNameErr != '' && $groupRefNoErr != '' && $middleNameErr != '' &&
         $lastNameErr != '' && $idNoErr != '' && $kraPinErr != '' && $dobErr != '' &&
         $occupationErr != '' && $phoneNumberErr != '' && $countyErr != '' && $subCountyErr != ''
-        && $locationErr != '' && $subLocationErr != '' && $emergencyContactErr != '' && $membershipNoErr==''
+        && $locationErr != '' && $subLocationErr != '' && $emergencyContactErr != '' && $membershipNoErr!=''
+        &&$nokNameErr !='' && $nokContactErr != '' && $dateEnrolledErr != ''
     ) {
         $client = new \Hudutech\Entity\Client();
         $fullName = $firstName . " " . $middleName . " " . $lastName;
@@ -122,7 +146,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $client->setMembershipNo(cleanInput($_POST['membership_no']));
         $client->setIdNo($idNo);
         $client->setKraPin($kraPin);
-        $client->setDob(cleanInput($_POST['dob']));
+        $client->setDob($dob);
         $client->setOccupation($occupation);
         $client->setPostalAddress(cleanInput($_POST['postal_address']));
         $client->setEmail(cleanInput($_POST['email']));
