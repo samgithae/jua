@@ -9,7 +9,7 @@ session_start();
 $error_msg="";
 $success_msg="";
 if(isset($_SESSION['username'])){
-    header("Location: ../base.php");
+    header("Location: ../index.php");
 }
 if(isset($_POST['submit'])) {
     if (isset($_POST['username']) && isset($_POST['password'])) {
@@ -20,7 +20,7 @@ if(isset($_POST['submit'])) {
         if ($authenticated) {
             $success_msg .= "Login Successful";
             $_SESSION['username']=$username;
-            header("Location: ../base.php");
+            header("Location: ../index.php");
 
         } else {
             $error_msg .= "Invalid username or password. Please try again";
