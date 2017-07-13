@@ -5,6 +5,10 @@
  * Date: 27/04/2017
  * Time: 06:42
  */
+session_start();
+if(!isset($_SESSION['username'])){
+    header("Location: login.php");
+}
 ?>
 <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
         <div class="navbar-header">
@@ -66,6 +70,9 @@
                             </li>
                             <li>
                                 <a href="register_group.php"><div class="menu-links" ><i class="fa fa-fw  fa-group"></i> Register Group</div></a>
+                            </li>
+                            <li>
+                                <a href="register_user.php"><div class="menu-links" ><i class="fa fa-fw  fa-user-plus"></i> Register User</div></a>
                             </li>
                         </ul>
                     </li>

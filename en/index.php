@@ -1,5 +1,6 @@
 <?php
 
+
 require_once __DIR__.'/../vendor/autoload.php';
 $clients = \Hudutech\Controller\ClientController::all();
 $groups=\Hudutech\Controller\GroupController::all();

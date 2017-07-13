@@ -5,6 +5,9 @@
  * Date: 04/05/2017
  * Time: 00:25
  */
+if(isset($_SESSION['username'])){
+    header("Location: index.php");
+}
 require_once __DIR__.'/../vendor/autoload.php';
 include __DIR__.'/includes/login.inc.php';
 ?>

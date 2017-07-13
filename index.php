@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="refresh" content="0;url=en/login.php">
+<meta http-equiv="refresh" content="0;url=en/index.php">
 <title>Rep Sacco</title>
 <script language="javascript">
-    window.location.href = "en/login.php"
+    window.location.href = "en/index.php"
 </script>
 </head>
 <body>
-Go to <a href="en/login.php">/en/login.php</a>
+Go to <a href="en/index.php">/en/index.php</a>
 </body>
 </html>
