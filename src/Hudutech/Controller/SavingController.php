@@ -580,9 +580,12 @@ class SavingController implements SavingInterface
     {
         $db = new DB();
         $conn = $db->connect();
+        $groupId = GroupController::getClientGroupId($clientId);
+
         try {
-            $stmt = $conn->prepare("INSERT INTO saving_balances(clientId) VALUES (:clientId)");
+            $stmt = $conn->prepare("INSERT INTO saving_balances(clientId, groupId) VALUES (:clientId, :groupId)");
             $stmt->bindParam(":clientId", $clientId);
+            $stmt->bindParam(":groupId", $groupId);
 
             if ($stmt->execute()) {
                 $db->closeConnection();

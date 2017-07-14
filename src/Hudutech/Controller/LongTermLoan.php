@@ -8,7 +8,7 @@
 
 namespace Hudutech\Controller;
 use Hudutech\DBManager\DB;
-use Hudutech\Entity\Loan;
+
 
 trait LongTermLoan
 {

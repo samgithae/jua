@@ -14,8 +14,11 @@ use Hudutech\DBManager\ComplexQuery;
 use Hudutech\DBManager\DB;
 use Hudutech\Entity\Group;
 
+
 class GroupController extends ComplexQuery implements GroupInterface
 {
+    use GroupStats;
+
     public function create(Group $group)
     {
         $db = new DB();
@@ -230,8 +233,6 @@ class GroupController extends ComplexQuery implements GroupInterface
         }
     }
 
-    public static function getGroupShares(){
 
-    }
 
 }

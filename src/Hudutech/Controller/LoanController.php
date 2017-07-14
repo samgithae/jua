@@ -112,6 +112,8 @@ class LoanController extends ComplexQuery implements LoanInterface
                         "loanType" => $loanType,
                         "clientLoanId" => $conn->lastInsertId()
                     );
+                    $groupId = ClientController::getClientsGroup($clientId)['id'];
+                    self::updateClientLoanGroupId($conn->lastInsertId(), $groupId);
                     self::createRepaymentDates($clientId, $loanType);
                     self::createLoanStatus($clientId, $loanType);
                     self::createLoanServicing($config);
@@ -135,6 +137,22 @@ class LoanController extends ComplexQuery implements LoanInterface
         } else {
             return [
                 "error" => "Amount More than your allowed limit of {$shortTermLoanLimit}"
+            ];
+        }
+    }
+
+    public static function updateClientLoanGroupId($id, $groupId){
+        $db = new DB();
+        $conn = $db->connect();
+        try{
+            $stmt = $conn->prepare("UPDATE client_loans SET groupId=:groupId WHERE  id=:id");
+            $stmt->bindParam(":groupId", $groupId);
+            $stmt->bindParam(":id", $id);
+            return $stmt->execute() ? true : false;
+        }catch (\PDOException $e){
+            //echo $e->getMessage();
+            return [
+                "error"=>$e->getMessage()
             ];
         }
     }
