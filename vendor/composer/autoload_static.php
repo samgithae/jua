@@ -34,6 +34,7 @@ class ComposerStaticInit4e3453010ba9f77a6119b03ae3282213
         'Hudutech\\Controller\\DefaulterController' => __DIR__ . '/../..' . '/src/Hudutech/Controller/DefaulterController.php',
         'Hudutech\\Controller\\EmployeeController' => __DIR__ . '/../..' . '/src/Hudutech/Controller/EmployeeController.php',
         'Hudutech\\Controller\\GroupController' => __DIR__ . '/../..' . '/src/Hudutech/Controller/GroupController.php',
+        'Hudutech\\Controller\\GroupStats' => __DIR__ . '/../..' . '/src/Hudutech/Controller/GroupStats.php',
         'Hudutech\\Controller\\LoanController' => __DIR__ . '/../..' . '/src/Hudutech/Controller/LoanController.php',
         'Hudutech\\Controller\\LongTermLoan' => __DIR__ . '/../..' . '/src/Hudutech/Controller/LongTermLoan.php',
         'Hudutech\\Controller\\SavingController' => __DIR__ . '/../..' . '/src/Hudutech/Controller/SavingController.php',

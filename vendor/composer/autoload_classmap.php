@@ -19,6 +19,7 @@ return array(
     'Hudutech\\Controller\\DefaulterController' => $baseDir . '/src/Hudutech/Controller/DefaulterController.php',
     'Hudutech\\Controller\\EmployeeController' => $baseDir . '/src/Hudutech/Controller/EmployeeController.php',
     'Hudutech\\Controller\\GroupController' => $baseDir . '/src/Hudutech/Controller/GroupController.php',
+    'Hudutech\\Controller\\GroupStats' => $baseDir . '/src/Hudutech/Controller/GroupStats.php',
     'Hudutech\\Controller\\LoanController' => $baseDir . '/src/Hudutech/Controller/LoanController.php',
     'Hudutech\\Controller\\LongTermLoan' => $baseDir . '/src/Hudutech/Controller/LongTermLoan.php',
     'Hudutech\\Controller\\SavingController' => $baseDir . '/src/Hudutech/Controller/SavingController.php',
