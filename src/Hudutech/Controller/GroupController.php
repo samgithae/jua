@@ -120,6 +120,25 @@ class GroupController extends ComplexQuery implements GroupInterface
         }
     }
 
+    public static function getId($id){
+        $db = new DB();
+        $conn = $db->connect();
+        try{
+            $stmt = $conn->prepare("SELECT t.* FROM sacco_group t WHERE t.id=:id");
+            $stmt->bindParam(":id", $id);
+            $row = [];
+            if($stmt->execute() && $stmt->rowCount() == 1){
+                $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+                $db->closeConnection();
+            }
+            return $row;
+        }catch (\PDOException $e){
+            return [
+                "error"=>$e->getMessage()
+            ];
+        }
+    }
+
     public static function delete($id)
     {
         $db = new DB();

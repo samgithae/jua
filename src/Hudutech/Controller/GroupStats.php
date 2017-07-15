@@ -48,22 +48,92 @@ trait GroupStats
         }
     }
     public static function getAdvance($groupId){
+        $db = new DB();
+        $conn = $db->connect();
+        try{
+          $stmt = $conn->prepare("SELECT SUM(loanAmount) as advance FROM client_loans WHERE MONTH(loanDate) = MONTH(CURDATE())-1 AND 
+                                groupId=:groupId AND loanType='monthly' OR loanType='trimester' AND `status`='active'");
+          $stmt->bindParam(":groupId", $groupId);
+          if($stmt->execute() && $stmt->rowCount() == 1){
+              $advance = $stmt->fetch(\PDO::FETCH_ASSOC);
+              return $advance['advance'];
+          }else{
+              return [
+                  "error"=>"Internal Server Error Occurred"
+              ];
+          }
+        } catch (\PDOException $e){
+            return [
+                "error"=>$e->getMessage()
+            ];
+        }
 
+    }
+
+    public static function getLoans($groupId){
+        $db = new DB();
+        $conn = $db->connect();
+        try{
+            $stmt = $conn->prepare("SELECT SUM(loanAmount) as total_loan FROM client_loans WHERE `status`='active'
+                                    AND groupId=:groupId");
+            $stmt->bindParam(":groupId", $groupId);
+
+            if($stmt->execute() && $stmt->rowCount()==1){
+                return $stmt->fetch(\PDO::FETCH_ASSOC)['total_loan'];
+            }else{
+                return ['error'=>"Internal Server Error Occurred"];
+            }
+        }catch (\PDOException $exception){
+
+            return[
+                'error'=>$exception->getMessage()
+            ];
+        }
     }
     public static function getGroupBanking($groupId){
-
+        $loans = self::getLoans($groupId);
+        $shares = self::getGroupShares($groupId);
+        return (float)($shares-$loans);
     }
     public static function getGroupTRF($groupId){
+    $loans = self::getLoans($groupId);
+    $banking =self::getGroupBanking($groupId);
+    $trf= $loans+$banking;
+    return (float)($trf);
 
+    }
+
+    public static function getGroupOfficeDebt($groupId){
+        $loans = self::getLoans($groupId);
+        $shares = self::getGroupShares($groupId);
+        $office_debt = 0;
+        if($loans > $shares) {
+           $office_debt=$loans-$shares;
+        }
+        return $office_debt;
     }
     public static function getGroupInterest($groupId){
-
-    }
-    public static function getGroupOfficeDebt($groupId){
-
+        $groupTRF = self::getGroupTRF($groupId);
+        $shares = self::getGroupShares($groupId);
+        $office_debt = self::getGroupOfficeDebt($groupId);
+        $interest = (float)($groupTRF-$shares-$office_debt);
+        return $interest;
     }
     public static function showStats(){
-
+     $groups = GroupController::all();
+     $data = [];
+     foreach ($groups as $group){
+         $dataItem = array(
+             "groupName"=>GroupController::getId($group['id'])['groupName'],
+             "shares"=>self::getGroupShares($group['id']),
+             "loans"=>self::getLoans($group['id']),
+             "groupTRF" => self::getGroupTRF($group['id']),
+             "interest" => self::getGroupInterest($group['id']),
+             "officeDebt"=>self::getGroupOfficeDebt($group['id'])
+         );
+         array_push($data, $dataItem);
+     }
+     return $data;
     }
 
 }

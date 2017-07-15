@@ -49,6 +49,10 @@ trait LongTermLoan
                         "loanType"=> $loanType,
                         "clientLoanId" => $conn->lastInsertId()
                     );
+
+                    $groupId = ClientController::getClientsGroup($clientId)['id'];
+                    self::updateClientLoanGroupId($conn->lastInsertId(), $groupId);
+
                     self::createRepaymentDates($clientId, $loanType, $years);
                     self::createLoanStatus($clientId, $loanType, $years);
                     self::createLongTermLoanServing($config);

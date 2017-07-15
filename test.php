@@ -82,3 +82,9 @@ $arr1 = array(
 //}
 //
 //echo "CONTRIB {$contribution} dump {$dumpedSaving}  cash {$cashReceived}";
+
+function getSum($x, $y){
+    return floatval($x+$y);
+}
+
+echo "sum is ".getSum(2,3);
