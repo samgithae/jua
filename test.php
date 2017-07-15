@@ -4,7 +4,7 @@ require_once __DIR__.'/vendor/autoload.php';
 use Hudutech\Controller\SavingController;
 
 use Hudutech\Controller\LoanController;
-use Hudutech\Controller\ClientController;
+use Hudutech\Controller\GroupController;
 
 $savings = SavingController::checkBalance(57);
 
@@ -83,8 +83,4 @@ $arr1 = array(
 //
 //echo "CONTRIB {$contribution} dump {$dumpedSaving}  cash {$cashReceived}";
 
-function getSum($x, $y){
-    return floatval($x+$y);
-}
-
-echo "sum is ".getSum(2,3);
+print_r(GroupController::showStats());

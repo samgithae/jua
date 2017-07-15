@@ -6,8 +6,10 @@
  * Time: 11:54
  */
 require_once __DIR__.'/../vendor/autoload.php';
+use Hudutech\Controller\GroupController;
 $counter=1;
-$groupSavings=\Hudutech\Controller\SavingController::showGroupSavingsLog();
+$groupSavings = GroupController::showStats();
+
 //print_r($groupSaving);
 ?>
 
@@ -37,7 +39,7 @@ $groupSavings=\Hudutech\Controller\SavingController::showGroupSavingsLog();
     <div id="page-wrapper">
         <div class="row">
             <div class="col-lg-12">
-                <h1 class="page-header"> Group Savings</h1>
+                <h3 class="page-header"> Group Savings and Statistics</h3>
             </div>
             <!-- /.col-lg-12 -->
         </div>
@@ -46,7 +48,7 @@ $groupSavings=\Hudutech\Controller\SavingController::showGroupSavingsLog();
             <div class="col-lg-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        Recorded group savings
+                        Group Saving Statistics
                     </div>
                     <!-- /.panel-heading -->
                     <div class="panel-body">
@@ -60,13 +62,13 @@ $groupSavings=\Hudutech\Controller\SavingController::showGroupSavingsLog();
                                 <tr>
                                     <th>#</th>
                                     <th>GroupName</th>
-                                    <th>GroupSaving</th>
                                     <th>Shares</th>
                                     <th>Advance</th>
                                     <th>Loans</th>
                                     <th>Banking</th>
                                     <th>TRF</th>
                                     <th>Interest</th>
+                                    <th>Office Debt</th>
 
                                 </tr>
                                 </thead>
@@ -75,7 +77,13 @@ $groupSavings=\Hudutech\Controller\SavingController::showGroupSavingsLog();
                                     <tr>
                                         <td><?php echo $counter++?></td>
                                         <td><?php echo $groupSaving['groupName']?></td>
-                                        <td><?php echo $groupSaving['total_group_savings']?></td>
+                                        <td><?php echo $groupSaving['shares']?></td>
+                                        <td><?php echo $groupSaving['advance']?></td>
+                                        <td><?php echo $groupSaving['loans']?></td>
+                                        <td><?php echo $groupSaving['banking']?></td>
+                                        <td><?php echo $groupSaving['groupTRF']?></td>
+                                        <td><?php echo $groupSaving['interest']?></td>
+                                        <td><?php echo $groupSaving['officeDebt']?></td>
 
 
 
