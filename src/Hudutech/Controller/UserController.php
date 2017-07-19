@@ -134,8 +134,8 @@ class UserController extends Auth implements UserInterface
 
         try{
 
-            $stmt = $conn->prepare("SELECT u.* FROM users u WHERE 1");
-            return $stmt->execute() && $stmt->rowCount() == 1 ? $stmt->fetchAll(\PDO::FETCH_ASSOC) : [];
+                $stmt = $conn->prepare("SELECT * FROM users");
+            return $stmt->execute() && $stmt->rowCount() >= 1 ? $stmt->fetchAll(\PDO::FETCH_ASSOC) : [];
         } catch (\PDOException $exception) {
             echo $exception->getMessage();
             return [];

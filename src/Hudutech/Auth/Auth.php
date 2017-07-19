@@ -26,12 +26,12 @@ class Auth
      * @param $password
      * @return bool
      */
-    public  static function authenticate($username, $password)
+    public static function authenticate($username, $password)
     {
         $db = new DB();
         $conn = $db->connect();
         try {
-            $stmt = $conn->prepare("SELECT * FROM users WHERE username=:username");
+            $stmt = $conn->prepare("SELECT * FROM `users` WHERE `username`=:username");
             $stmt->bindParam(":username", $username);
 
             $stmt->execute();
@@ -40,21 +40,27 @@ class Auth
 
                 $row = $stmt->fetch(\PDO::FETCH_ASSOC);
                 if (password_verify($password, $row['password'])) {
-                    return true;
+                    if ($row['isActive'] == 0) {
+                        return ["error" => "Your Account Has Been Temporally blocked Contact Admin"];
+                    }
+                    if ($row['isActive'] == 1) {
+                        return ["success" => "Authenticated Successfully"];
+                    } else {
+                        return ["error" => "Invalid Login Credentials Supplied."];
+                    }
                 } else {
-                    return false;
+                    return ["error" => "Invalid Login Credentials Supplied."];
                 }
 
-
             } else {
-                return false;
+                return ["error" => "Invalid Login Credentials Supplied."];
             }
-
         } catch (\PDOException $e) {
             echo $e->getMessage();
-            return false;
+            return ["error" => "Internal Server error occurred Try again later."];
         }
     }
+
 
     /**
      * Generate a csrf_token to
@@ -70,6 +76,27 @@ class Auth
     {
         $this->token = md5(uniqid('auth', true));
         return $this->token;
+    }
+    public static function makePassword($password)
+    {
+        return password_hash($password, PASSWORD_BCRYPT);
+    }
+
+    public static function changePassword($username, $newPassword)
+    {
+        $db = new DB();
+        $conn = $db->connect();
+        $password = self::makePassword($newPassword);
+
+        try {
+            $stmt = $conn->prepare("UPDATE `users` SET `password`=:password WHERE `username`=:username");
+            $stmt->bindParam(":username", $username);
+            $stmt->bindParam(":password", $password);
+            return $stmt->execute() ? true : false;
+        } catch (\PDOException $exception) {
+            echo $exception->getMessage();
+            return false;
+        }
     }
 
 

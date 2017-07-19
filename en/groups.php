@@ -7,6 +7,7 @@
  */
 require_once __DIR__.'/../vendor/autoload.php';
 $groups = \Hudutech\Controller\GroupController::all();
+
 $counter=1;
 ?>
 
@@ -101,7 +102,8 @@ $counter=1;
                                         <td><?php echo $group['monthlyMeetingSchedule'] ?></td>
 
                                         <td colspan="3">
-                                            <button class="btn btn-xs btn-primary">Edit</button>
+
+                                            <a class="btn btn-xs btn-success" href="edit_group.php?k=<?php echo $group['id'] ?> ">Edit</a>
 
                                             <a class="btn btn-xs btn-success" href="group_member_get.php?k=<?php echo $group['refNo'] ?> ">View</a>
                                             <button class="btn btn-xs btn-danger">Delete</button>

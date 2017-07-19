@@ -72,33 +72,37 @@ class GroupController extends ComplexQuery implements GroupInterface
 
     public function update(Group $group, $id)
     {
+
         $db = new DB();
         $conn = $db->connect();
 
         $groupName = $group->getGroupName();
-        $refNo = $group->getRefNo();
+
         $region = $group->getRegion();
         $officialContact = $group->getOfficialContact();
         $dateFormed = $group->getDateFormed();
         $monthlyMeetingSchedule = $group->getMonthlyMeetingSchedule();
+
         try {
             $sql = " UPDATE  sacco_group SET
                                         groupName:=groupName,
-                                        refNo:=refNo,
-                                        region:=refNo,
+                                        
+                                        region:=region,
                                         officialContact:=officialContact,
                                         dateFormed:=dateFormed,
                                         monthlyMeetingSchedule:=monthlyMeetingSchedule
-                                      WHERE id=:id
-                                        ";
+                                      WHERE 
+                                        id='.$id.'";
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(":id", $id);
             $stmt->bindParam(":groupName", $groupName);
-            $stmt->bindParam(":refNo", $refNo);
+
             $stmt->bindParam(":region", $region);
             $stmt->bindParam(":officialContact", $officialContact);
             $stmt->bindParam(":dateFormed", $dateFormed);
             $stmt->bindParam(":monthlyMeetingSchedule", $monthlyMeetingSchedule);
+
+
 
             if($stmt->execute()){
                 $db->closeConnection();
@@ -165,7 +169,6 @@ class GroupController extends ComplexQuery implements GroupInterface
             ];
         }
     }
-
     public static function getGroupObject($id)
     {
         $db = new DB();
@@ -177,6 +180,25 @@ class GroupController extends ComplexQuery implements GroupInterface
             $stmt->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, Group::class);
 
             return $stmt->execute() && $stmt->rowCount() == 1 ? $stmt->fetch() : null;
+
+        } catch (\PDOException $exception) {
+            echo $exception->getMessage();
+            return null;
+        }
+    }
+
+    public static function getGroupObject2($id)
+    {
+        $db = new DB();
+        $conn = $db->connect();
+
+        try{
+            $stmt = $conn->prepare("SELECT g.* FROM sacco_group g WHERE g.id=:id");
+            $stmt->bindParam(":id", $id);
+            //$stmt->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, Group::class);
+            $stmt->execute();
+$groupInfo=$stmt->fetch(\PDO::FETCH_ASSOC);
+            return  $stmt->rowCount() == 1 ?  $groupInfo: null;
 
         } catch (\PDOException $exception) {
             echo $exception->getMessage();

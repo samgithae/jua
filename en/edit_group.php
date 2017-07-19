@@ -6,8 +6,22 @@
  * Time: 11:19
  */
 require_once __DIR__.'/../vendor/autoload.php';
-include  __DIR__.'/includes/register_group.inc.php';
-$group= Hudutech\Controller\GroupController::getGroupObject($_GET['id']);
+include  'includes/edit_group.inc.php';
+//$groupsInfo=Hudutech\Controller\GroupController::getGroupObject2($_GET['k']);
+$groupsAlls=Hudutech\Controller\GroupController::all();
+foreach ($groupsAlls as $groupsAll):
+
+if($groupsAll['id']==$_GET['k']){
+
+    $groupName= $groupsAll['groupName'];
+    $refNo=$groupsAll['refNo'];
+    $region=$groupsAll['region'];
+    $officialContact=$groupsAll['officialContact'];
+    $monthlyMeetingSchedule=$groupsAll['monthlyMeetingSchedule'];
+    $dateFormed=$groupsAll['dateFormed'];
+}
+endforeach;
+
 
 ?>
 <!DOCTYPE html>
@@ -104,12 +118,16 @@ $group= Hudutech\Controller\GroupController::getGroupObject($_GET['id']);
                                 <?php } ?>
                             </div>
 
-                            <div class="col-md-12 ">
+                            <div class="col-md-12 "
                                 <div class="container-fluid">
                                     <!-- Page Heading -->
                                     <div class="row" id="main" >
 
                                         <div class="col-md-10 ">
+
+
+
+
                                             <form class="form-horizontal col-md-offset-2" role="form" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'])?>" METHOD="post">
                                                 <fieldset>
 
@@ -120,12 +138,14 @@ $group= Hudutech\Controller\GroupController::getGroupObject($_GET['id']);
                                                     <div class="form-group">
                                                         <div class="col-sm-5">
                                                             <label for="group_name">Name of group</label>
-                                                            <input type="text" name="pf_no" id="pf_no" value="<?php echo $group['refNo'] ?> " placeholder="Personal file number (PF No)" class="form-control">
+
+                                                            <input type="hidden" name="id" value="<?php echo $_GET['k'] ?>">
+                                                            <input type="text" name="group_name" id="pf_no" value='<?php echo $groupName; ?> ' placeholder="Personal file number (PF No)" class="form-control">
 
                                                         </div>
                                                         <div class="col-sm-5">
                                                             <label for="ref_no">Reference number</label>
-                                                            <input type="text" name="ref_no" id="ref_no" value="<?php echo $group['refNo'] ?>"  placeholder="Reference number" class="form-control">
+                                                            <input type="text" name="ref_no" id="ref_no" value="<?php echo $refNo; ?>"  placeholder="Reference number" class="form-control">
                                                         </div>
 
                                                     </div>
@@ -133,14 +153,16 @@ $group= Hudutech\Controller\GroupController::getGroupObject($_GET['id']);
 
                                                     <!-- Text input-->
                                                     <div class="form-group">
-                                                        <div class="col-sm-5">
-                                                            <label for="number_of_members">Number of members</label>
-                                                            <input type="text" name="number_of_members" id="number_of_members" value="<?php echo $group['']?>"  placeholder="Number of members" class="form-control">
-                                                        </div>
+
 
                                                         <div class="col-sm-5">
                                                             <label for="region">Region of location</label>
-                                                            <input type="text" name="region" id="region" value="<?php echo $group['region']?>"  placeholder="Region of location" class="form-control">
+                                                            <input type="text" name="region" id="region" value="<?php echo $region ?>"  placeholder="Region of location" class="form-control">
+                                                        </div>
+                                                        <div class="col-sm-5">
+                                                            <label for="date_formed">Date of formation</label>
+
+                                                            <input placeholder="Date of formation" name="date_formed" id="date_formed" value="<?php echo $dateFormed ?>"  class="form-control" type="text" onfocus="(this.type='date')" onblur="(this.type='text')" >
                                                         </div>
 
                                                     </div>
@@ -151,12 +173,12 @@ $group= Hudutech\Controller\GroupController::getGroupObject($_GET['id']);
                                                     <div class="form-group">
                                                         <div class="col-sm-5">
                                                             <label for="official_contact">Group officials’ contact</label>
-                                                            <input type="text" name="official_contact" id="official_contact" value="<?php echo $group['officialContact']?>"  placeholder="Group officials’ contact" class="form-control">
+                                                            <input type="text" name="official_contact" id="official_contact" value="<?php echo $officialContact ?>"  placeholder="Group officials’ contact" class="form-control">
                                                         </div>
 
                                                         <div class="col-sm-5">
                                                             <label for="monthly_meeting_schedule">Monthly meeting schedules</label>
-                                                            <input type="text" name="monthly_meeting_schedule" id="monthly_meeting_schedule" value="<?php echo $group['monthlyMeetingSchedule']?>"  placeholder="Monthly meeting schedules" class="form-control">
+                                                            <input type="text" name="monthly_meeting_schedule" id="monthly_meeting_schedule" value="<?php echo $monthlyMeetingSchedule ?>"  placeholder="Monthly meeting schedules" class="form-control">
                                                         </div>
 
                                                     </div>
@@ -164,13 +186,7 @@ $group= Hudutech\Controller\GroupController::getGroupObject($_GET['id']);
 
 
 
-                                                    <div class="form-group">
-                                                        <div class="col-sm-5">
-                                                            <label for="date_formed">Date of formation</label>
 
-                                                            <input placeholder="Date of formation" name="date_formed" id="date_formed" value="<?php echo $group['dateFormed']?>"  class="form-control" type="text" onfocus="(this.type='date')" onblur="(this.type='text')" >
-                                                        </div>
-                                                    </div>
 
 
                                                     <!-- Command -->
@@ -184,7 +200,9 @@ $group= Hudutech\Controller\GroupController::getGroupObject($_GET['id']);
                                                     </div>
                                                 </fieldset>
                                             </form>
-                                        </div><!-- /.col-lg-12 -->
+
+
+                                            </div><!-- /.col-lg-12 -->
                                     </div><!-- /.row -->
 
                                 </div>

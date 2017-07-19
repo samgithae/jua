@@ -95,6 +95,9 @@ if(!isset($_SESSION['username'])){
                             <li>
                                 <a href="group_member.php"><div class="menu-links" ><i class="fa fa-fw  fa-group"></i> View Group Members</div></a>
                             </li>
+                            <li>
+                                <a href="users.php"><div class="menu-links" ><i class="fa fa-fw  fa-user-plus"></i> View Users</div></a>
+                            </li>
                         </ul>
                     </li>
 
