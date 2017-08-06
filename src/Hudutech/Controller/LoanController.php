@@ -109,7 +109,7 @@ class LoanController extends ComplexQuery implements LoanInterface
                         "principal" => $amount,
                         "loanInterest" => $interest,
                         "loanBal" => $loanBal,
-                        "loanType"=>$loanType,
+                        "loanType" => $loanType,
                         "clientLoanId" => $conn->lastInsertId()
                     );
                     self::createRepaymentDates($clientId, $loanType);
@@ -178,7 +178,7 @@ class LoanController extends ComplexQuery implements LoanInterface
      * @param $years
      * @return bool
      */
-    public static function createRepaymentDates($clientId, $loanType, $years=0)
+    public static function createRepaymentDates($clientId, $loanType, $years = 0)
     {
         $db = new DB();
         $conn = $db->connect();
@@ -194,9 +194,9 @@ class LoanController extends ComplexQuery implements LoanInterface
                 $monthOne = date('Y-m-d', strtotime($currentDate . ' + 30 days'));
                 $monthTwo = date('Y-m-d', strtotime($monthOne . ' + 30 days'));
                 $monthThree = date('Y-m-d', strtotime($monthTwo . ' + 30 days'));
-            }elseif ($loanType == 'long_term'){
+            } elseif ($loanType == 'long_term') {
                 $d = $years * 365;
-                $days = '+'.$d.' days';
+                $days = '+' . $d . ' days';
                 $monthOne = date('Y-m-d', strtotime($currentDate . $days));
             }
             $stmt = $conn->prepare("INSERT INTO loan_repayment_dates(clientId, monthOne, monthTwo, monthThree, loanType, loanDate)
@@ -222,7 +222,7 @@ class LoanController extends ComplexQuery implements LoanInterface
      * @param $years
      * @return bool
      */
-    public static function createLoanStatus($clientId, $loanType, $years=0)
+    public static function createLoanStatus($clientId, $loanType, $years = 0)
     {
         $db = new DB;
         $conn = $db->connect();
@@ -261,10 +261,9 @@ class LoanController extends ComplexQuery implements LoanInterface
                     $stmt->execute();
                 }
                 return true;
-            }
-            elseif ($loanType=='long_term'){
+            } elseif ($loanType == 'long_term') {
                 $days = $years * 365;
-                $days = '+'.$days.' days';
+                $days = '+' . $days . ' days';
                 $deadline = date('Y-m-d', strtotime($currentDate . $days));
                 $sql = "INSERT INTO loan_status(clientId, deadline, status, loanType, loanDate)
                           VALUES (:clientId, :deadline, :status, :loanType, :loanDate)";
@@ -315,7 +314,8 @@ class LoanController extends ComplexQuery implements LoanInterface
         }
     }
 
-    public static function createLongTermLoanServing($config){
+    public static function createLongTermLoanServing($config)
+    {
 
         $clientId = $config['clientId'];
         $principal = $config['principal'];
@@ -414,13 +414,14 @@ class LoanController extends ComplexQuery implements LoanInterface
             }
             if (sizeof($loanServicing) == 1 && !empty($loanServicing[0]['loanCF']) && !empty($loanServicing[0]['amountPaid']) && $loanServicing[0]['loanCF'] > 0) {
                 // get the previous payment and create an new record
-                //previous LoanCF = new principal
-                $previousLoanCF = $loanServicing[0]['loanCF'];
-                $createdAt = $loanServicing[0]['createdAt'];
 
+                $previousLoanCF = $loanServicing[0]['loanCF'];
                 $newInterest = self::calculateInterest($loanType, $previousLoanCF);
                 $newLoanBal = $previousLoanCF + $newInterest;
                 $newLoanCF = (float)($newLoanBal - $amount);
+
+                $createdAt = $loanServicing[0]['createdAt'];
+
                 $datePaid = date("Y-m-d h:i:s");
 
                 if ($newLoanCF == 0) {
@@ -488,11 +489,11 @@ class LoanController extends ComplexQuery implements LoanInterface
                 $month2 = date("m", $time2);
                 $year2 = date("Y", $time2);
                 $newLoanCF = 0;
-                if($month1 == $month2 && $year1==$year2){
+                if ($month1 == $month2 && $year1 == $year2) {
                     $newInterest = 0;
                     $newLoanBal = $previousLoanCF;
                     $newLoanCF = $newLoanBal - $amount;
-                }elseif($month2 > $month1 && $year1==$year2){
+                } elseif ($month2 > $month1 && $year1 == $year2) {
                     $newInterest = self::calculateInterest($loanType, $previousLoanCF);
                     $newLoanBal = $previousLoanCF + $newInterest;
                     $newLoanCF = (float)($newLoanBal - $amount);
@@ -1085,27 +1086,26 @@ class LoanController extends ComplexQuery implements LoanInterface
         }
     }
 
-    public static function checkClientHasActiveLoan($clientId){
-        //TODO: fix logic return all active dont allow client with active loan to get more except topup
-       // removed the load id parameter to allow more dynamic query and get only the active loan
+    public static function checkClientHasActiveLoan($clientId)
+    {
         $db = new DB();
         $conn = $db->connect();
 
-        try{
-           $stmt = $conn->prepare("SELECT * FROM client_loans  WHERE clientId=:clientId AND status='active' LIMIT 1");
-           $stmt->bindParam(":clientId", $clientId);
-           if($stmt->execute() ==1){
-               $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-               return $row;
-           }else{
-              return [
-                  'error'=> "Internal Server error"
-              ];
-           }
-        }catch (\PDOException $exception){
+        try {
+            $stmt = $conn->prepare("SELECT * FROM client_loans  WHERE clientId=:clientId AND status='active' LIMIT 1");
+            $stmt->bindParam(":clientId", $clientId);
+            if ($stmt->execute() == 1) {
+                $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+                return $row;
+            } else {
+                return [
+                    'error' => "Internal Server error"
+                ];
+            }
+        } catch (\PDOException $exception) {
             $exception->getMessage();
             return [
-                'error'=> $exception->getMessage()
+                'error' => $exception->getMessage()
             ];
         }
     }
@@ -1115,32 +1115,33 @@ class LoanController extends ComplexQuery implements LoanInterface
      * shows the list of clients with loan and their
      * loan balances
      */
-    public static function showLoanBalances(){
-       //Todo: implement logic for showing short term loan balances--completed on 7th Aug
+    public static function showLoanBalances()
+    {
+        //Todo: implement logic for showing short term loan balances--completed on 7th Aug
         //todo:implement on the ui
         //todo : allow one to click on loan list and redirect to repayment page. the repayment
         //todo: form will show the current balance as computed from the logic below
+        //todo: test this code if its returning correct array data;
         $loans = self::getLoan();
         $data = array();
-        foreach ($loans as $loan){
+        foreach ($loans as $loan) {
             $loanType = $loan['loanType'];
             $previousPayment = [];
-            if($loanType == 'long_term'){
+            if ($loanType == 'long_term') {
                 $previousPayment = self::getPreviousLongTermLoan($loan['id']);
-                if(is_null($previousPayment['loanCF'])){
+                if (is_null($previousPayment['loanCF'])) {
                     $dataItem = array();
                     $dataItem['loanBal'] = $previousPayment['loanBal'];
                     $clientName = ClientController::getId($previousPayment['clientId'])['fullName'];
                     $clientGroup = ClientController::getClientsGroup($previousPayment['clientId'])['groupName'];
-                    $dataItem['fullName']= $clientName;
+                    $dataItem['fullName'] = $clientName;
                     $dataItem['groupName'] = $clientGroup;
                     $dataItem['dateBorrowed'] = $previousPayment['createdAt'];
 
                     array_push($data, $dataItem);
 
 
-
-                }elseif(!is_null($previousPayment['loanCF']) && (float)$previousPayment['loanCF'] > 0){
+                } elseif (!is_null($previousPayment['loanCF']) && (float)$previousPayment['loanCF'] > 0) {
                     $deadline = $previousPayment['createdAt'];
                     $previousPaymentDate = $previousPayment['datePaid'];
                     $currentDate = date('Y-m-d');
@@ -1152,28 +1153,28 @@ class LoanController extends ComplexQuery implements LoanInterface
                     //year therefore should not attract interest since it was
                     // included in the previous payment.
                     //this will ensure we show correct loan balance.
-                    if($year3 == $year2 && $year2 < $year1){
+                    if ($year3 == $year2 && $year2 < $year1) {
                         $dataItem = array();
                         $dataItem['loanBal'] = $previousPayment['loanCF'];
                         $clientName = ClientController::getId($previousPayment['clientId'])['fullName'];
                         $clientGroup = ClientController::getClientsGroup($previousPayment['clientId'])['groupName'];
-                        $dataItem['fullName']= $clientName;
+                        $dataItem['fullName'] = $clientName;
                         $dataItem['groupName'] = $clientGroup;
                         $dataItem['dateBorrowed'] = $previousPayment['createdAt'];
                         array_push($data, $dataItem);
                     }
 
-                    if(($year2-$year3)== 1 && $year2<$year1){
+                    if (($year2 - $year3) == 1 && $year2 < $year1) {
                         //loanCF will include interest since this is new year
-                        $withInterest = self::calculateInterest('long_term', $previousPayment['loanCF']);
+                        $interest = self::calculateInterest('long_term', $previousPayment['loanCF']);
                         $dataItem = array();
-                        $dataItem['loanBal'] = $withInterest;
+                        $dataItem['loanBal'] = $interest + $previousPayment['loanCF'];
                         $dataItem['fullName'] = ClientController::getId($previousPayment)['fullName'];
                         $dataItem['groupName'] = ClientController::getClientsGroup($previousPayment['clientId'])['groupName'];
                         $dataItem['dateBorrowed'] = $previousPayment['createdAt'];
                         array_push($data, $dataItem);
                     }
-                    if($year2==$year1 && $year3==$year2){
+                    if ($year2 == $year1 && $year3 == $year2) {
                         $dataItem = array();
                         $dataItem['loanBal'] = $previousPayment['loanCF'];
                         $dataItem['fullName'] = ClientController::getId($previousPayment)['fullName'];
@@ -1183,10 +1184,10 @@ class LoanController extends ComplexQuery implements LoanInterface
                     }
 
                 }
-            }elseif ($loanType=='trimester'){
-                $previousPayment=self::getPreviousRepayment($loan['clientId'], $loan['clientLoanId']);
+            } elseif ($loanType == 'trimester') {
+                $previousPayment = self::getPreviousRepayment($loan['clientId'], $loan['clientLoanId']);
                 //check if the previous payment loanCF is null, if null then this is the first repayment
-                if(is_null($previousPayment['loanCF'])){
+                if (is_null($previousPayment['loanCF'])) {
                     $dataItem = array();
                     $dataItem['loanBal'] = $previousPayment['loanBal'];
                     $dataItem['fullName'] = ClientController::getId($previousPayment['clientId'])['fullName'];
@@ -1194,17 +1195,20 @@ class LoanController extends ComplexQuery implements LoanInterface
                     $dataItem['dateBorrowed'] = $previousPayment['createdAt'];
                     array_push($data, $dataItem);
 
-                }elseif (!is_null($previousPayment['loanCF']) && (float)($previousPayment['loanCF']) > 0){
+                } elseif (!is_null($previousPayment['loanCF']) && (float)($previousPayment['loanCF']) > 0) {
                     $currentDate = date('Y-m-d');
                     $previousPaymentDate = $previousPayment['datePaid'];
-                    $repaymentDates = self::getRepaymentsDeadlines($loan['clientId'], $previousPayment['createdAt']);
+                    //$repaymentDates = self::getRepaymentsDeadlines($loan['clientId'], $previousPayment['createdAt']);
 //                    $deadline1 = date('m', strtotime($repaymentDates['monthOne']));
 //                    $deadline2 = date('m', strtotime($repaymentDates['monthTwo']));
 //                    $deadline3 = date('m', strtotime($repaymentDates['monthThree']));
 
                     $curMonth = date('m', strtotime($currentDate));
                     $prevPmtMonth = date('m', strtotime($previousPaymentDate));
-                    if($curMonth == $prevPmtMonth){
+                    $year1 = date('Y', strtotime($currentDate));
+                    $year2 = date('Y', strtotime($previousPaymentDate));
+
+                    if ($curMonth == $prevPmtMonth && $year1 == $year2) {
                         $dataItem = array();
                         $dataItem['loanBal'] = $previousPayment['loanCF'];
                         $dataItem['fullName'] = ClientController::getId($previousPayment['clientId'])['fullName'];
@@ -1213,21 +1217,20 @@ class LoanController extends ComplexQuery implements LoanInterface
                         array_push($data, $dataItem);
 
                     }
-                    if($curMonth > $prevPmtMonth){
-                        $withInterest = self::calculateInterest('trimester', $previousPayment['loanCF']);
+                    if ($curMonth > $prevPmtMonth && $year1 == $year2) {
+                        $interest = self::calculateInterest('trimester', $previousPayment['loanCF']);
                         $dataItem = array();
-                        $dataItem['loanBal'] = $withInterest;
+                        $dataItem['loanBal'] = $interest + $previousPayment['loanCF'];
                         $dataItem['fullName'] = ClientController::getId($previousPayment['clientId'])['fullName'];
                         $dataItem['groupName'] = ClientController::getClientsGroup($previousPayment['clientId'])['groupName'];
                         $dataItem['dateBorrowed'] = $previousPayment['createdAt'];
                         array_push($data, $dataItem);
                     }
                 }
-            }
-            elseif ($loanType == 'monthly'){
-                $previousPayment=self::getPreviousRepayment($loan['clientId'], $loan['clientLoanId']);
+            } elseif ($loanType == 'monthly') {
+                $previousPayment = self::getPreviousRepayment($loan['clientId'], $loan['clientLoanId']);
                 //check if the previous payment loanCF is null, if null then this is the first repayment
-                if(is_null($previousPayment['loanCF'])){
+                if (is_null($previousPayment['loanCF'])) {
                     $dataItem = array();
                     $dataItem['loanBal'] = $previousPayment['loanBal'];
                     $dataItem['fullName'] = ClientController::getId($previousPayment['clientId'])['fullName'];
@@ -1235,13 +1238,15 @@ class LoanController extends ComplexQuery implements LoanInterface
                     $dataItem['dateBorrowed'] = $previousPayment['createdAt'];
                     array_push($data, $dataItem);
 
-                }elseif (!is_null($previousPayment['loanCF']) && (float)($previousPayment['loanCF']) > 0){
+                } elseif (!is_null($previousPayment['loanCF']) && (float)($previousPayment['loanCF']) > 0) {
                     $currentDate = date('Y-m-d');
                     $previousPaymentDate = $previousPayment['datePaid'];
 
                     $curMonth = date('m', strtotime($currentDate));
                     $prevPmtMonth = date('m', strtotime($previousPaymentDate));
-                    if($curMonth == $prevPmtMonth){
+                    $year1 = date('Y', strtotime($currentDate));
+                    $year2 = date('Y', strtotime($previousPaymentDate));
+                    if ($curMonth == $prevPmtMonth && $year1 == $year2) {
                         $dataItem = array();
                         $dataItem['loanBal'] = $previousPayment['loanCF'];
                         $dataItem['fullName'] = ClientController::getId($previousPayment['clientId'])['fullName'];
@@ -1250,10 +1255,10 @@ class LoanController extends ComplexQuery implements LoanInterface
                         array_push($data, $dataItem);
 
                     }
-                    if($curMonth > $prevPmtMonth){
+                    if ($curMonth > $prevPmtMonth && $year1 == $year2) {
                         $dataItem = array();
-                        $withInterest = self::calculateInterest('monthly', $previousPayment['loanCF']);
-                        $dataItem['loanBal'] = $withInterest;
+                        $interest = self::calculateInterest('monthly', $previousPayment['loanCF']);
+                        $dataItem['loanBal'] = $interest + $previousPayment['loanCF'];
                         $dataItem['fullName'] = ClientController::getId($previousPayment['clientId'])['fullName'];
                         $dataItem['groupName'] = ClientController::getClientsGroup($previousPayment['clientId'])['groupName'];
                         $dataItem['dateBorrowed'] = $previousPayment['createdAt'];
