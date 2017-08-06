@@ -1113,7 +1113,7 @@ class LoanController extends ComplexQuery implements LoanInterface
     }
 
 
-    public static function showShortTermLoanBalances(){
+    public static function showLoanBalances(){
        //Todo: implement logic for showing short term loan balances
         $loans = self::getLoan();
         $data = array();
@@ -1123,12 +1123,15 @@ class LoanController extends ComplexQuery implements LoanInterface
             if($loanType == 'long_term'){
                 $previousPayment = self::getPreviousLongTermLoan($loan['id']);
                 if(is_null($previousPayment['loanCF'])){
-                    $data['loanBal'] = $previousPayment['loanBal'];
+                    $dataItem = array();
+                    $dataItem['loanBal'] = $previousPayment['loanBal'];
                     $clientName = ClientController::getId($previousPayment['clientId'])['fullName'];
                     $clientGroup = ClientController::getClientsGroup($previousPayment['clientId'])['groupName'];
-                    $data['fullName']= $clientName;
-                    $data['groupName'] = $clientGroup;
-                    $data['dateBorrowed'] = $previousPayment['createdAt'];
+                    $dataItem['fullName']= $clientName;
+                    $dataItem['groupName'] = $clientGroup;
+                    $dataItem['dateBorrowed'] = $previousPayment['createdAt'];
+
+                    array_push($data, $dataItem);
 
 
 
@@ -1145,22 +1148,33 @@ class LoanController extends ComplexQuery implements LoanInterface
                     // included in the previous payment.
                     //this will ensure we show correct loan balance.
                     if($year3 == $year2 && $year2 < $year1){
-                        $data['loanBal'] = $previousPayment['loanCF'];
+                        $dataItem = array();
+                        $dataItem['loanBal'] = $previousPayment['loanCF'];
+                        $clientName = ClientController::getId($previousPayment['clientId'])['fullName'];
+                        $clientGroup = ClientController::getClientsGroup($previousPayment['clientId'])['groupName'];
+                        $dataItem['fullName']= $clientName;
+                        $dataItem['groupName'] = $clientGroup;
+                        $dataItem['dateBorrowed'] = $previousPayment['createdAt'];
+                        array_push($data, $dataItem);
                     }
 
                     if(($year2-$year3)== 1 && $year2<$year1){
                         //loanCF will include interest since this is new year
-                        $withInterest = self::calculateInterest('loan_term', $previousPayment['loanCF']);
-                        $data['loanBal'] = $withInterest;
-                        $data['fullName'] = ClientController::getId($previousPayment)['fullName'];
-                        $data['groupName'] = ClientController::getClientsGroup($previousPayment['clientId'])['groupName'];
-                        $data['dateBorrowed'] = $previousPayment['createdAt'];
+                        $withInterest = self::calculateInterest('long_term', $previousPayment['loanCF']);
+                        $dataItem = array();
+                        $dataItem['loanBal'] = $withInterest;
+                        $dataItem['fullName'] = ClientController::getId($previousPayment)['fullName'];
+                        $dataItem['groupName'] = ClientController::getClientsGroup($previousPayment['clientId'])['groupName'];
+                        $dataItem['dateBorrowed'] = $previousPayment['createdAt'];
+                        array_push($data, $dataItem);
                     }
                     if($year2==$year1 && $year3==$year2){
-                        $data['loanBal'] = $previousPayment['loanCF'];
-                        $data['fullName'] = ClientController::getId($previousPayment)['fullName'];
-                        $data['groupName'] = ClientController::getClientsGroup($previousPayment['clientId'])['groupName'];
-                        $data['dateBorrowed'] = $previousPayment['createdAt'];
+                        $dataItem = array();
+                        $dataItem['loanBal'] = $previousPayment['loanCF'];
+                        $dataItem['fullName'] = ClientController::getId($previousPayment)['fullName'];
+                        $dataItem['groupName'] = ClientController::getClientsGroup($previousPayment['clientId'])['groupName'];
+                        $dataItem['dateBorrowed'] = $previousPayment['createdAt'];
+                        array_push($data, $dataItem);
                     }
 
                 }
@@ -1168,10 +1182,12 @@ class LoanController extends ComplexQuery implements LoanInterface
                 $previousPayment=self::getPreviousRepayment($loan['clientId'], $loan['clientLoanId']);
                 //check if the previous payment loanCF is null, if null then this is the first repayment
                 if(is_null($previousPayment['loanCF'])){
-                    $data['loanBal'] = $previousPayment['loanBal'];
-                    $data['fullName'] = ClientController::getId($previousPayment['clientId'])['fullName'];
-                    $data['groupName'] = ClientController::getClientsGroup($previousPayment['clientId'])['groupName'];
-                    $data['dateBorrowed'] = $previousPayment['createdAt'];
+                    $dataItem = array();
+                    $dataItem['loanBal'] = $previousPayment['loanBal'];
+                    $dataItem['fullName'] = ClientController::getId($previousPayment['clientId'])['fullName'];
+                    $dataItem['groupName'] = ClientController::getClientsGroup($previousPayment['clientId'])['groupName'];
+                    $dataItem['dateBorrowed'] = $previousPayment['createdAt'];
+                    array_push($data, $dataItem);
 
                 }elseif (!is_null($previousPayment['loanCF']) && (float)($previousPayment['loanCF']) > 0){
                     $currentDate = date('Y-m-d');
@@ -1184,18 +1200,22 @@ class LoanController extends ComplexQuery implements LoanInterface
                     $curMonth = date('m', strtotime($currentDate));
                     $prevPmtMonth = date('m', strtotime($previousPaymentDate));
                     if($curMonth == $prevPmtMonth){
-                        $data['loanBal'] = $previousPayment['loanCF'];
-                        $data['fullName'] = ClientController::getId($previousPayment['clientId'])['fullName'];
-                        $data['groupName'] = ClientController::getClientsGroup($previousPayment['clientId'])['groupName'];
-                        $data['dateBorrowed'] = $previousPayment['createdAt'];
+                        $dataItem = array();
+                        $dataItem['loanBal'] = $previousPayment['loanCF'];
+                        $dataItem['fullName'] = ClientController::getId($previousPayment['clientId'])['fullName'];
+                        $dataItem['groupName'] = ClientController::getClientsGroup($previousPayment['clientId'])['groupName'];
+                        $dataItem['dateBorrowed'] = $previousPayment['createdAt'];
+                        array_push($data, $dataItem);
 
                     }
                     if($curMonth > $prevPmtMonth){
                         $withInterest = self::calculateInterest('trimester', $previousPayment['loanCF']);
-                        $data['loanBal'] = $withInterest;
-                        $data['fullName'] = ClientController::getId($previousPayment['clientId'])['fullName'];
-                        $data['groupName'] = ClientController::getClientsGroup($previousPayment['clientId'])['groupName'];
-                        $data['dateBorrowed'] = $previousPayment['createdAt'];
+                        $dataItem = array();
+                        $dataItem['loanBal'] = $withInterest;
+                        $dataItem['fullName'] = ClientController::getId($previousPayment['clientId'])['fullName'];
+                        $dataItem['groupName'] = ClientController::getClientsGroup($previousPayment['clientId'])['groupName'];
+                        $dataItem['dateBorrowed'] = $previousPayment['createdAt'];
+                        array_push($data, $dataItem);
                     }
                 }
             }
@@ -1203,10 +1223,12 @@ class LoanController extends ComplexQuery implements LoanInterface
                 $previousPayment=self::getPreviousRepayment($loan['clientId'], $loan['clientLoanId']);
                 //check if the previous payment loanCF is null, if null then this is the first repayment
                 if(is_null($previousPayment['loanCF'])){
-                    $data['loanBal'] = $previousPayment['loanBal'];
-                    $data['fullName'] = ClientController::getId($previousPayment['clientId'])['fullName'];
-                    $data['groupName'] = ClientController::getClientsGroup($previousPayment['clientId'])['groupName'];
-                    $data['dateBorrowed'] = $previousPayment['createdAt'];
+                    $dataItem = array();
+                    $dataItem['loanBal'] = $previousPayment['loanBal'];
+                    $dataItem['fullName'] = ClientController::getId($previousPayment['clientId'])['fullName'];
+                    $dataItem['groupName'] = ClientController::getClientsGroup($previousPayment['clientId'])['groupName'];
+                    $dataItem['dateBorrowed'] = $previousPayment['createdAt'];
+                    array_push($data, $dataItem);
 
                 }elseif (!is_null($previousPayment['loanCF']) && (float)($previousPayment['loanCF']) > 0){
                     $currentDate = date('Y-m-d');
@@ -1215,23 +1237,29 @@ class LoanController extends ComplexQuery implements LoanInterface
                     $curMonth = date('m', strtotime($currentDate));
                     $prevPmtMonth = date('m', strtotime($previousPaymentDate));
                     if($curMonth == $prevPmtMonth){
-                        $data['loanBal'] = $previousPayment['loanCF'];
-                        $data['fullName'] = ClientController::getId($previousPayment['clientId'])['fullName'];
-                        $data['groupName'] = ClientController::getClientsGroup($previousPayment['clientId'])['groupName'];
-                        $data['dateBorrowed'] = $previousPayment['createdAt'];
+                        $dataItem = array();
+                        $dataItem['loanBal'] = $previousPayment['loanCF'];
+                        $dataItem['fullName'] = ClientController::getId($previousPayment['clientId'])['fullName'];
+                        $dataItem['groupName'] = ClientController::getClientsGroup($previousPayment['clientId'])['groupName'];
+                        $dataItem['dateBorrowed'] = $previousPayment['createdAt'];
+                        array_push($data, $dataItem);
 
                     }
                     if($curMonth > $prevPmtMonth){
+                        $dataItem = array();
                         $withInterest = self::calculateInterest('monthly', $previousPayment['loanCF']);
-                        $data['loanBal'] = $withInterest;
-                        $data['fullName'] = ClientController::getId($previousPayment['clientId'])['fullName'];
-                        $data['groupName'] = ClientController::getClientsGroup($previousPayment['clientId'])['groupName'];
-                        $data['dateBorrowed'] = $previousPayment['createdAt'];
+                        $dataItem['loanBal'] = $withInterest;
+                        $dataItem['fullName'] = ClientController::getId($previousPayment['clientId'])['fullName'];
+                        $dataItem['groupName'] = ClientController::getClientsGroup($previousPayment['clientId'])['groupName'];
+                        $dataItem['dateBorrowed'] = $previousPayment['createdAt'];
+                        array_push($data, $dataItem);
                     }
                 }
             }
 
         }
+
+        return $data;
     }
 
 }
