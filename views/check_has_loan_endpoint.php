@@ -11,7 +11,7 @@ use Hudutech\Controller\LoanController;
 $data = json_decode(file_get_contents('php://input'), true);
 
 if(!empty($data)){
-$hasActiveLoan = LoanController::checkClientHasActiveLoan($data['clientId'], $data['loanId']);
+$hasActiveLoan = LoanController::checkClientHasActiveLoan($data['clientId']);
 if(isset($hasActiveLoan['error'])){
     print_r(json_encode(array(
         "statusCode"=>500,

@@ -1085,17 +1085,15 @@ class LoanController extends ComplexQuery implements LoanInterface
         }
     }
 
-    public static function checkClientHasActiveLoan($clientId, $loanId){
+    public static function checkClientHasActiveLoan($clientId){
         //TODO: fix logic return all active dont allow client with active loan to get more except topup
+       // removed the load id parameter to allow more dynamic query and get only the active loan
         $db = new DB();
         $conn = $db->connect();
-        $loan = self::getId($loanId);
-        $loanType = isset($loan['loanType']) ? $loan['loanType'] : '';
+
         try{
-           $stmt = $conn->prepare("SELECT * FROM client_loans  WHERE loanType=:loanType AND loanType !='' AND
-                                    clientId=:clientId AND status='active' LIMIT 1");
+           $stmt = $conn->prepare("SELECT * FROM client_loans  WHERE clientId=:clientId AND status='active' LIMIT 1");
            $stmt->bindParam(":clientId", $clientId);
-           $stmt->bindParam(":loanType", $loanType);
            if($stmt->execute() ==1){
                $row = $stmt->fetch(\PDO::FETCH_ASSOC);
                return $row;
@@ -1112,9 +1110,16 @@ class LoanController extends ComplexQuery implements LoanInterface
         }
     }
 
-
+    /**
+     * @return array
+     * shows the list of clients with loan and their
+     * loan balances
+     */
     public static function showLoanBalances(){
-       //Todo: implement logic for showing short term loan balances
+       //Todo: implement logic for showing short term loan balances--completed on 7th Aug
+        //todo:implement on the ui
+        //todo : allow one to click on loan list and redirect to repayment page. the repayment
+        //todo: form will show the current balance as computed from the logic below
         $loans = self::getLoan();
         $data = array();
         foreach ($loans as $loan){
