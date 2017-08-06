@@ -230,5 +230,8 @@ class GroupController extends ComplexQuery implements GroupInterface
         }
     }
 
+    public static function getGroupShares(){
+
+    }
 
 }

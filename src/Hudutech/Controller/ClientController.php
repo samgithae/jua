@@ -407,4 +407,17 @@ class ClientController extends ComplexQuery implements ClientInterface
         }
     }
 
+    public static function getClientsGroup($clientId){
+        $db = new DB();
+        $conn = $db->connect();
+        try{
+          $stmt = $conn->prepare("SELECT g.groupName FROM clients c, sacco_group g INNER JOIN clients cl
+                                   ON cl.groupRefNo=g.refNo WHERE c.groupRefNo=g.refNo AND c.id=:clientId");
+          $stmt->bindParam(":clientId", $clientId);
+          return $stmt->execute() && $stmt->rowCount()==1 ? $stmt->fetch(\PDO::FETCH_ASSOC): [];
+        }catch (\PDOException $e){
+            return ['error'=>$e->getMessage()];
+        }
+    }
+
 }

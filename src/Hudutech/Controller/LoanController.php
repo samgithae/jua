@@ -380,6 +380,7 @@ class LoanController extends ComplexQuery implements LoanInterface
         // make first payment
 
         try {
+
             $previousPayment = self::getPreviousRepayment($clientId, $clientLoanId);
 
             if (sizeof($loanServicing) == 1 &&
@@ -1111,5 +1112,126 @@ class LoanController extends ComplexQuery implements LoanInterface
         }
     }
 
+
+    public static function showShortTermLoanBalances(){
+       //Todo: implement logic for showing short term loan balances
+        $loans = self::getLoan();
+        $data = array();
+        foreach ($loans as $loan){
+            $loanType = $loan['loanType'];
+            $previousPayment = [];
+            if($loanType == 'long_term'){
+                $previousPayment = self::getPreviousLongTermLoan($loan['id']);
+                if(is_null($previousPayment['loanCF'])){
+                    $data['loanBal'] = $previousPayment['loanBal'];
+                    $clientName = ClientController::getId($previousPayment['clientId'])['fullName'];
+                    $clientGroup = ClientController::getClientsGroup($previousPayment['clientId'])['groupName'];
+                    $data['fullName']= $clientName;
+                    $data['groupName'] = $clientGroup;
+                    $data['dateBorrowed'] = $previousPayment['createdAt'];
+
+
+
+                }elseif(!is_null($previousPayment['loanCF']) && (float)$previousPayment['loanCF'] > 0){
+                    $deadline = $previousPayment['createdAt'];
+                    $previousPaymentDate = $previousPayment['datePaid'];
+                    $currentDate = date('Y-m-d');
+
+                    $year1 = date('Y', strtotime($deadline));
+                    $year2 = date('Y', strtotime($currentDate));
+                    $year3 = date('Y', strtotime($previousPaymentDate));
+                    //deadline date not exceeded and repayment will be on the same
+                    //year therefore should not attract interest since it was
+                    // included in the previous payment.
+                    //this will ensure we show correct loan balance.
+                    if($year3 == $year2 && $year2 < $year1){
+                        $data['loanBal'] = $previousPayment['loanCF'];
+                    }
+
+                    if(($year2-$year3)== 1 && $year2<$year1){
+                        //loanCF will include interest since this is new year
+                        $withInterest = self::calculateInterest('loan_term', $previousPayment['loanCF']);
+                        $data['loanBal'] = $withInterest;
+                        $data['fullName'] = ClientController::getId($previousPayment)['fullName'];
+                        $data['groupName'] = ClientController::getClientsGroup($previousPayment['clientId'])['groupName'];
+                        $data['dateBorrowed'] = $previousPayment['createdAt'];
+                    }
+                    if($year2==$year1 && $year3==$year2){
+                        $data['loanBal'] = $previousPayment['loanCF'];
+                        $data['fullName'] = ClientController::getId($previousPayment)['fullName'];
+                        $data['groupName'] = ClientController::getClientsGroup($previousPayment['clientId'])['groupName'];
+                        $data['dateBorrowed'] = $previousPayment['createdAt'];
+                    }
+
+                }
+            }elseif ($loanType=='trimester'){
+                $previousPayment=self::getPreviousRepayment($loan['clientId'], $loan['clientLoanId']);
+                //check if the previous payment loanCF is null, if null then this is the first repayment
+                if(is_null($previousPayment['loanCF'])){
+                    $data['loanBal'] = $previousPayment['loanBal'];
+                    $data['fullName'] = ClientController::getId($previousPayment['clientId'])['fullName'];
+                    $data['groupName'] = ClientController::getClientsGroup($previousPayment['clientId'])['groupName'];
+                    $data['dateBorrowed'] = $previousPayment['createdAt'];
+
+                }elseif (!is_null($previousPayment['loanCF']) && (float)($previousPayment['loanCF']) > 0){
+                    $currentDate = date('Y-m-d');
+                    $previousPaymentDate = $previousPayment['datePaid'];
+                    $repaymentDates = self::getRepaymentsDeadlines($loan['clientId'], $previousPayment['createdAt']);
+//                    $deadline1 = date('m', strtotime($repaymentDates['monthOne']));
+//                    $deadline2 = date('m', strtotime($repaymentDates['monthTwo']));
+//                    $deadline3 = date('m', strtotime($repaymentDates['monthThree']));
+
+                    $curMonth = date('m', strtotime($currentDate));
+                    $prevPmtMonth = date('m', strtotime($previousPaymentDate));
+                    if($curMonth == $prevPmtMonth){
+                        $data['loanBal'] = $previousPayment['loanCF'];
+                        $data['fullName'] = ClientController::getId($previousPayment['clientId'])['fullName'];
+                        $data['groupName'] = ClientController::getClientsGroup($previousPayment['clientId'])['groupName'];
+                        $data['dateBorrowed'] = $previousPayment['createdAt'];
+
+                    }
+                    if($curMonth > $prevPmtMonth){
+                        $withInterest = self::calculateInterest('trimester', $previousPayment['loanCF']);
+                        $data['loanBal'] = $withInterest;
+                        $data['fullName'] = ClientController::getId($previousPayment['clientId'])['fullName'];
+                        $data['groupName'] = ClientController::getClientsGroup($previousPayment['clientId'])['groupName'];
+                        $data['dateBorrowed'] = $previousPayment['createdAt'];
+                    }
+                }
+            }
+            elseif ($loanType == 'monthly'){
+                $previousPayment=self::getPreviousRepayment($loan['clientId'], $loan['clientLoanId']);
+                //check if the previous payment loanCF is null, if null then this is the first repayment
+                if(is_null($previousPayment['loanCF'])){
+                    $data['loanBal'] = $previousPayment['loanBal'];
+                    $data['fullName'] = ClientController::getId($previousPayment['clientId'])['fullName'];
+                    $data['groupName'] = ClientController::getClientsGroup($previousPayment['clientId'])['groupName'];
+                    $data['dateBorrowed'] = $previousPayment['createdAt'];
+
+                }elseif (!is_null($previousPayment['loanCF']) && (float)($previousPayment['loanCF']) > 0){
+                    $currentDate = date('Y-m-d');
+                    $previousPaymentDate = $previousPayment['datePaid'];
+
+                    $curMonth = date('m', strtotime($currentDate));
+                    $prevPmtMonth = date('m', strtotime($previousPaymentDate));
+                    if($curMonth == $prevPmtMonth){
+                        $data['loanBal'] = $previousPayment['loanCF'];
+                        $data['fullName'] = ClientController::getId($previousPayment['clientId'])['fullName'];
+                        $data['groupName'] = ClientController::getClientsGroup($previousPayment['clientId'])['groupName'];
+                        $data['dateBorrowed'] = $previousPayment['createdAt'];
+
+                    }
+                    if($curMonth > $prevPmtMonth){
+                        $withInterest = self::calculateInterest('monthly', $previousPayment['loanCF']);
+                        $data['loanBal'] = $withInterest;
+                        $data['fullName'] = ClientController::getId($previousPayment['clientId'])['fullName'];
+                        $data['groupName'] = ClientController::getClientsGroup($previousPayment['clientId'])['groupName'];
+                        $data['dateBorrowed'] = $previousPayment['createdAt'];
+                    }
+                }
+            }
+
+        }
+    }
 
 }

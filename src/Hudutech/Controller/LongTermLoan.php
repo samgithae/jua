@@ -107,7 +107,7 @@ trait LongTermLoan
         // make first payment
 
         try {
-            $previousPayment = self::getPreviousRepayment($clientId, $clientLoanId);
+            $previousPayment = self::getPreviousLongTermLoan($clientLoanId);
 
             if (sizeof($loanServicing) == 1 &&
                 empty($loanServicing[0]['loanCF']) &&
@@ -312,10 +312,9 @@ trait LongTermLoan
     }
 
     public static function createTopUpLoan($prevClientLoanId, $topUpAmt, $years){
-        $db = new DB();
-        $conn = $db->connect();
+
         $prevLongTermLoan = self::getPreviousLongTermLoan($prevClientLoanId);
-        if(!array_key_exists('error', $prevLongTermLoan)){
+        if(!isset($prevLongTermLoan['error'])){
             $loanCF = $prevClientLoanId['loanCF'];
             if((float)$topUpAmt > $loanCF){
                 //clear previous loan and create
