@@ -301,15 +301,7 @@ trait LongTermLoan
             ];
         }
     }
-    public static function clearLoanCF($id){
-        $db = new DB();
-        $conn = $db->connect();
-        try{
 
-        } catch (\PDOException $exception) {
-
-        }
-    }
 
     public static function createTopUpLoan($prevClientLoanId, $topUpAmt, $years){
 

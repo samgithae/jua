@@ -1185,7 +1185,7 @@ class LoanController extends ComplexQuery implements LoanInterface
 
                 }
             } elseif ($loanType == 'trimester') {
-                $previousPayment = self::getPreviousRepayment($loan['clientId'], $loan['clientLoanId']);
+                $previousPayment = self::getPreviousRepayment($loan['clientId'], $loan['id']);
                 //check if the previous payment loanCF is null, if null then this is the first repayment
                 if (is_null($previousPayment['loanCF'])) {
                     $dataItem = array();
@@ -1228,7 +1228,7 @@ class LoanController extends ComplexQuery implements LoanInterface
                     }
                 }
             } elseif ($loanType == 'monthly') {
-                $previousPayment = self::getPreviousRepayment($loan['clientId'], $loan['clientLoanId']);
+                $previousPayment = self::getPreviousRepayment($loan['clientId'], $loan['id']);
                 //check if the previous payment loanCF is null, if null then this is the first repayment
                 if (is_null($previousPayment['loanCF'])) {
                     $dataItem = array();
